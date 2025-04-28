@@ -1,5 +1,9 @@
 # Jeu de données CWRU Bearing au format .npz
 
+---
+
+
+
 Ce dépôt présente le jeu de données CWRU Bearing au format .npz, corrigé et allégé en ce qui concerne certaines métadonnées. Tous les crédits pour ce jeu de données reviennent à la CWRU.
 
 ## Présentation du jeu de données
@@ -73,3 +77,37 @@ Tous les crédits pour le jeu de données reviennent à la CWRU. Cette version c
   number = {16},
   doi = {10.3390/s24165310}
 }
+
+# Roulement informations
+
+---
+
+Les spécifications des roulements du côté moteur (drive end) et du côté ventilateur (fan end), incluant la géométrie des roulements et les fréquences de défaut, y sont listées.
+
+## **Drive end bearing** (DE) : 6205-2RS JEM SKF, deep groove ball bearing
+
+Description taille :
+
+| Diamètre intérieur (m) | Diamètre extérieur (m) | Epaisseur (m) | Diamètre bille (m) | Diamètre de pas (m) |
+| ------------------------ | ------------------------ | ------------- | ------------------- | -------------------- |
+| 0,0250                   | 0,0520                   | 0,0150        | 0,0079              | 0,0390               |
+
+Fréquence de défaut (multiple de la vitesse en Hz) :
+
+| Bague interne | Bague externe | Cage    | Bille  |
+| ------------- | ------------- | ------- | ------ |
+| 5,4152        | 3,5848        | 0,39828 | 4,7135 |
+
+## **Fan end bearing (FE)** : 6203-2RS JEM SKF, deep groove ball bearing
+
+Description taille :
+
+| Diamètre intérieur (m) | Diamètre extérieur (m) | Epaisseur (m) | Diamètre bille (m) | Diamètre de pas (m) |
+| ------------------------ | ------------------------ | ------------- | ------------------- | -------------------- |
+| 0,0170                   | 0,040                    | 0,0120        | 0,0067              | 0,0285               |
+
+Fréquence de défaut (multiple de la vitesse en Hz) :
+
+| Bague interne | Bague externe | Cage   | Bille  |
+| ------------- | ------------- | ------ | ------ |
+| 4,9469        | 3,0530        | 0,3817 | 3,9874 |
