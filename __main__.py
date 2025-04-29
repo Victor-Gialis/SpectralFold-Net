@@ -14,10 +14,14 @@ from data.data.dataloader import CWRUDataset,custom_collate_fn
 size = 2**14 # 16384
 recovery = 0.95
 
-train_dataset = CWRUDataset(
+dataset = CWRUDataset(
     fault_filter=['normal', 'inner', 'outer'],
     window_size=size,
     stride=int(size * (1 - recovery)))
+
+train_size = int(0.8 * len(dataset)) # 80% pour l'entraînement
+valid_size = len(dataset) - train_size # 20% pour la validation
+train_dataset, valid_dataset = torch.utils.data.random_split(dataset, [train_size, valid_size])
 
 test_dataset = CWRUDataset(
     fault_filter=['ball'],
@@ -25,6 +29,7 @@ test_dataset = CWRUDataset(
     stride=int(size * (1 - recovery)))
 
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, collate_fn=custom_collate_fn)
+valid_loader = DataLoader(valid_dataset, batch_size=32, shuffle=False, collate_fn=custom_collate_fn)
 test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False, collate_fn=custom_collate_fn)
 
 # Define the Vision Transformer 1D model
@@ -36,6 +41,7 @@ criterion = nn.MSELoss()
 
 num_epochs = 100
 for epoch in range(num_epochs):
+    # Training
     model.train()
     epoch_loss = 0
 
@@ -54,6 +60,21 @@ for epoch in range(num_epochs):
         epoch_loss += loss.item()
 
     print(f"Epoch {epoch}: loss = {epoch_loss / len(train_loader)}")
+
+    # Validation
+    model.eval()
+    val_loss = 0
+    with torch.no_grad():
+        for batch in valid_loader:
+            signals_reduce = torch.stack(batch['vibration_fft_reduce']).unsqueeze(1).to(device)
+            signals_complete = torch.stack(batch['vibration_fft_complete']).unsqueeze(1).to(device)
+
+            predicted_signals = model(signals_reduce)
+            loss = torch.mean(torch.abs(predicted_signals - signals_complete))
+            val_loss += loss.item()
+
+    val_loss /= len(valid_loader)
+    print(f"Epoch {epoch}: train loss = {epoch_loss / len(train_loader):.4f} | val loss = {val_loss:.4f}")
 
 #Save the model
 torch.save(model.state_dict(), 'model.pth')

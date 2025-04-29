@@ -33,7 +33,7 @@ class ViT(nn.Module):
                 Residual(PreNorm(emb_dim, FeedForward(emb_dim, emb_dim, dropout = dropout))))
             self.layers.append(transformer_block)
 
-        # Classification head
+        # Regression head
         self.head = nn.Sequential(nn.LayerNorm(emb_dim), nn.Linear(emb_dim, out_dim))
 
     def forward(self, serie):
