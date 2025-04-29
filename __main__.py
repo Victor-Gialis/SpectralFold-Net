@@ -34,7 +34,7 @@ model = ViT(serie_len=size).to(device)
 optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
 criterion = nn.MSELoss()
 
-num_epochs = 1
+num_epochs = 100
 for epoch in range(num_epochs):
     model.train()
     epoch_loss = 0
@@ -54,3 +54,23 @@ for epoch in range(num_epochs):
         epoch_loss += loss.item()
 
     print(f"Epoch {epoch}: loss = {epoch_loss / len(train_loader)}")
+
+#Save the model
+torch.save(model.state_dict(), 'model.pth')
+
+# Load the model for inference
+model = ViT(serie_len=size).to(device)
+model.load_state_dict(torch.load('model.pth'))
+model.eval()
+
+# Test the model on the test set
+test_loss = 0
+for batch in tqdm(test_loader):
+    signals_reduce = torch.stack(batch['vibration_fft_reduce']).unsqueeze(1).to(device)  # (batch_size, 1, signal_length)
+    signals_complete = torch.stack(batch['vibration_fft_complete']).unsqueeze(1).to(device)  # (batch_size, 1, signal_length)
+
+    with torch.no_grad():
+        predicted_signals = model(signals_reduce)  # (batch_size, 1, signal_length)
+
+    loss = torch.mean(torch.abs(predicted_signals - signals_complete))
+    test_loss += loss.item()

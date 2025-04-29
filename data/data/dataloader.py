@@ -1,6 +1,7 @@
 import sys,os,torch
 import numpy as np
 import pandas as pd
+import random
 from torch.utils.data import DataLoader
 
 def custom_collate_fn(batch):
@@ -25,7 +26,7 @@ def custom_collate_fn(batch):
     }
 
 class CWRUDataset:
-    def __init__(self, end='FE', fault_filter=None, window_size=None, stride=None):
+    def __init__(self, end='FE', fault_filter=None, window_size=None, stride=None, downsample_factor=4):
         assert end in ['DE', 'FE', 'BA'], "source must be 'DE', 'FE' or 'BA'"
         assert fault_filter is None or isinstance(fault_filter, list), "fault_filter must be a list or None"
         
@@ -33,6 +34,7 @@ class CWRUDataset:
         self.fault_filter = fault_filter 
         self.window_size = window_size
         self.stride = stride
+        self.downsample_factor = downsample_factor
 
         fault_name = {'normal':'Normal',
          'inner':'IR', 
@@ -121,9 +123,9 @@ class CWRUDataset:
             'diameter': window_info['diameter'],
             'end': window_info['end'],
             'vibration_complete': vibration,
-            'vibration_reduce':vibration[::2],  # Réduction de la taille du signal
+            'vibration_reduce':vibration[...,::self.downsample_factor],  # Réduction de la taille du signal
             'vibration_fft_complete': torch.abs(torch.fft.fft(vibration, dim=-1))/N,  # FFT du signal complet
-            'vibration_fft_reduce': torch.abs(torch.fft.fft(vibration[::2], dim=-1))/(N//2)  # FFT du signal réduit
+            'vibration_fft_reduce': torch.abs(torch.fft.fft(vibration[...,::self.downsample_factor], dim=-1))/(N//self.downsample_factor)  # FFT du signal réduit
         }
         return sample
 
