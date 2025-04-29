@@ -9,13 +9,19 @@ def custom_collate_fn(batch):
     batch_fault = [item['fault'] for item in batch]
     batch_diameter = [item['diameter'] for item in batch]
     batch_end = [item['end'] for item in batch]
-    batch_vibration = [item['vibration'] for item in batch]  # Liste de tensors de tailles variables
+    batch_vibration_complete = [item['vibration_complete'] for item in batch]  # Liste de tensors de tailles variables
+    batch_vibration_reduce = [item['vibration_reduce'] for item in batch]  # Liste de tensors de tailles variables
+    batch_vibration_fft_complete = [item['vibration_fft_complete'] for item in batch]  # Liste de tensors de tailles variables  
+    batch_vibration_fft_reduce = [item['vibration_fft_reduce'] for item in batch]  # Liste de tensors de tailles variables
     return {
         'speed': batch_speed,
         'fault': batch_fault,
         'diameter': batch_diameter,
         'end': batch_end,
-        'vibration': batch_vibration
+        'vibration_complete': batch_vibration_complete,
+        'vibration_reduce': batch_vibration_reduce,
+        'vibration_fft_complete': batch_vibration_fft_complete,
+        'vibration_fft_reduce': batch_vibration_fft_reduce
     }
 
 class CWRUDataset:
@@ -108,12 +114,16 @@ class CWRUDataset:
         else:
             vibration = signal  # si pas de fenêtre glissante, tout le signal
 
+        N = vibration.shape[-1]
         sample = {
             'speed': window_info['speed'],
             'fault': window_info['fault'],
             'diameter': window_info['diameter'],
             'end': window_info['end'],
-            'vibration': vibration
+            'vibration_complete': vibration,
+            'vibration_reduce':vibration[::2],  # Réduction de la taille du signal
+            'vibration_fft_complete': torch.abs(torch.fft.fft(vibration, dim=-1))/N,  # FFT du signal complet
+            'vibration_fft_reduce': torch.abs(torch.fft.fft(vibration[::2], dim=-1))/(N//2)  # FFT du signal réduit
         }
         return sample
 
