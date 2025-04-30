@@ -52,6 +52,9 @@ test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False, collate_fn=
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = ViT(serie_len=size).to(device)
 
+mean = mean.to(device)
+std = std.to(device)
+
 # Define the optimizer and loss function
 # The AdamW optimizer is used for training the model, and the loss function is Mean Squared Error (MSE).
 optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
