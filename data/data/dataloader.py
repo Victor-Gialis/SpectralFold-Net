@@ -116,33 +116,22 @@ class CWRUDataset:
         else:
             vibration = signal  # si pas de fenêtre glissante, tout le signal
 
-        # Normalisation du signal
-        mean, std = self._compute_global_stats()
-        vibration = (vibration - mean) / std
-
+        # Normalisation de la FFT
         N = vibration.shape[-1]
+        vibration_reduce = vibration[...,::self.downsample_factor]  # Réduction de la taille du signal
+        N_reduce = vibration_reduce.shape[-1]
+
         sample = {
             'speed': window_info['speed'],
             'fault': window_info['fault'],
             'diameter': window_info['diameter'],
             'end': window_info['end'],
             'vibration_complete': vibration,
-            'vibration_reduce':vibration[...,::self.downsample_factor],  # Réduction de la taille du signal
+            'vibration_reduce':vibration_reduce,  # Réduction de la taille du signal
             'vibration_fft_complete': torch.abs(torch.fft.fft(vibration, dim=-1))/N,  # FFT du signal complet
-            'vibration_fft_reduce': torch.abs(torch.fft.fft(vibration[...,::self.downsample_factor], dim=-1))/(N//self.downsample_factor)  # FFT du signal réduit
+            'vibration_fft_reduce': torch.abs(torch.fft.fft(vibration_reduce, dim=-1))/N_reduce # FFT du signal réduit
         }
         return sample
-    
-    def _compute_global_stats(self):
-        all_signals = []
-        for sample in self.samples:
-            signal = sample['vibration_complete']  # assure-toi que c’est un Tensor
-            all_signals.append(signal)
-
-        stacked = torch.stack(all_signals)  # (N, signal_len)
-        mean = stacked.mean()
-        std = stacked.std()
-        return mean, std
 
 if __name__ == "__main__":
     # Exemple d'utilisation

@@ -4,6 +4,35 @@ from torch import nn
 from einops.layers.torch import Rearrange
 from torch import Tensor
 
+def global_stats(dataset):
+    """
+    Compute the global mean and standard deviation of the dataset.
+    """
+    all_signals = []
+    for sample in dataset:
+        signal = sample['vibration_fft_complete']
+        all_signals.append(signal)
+
+    stacked = torch.stack(all_signals)
+    mean = stacked.mean(axis=0)
+    std = stacked.std(axis=0)
+    return mean, std
+
+def signal_normalization(signal: Tensor, mean: Tensor, std: Tensor) -> Tensor:
+    """
+    Normalize the input signal using the provided mean and standard deviation.
+    
+    Args:
+        signal (Tensor): The input signal to be normalized.
+        mean (Tensor): The mean value for normalization.
+        std (Tensor): The standard deviation value for normalization.
+
+    Returns:
+        Tensor: The normalized signal.
+    """
+    N = signal.shape[-1]
+    return (signal - mean[:N]) / std[:N]
+
 # Patch Embedding
 # This class is used to convert the input image into patches and then flatten them.  
 class PatchEmbedding(nn.Module):

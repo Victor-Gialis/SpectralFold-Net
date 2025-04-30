@@ -5,7 +5,7 @@ from einops import repeat
 from utils import PatchEmbedding, Attention, PreNorm, FeedForward, Residual
 
 class ViT(nn.Module):
-    def __init__(self, ch=1, serie_len=2**14, patch_size=1024, emb_dim=32,
+    def __init__(self, ch=1, serie_len=2**14, patch_size=2048, emb_dim=32,
                 n_layers=6, out_dim=2**14, dropout=0.1, heads=2):
         super(ViT, self).__init__()
 
