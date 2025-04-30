@@ -1,7 +1,5 @@
 import sys,os,torch
 import numpy as np
-import pandas as pd
-import random
 from torch.utils.data import DataLoader
 
 def custom_collate_fn(batch):

@@ -1,8 +1,9 @@
 import torch
-from einops import rearrange, repeat
 from torch import nn
-from einops.layers.torch import Rearrange
 from torch import Tensor
+
+from einops import rearrange, repeat
+from einops.layers.torch import Rearrange
 
 def global_stats(dataset):
     """
