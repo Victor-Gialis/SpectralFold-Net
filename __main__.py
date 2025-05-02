@@ -14,7 +14,7 @@ from data.data.dataloader import CWRUDataset,custom_collate_fn
 # The input signal is a 1D time series of length 2^14 (16384 samples).
 # The signal is divided into patches of size 1024 (2^10) samples, and the model processes these patches.
 size = 2**14 # 16384
-recovery = 0.95 # 95% overlap between patches
+recovery = 0.5 # 95% overlap between patches
 # The stride is set to 5% of the window size, which means that the model will process 95% of the signal in each patch.
 
 # The window size is set to 1024 samples (2^10), which means that the model will process 1024 samples at a time.

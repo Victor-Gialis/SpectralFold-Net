@@ -115,7 +115,7 @@ class CWRUDataset:
             vibration = signal  # si pas de fenêtre glissante, tout le signal
 
         # Normalisation de la FFT
-        N = vibration.shape[-1]
+        N_complete = vibration.shape[-1]
         vibration_reduce = vibration[...,::self.downsample_factor]  # Réduction de la taille du signal
         N_reduce = vibration_reduce.shape[-1]
 
@@ -126,8 +126,8 @@ class CWRUDataset:
             'end': window_info['end'],
             'vibration_complete': vibration,
             'vibration_reduce':vibration_reduce,  # Réduction de la taille du signal
-            'vibration_fft_complete': torch.abs(torch.fft.fft(vibration, dim=-1))/N,  # FFT du signal complet
-            'vibration_fft_reduce': torch.abs(torch.fft.fft(vibration_reduce, dim=-1))/N_reduce # FFT du signal réduit
+            'vibration_fft_complete': torch.abs(torch.fft.rfft(vibration, dim=-1))/N_complete,  # FFT du signal complet
+            'vibration_fft_reduce': torch.abs(torch.fft.rfft(vibration_reduce, dim=-1))/N_reduce # FFT du signal réduit
         }
         return sample
 

@@ -48,8 +48,8 @@ class PatchEmbedding(nn.Module):
         super().__init__()
         self.projection = nn.Sequential(
             # break-down the image in s1 x s2 patches and flat them
-            Rearrange('b c (n p) -> b n (p c)', p = patch_size),
-            nn.Linear(patch_size, emb_size)
+            Rearrange('b c (n p) -> b n (p c)', p = patch_size), # Rearrange the input tensor to create patches
+            nn.Linear(patch_size, emb_size) # Linear projection of the patch to the embedding size
         )
 
     def forward(self, x: Tensor) -> Tensor:
