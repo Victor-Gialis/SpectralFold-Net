@@ -1,11 +1,13 @@
 import sys,os,torch
 import numpy as np
+from scipy.signal import hilbert
 from torch.utils.data import DataLoader
 
 def custom_collate_fn(batch):
     # batch est une liste de samples individuels
     batch_speed = [item['speed'] for item in batch]
     batch_fault = [item['fault'] for item in batch]
+    batch_position = {item['position'] for item in batch}
     batch_diameter = [item['diameter'] for item in batch]
     batch_end = [item['end'] for item in batch]
     batch_vibration_complete = [item['vibration_complete'] for item in batch]  # Liste de tensors de tailles variables
@@ -16,6 +18,7 @@ def custom_collate_fn(batch):
         'speed': batch_speed,
         'fault': batch_fault,
         'diameter': batch_diameter,
+        'position': batch_position,
         'end': batch_end,
         'vibration_complete': batch_vibration_complete,
         'vibration_reduce': batch_vibration_reduce,
@@ -24,15 +27,18 @@ def custom_collate_fn(batch):
     }
 
 class CWRUDataset:
-    def __init__(self, end='FE', fault_filter=None, window_size=None, stride=None, downsample_factor=4):
+    def __init__(self, end='FE', fault_filter=None, window_size=None, stride=None, downsample_factor=None, envelope_analysis=False):
         assert end in ['DE', 'FE', 'BA'], "source must be 'DE', 'FE' or 'BA'"
         assert fault_filter is None or isinstance(fault_filter, list), "fault_filter must be a list or None"
+        assert downsample_factor in [None,1,2,3,4]
+        assert envelope_analysis is False or True
         
         self.end = end
         self.fault_filter = fault_filter 
         self.window_size = window_size
         self.stride = stride
         self.downsample_factor = downsample_factor
+        self.envelope_analysis = envelope_analysis
 
         fault_name = {'normal':'Normal',
          'inner':'IR', 
@@ -56,11 +62,14 @@ class CWRUDataset:
                         pattern = filename.split('_')
                         # On suppose que le nom de fichier est toujours au format speed_fault_diameter_end
                         # Par exemple : 1700_1_1_DE.npz ou 1700_1_1_1_DE.npz
+                        diameter = None
+                        position = None
                         if len(pattern) == 4:
                             speed_rpm, fault, diameter, end = pattern
+                            if '@' in fault :
+                                fault, position = fault.split('@')
                         else:
                             speed_rpm, fault = pattern
-                            diameter = None
                             end = self.end  # Si pas de diamètre, on suppose que c'est la fin par défaut
 
                         if self.fault_filter is None or fault in self.fault_filter and self.end in end:
@@ -69,6 +78,7 @@ class CWRUDataset:
                                 'filepath': filepath,
                                 'speed': speed_rpm,
                                 'fault': fault,
+                                'position': position,
                                 'diameter': diameter,
                                 'end': end
                             })
@@ -85,6 +95,7 @@ class CWRUDataset:
                     'filepath': sample['filepath'],
                     'speed': sample['speed'],
                     'fault': sample['fault'],
+                    'position': sample['position'],
                     'diameter': sample['diameter'],
                     'end': sample['end'],
                     'start_idx': 0
@@ -95,6 +106,7 @@ class CWRUDataset:
                         'filepath': sample['filepath'],
                         'speed': sample['speed'],
                         'fault': sample['fault'],
+                        'position': sample['position'],
                         'diameter': sample['diameter'],
                         'end': sample['end'],
                         'start_idx': start
@@ -115,13 +127,28 @@ class CWRUDataset:
             vibration = signal  # si pas de fenêtre glissante, tout le signal
 
         # Normalisation de la FFT
-        N_complete = vibration.shape[-1]
-        vibration_reduce = vibration[...,::self.downsample_factor]  # Réduction de la taille du signal
+
+        if self.downsample_factor == None :
+            factor = int(np.random.uniform(1,4))
+            vibration_reduce = vibration[...,::factor]
+        
+        else :
+            vibration_reduce = vibration[...,::self.downsample_factor]  # Réduction de la taille du signal
+
+        N_complete = vibration.shape[-1]   
         N_reduce = vibration_reduce.shape[-1]
+
+        if self.envelope_analysis:
+            vibration = torch.abs(torch.from_numpy(hilbert(vibration)))
+            vibration_reduce = torch.abs(torch.from_numpy(hilbert(vibration_reduce)))
+
+            vibration -= vibration.mean()
+            vibration_reduce -= vibration_reduce.mean()
 
         sample = {
             'speed': window_info['speed'],
             'fault': window_info['fault'],
+            'position': window_info['position'],
             'diameter': window_info['diameter'],
             'end': window_info['end'],
             'vibration_complete': vibration,

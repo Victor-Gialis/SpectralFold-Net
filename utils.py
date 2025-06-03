@@ -1,9 +1,46 @@
 import torch
+import numpy as np
 from torch import nn
 from torch import Tensor
 
 from einops import rearrange, repeat
 from einops.layers.torch import Rearrange
+
+def mse_loss(x,y):
+    """
+    Compute the Mean Squared Error (MSE).
+    Args :
+        x (Tensor): true signal
+        y (Tensor): predict signal
+
+    Returns : 
+        Tensor: Mean Squared Error (MSE).
+    """
+    b, n = y.shape
+    x = x[:,:n]
+    return torch.mean((x - y)**2)
+
+def covariance_matrix(x):
+    x -= torch.mean(x, dim=-1, keepdim=True)
+    cov = (x.T @ x).T / (x.shape[-1] - 1)
+    return cov
+
+def covariance_loss(x,y):
+    """
+    Compute the covariance matrix of two signals.
+
+    Args :
+        x (Tensor): true signal
+        y (Tensor): predict signal
+
+    Returns :
+        Tensor: covariance matrix of the two signals
+    """ 
+    b, n = y.shape
+    x = x[:,:n]
+    Cov_true = covariance_matrix(x)
+    Cov_pred = covariance_matrix(y)
+    return torch.norm(Cov_true - Cov_pred)**2
 
 def global_stats(dataset):
     """
@@ -37,7 +74,7 @@ def signal_normalization(signal: Tensor, mean: Tensor, std: Tensor) -> Tensor:
 # Patch Embedding
 # This class is used to convert the input image into patches and then flatten them.  
 class PatchEmbedding(nn.Module):
-    def __init__(self, in_channels = 3, patch_size = 8, emb_size = 128):
+    def __init__(self, patch_size = 8, emb_size = 128):
         """
         Args:
             in_channels (int): Number of input channels (e.g., 3 for RGB images).
@@ -47,12 +84,13 @@ class PatchEmbedding(nn.Module):
         self.patch_size = patch_size
         super().__init__()
         self.projection = nn.Sequential(
-            # break-down the image in s1 x s2 patches and flat them
+            # Reshape the input tensor to create patches
             Rearrange('b c (n p) -> b n (p c)', p = patch_size), # Rearrange the input tensor to create patches
             nn.Linear(patch_size, emb_size) # Linear projection of the patch to the embedding size
         )
 
     def forward(self, x: Tensor) -> Tensor:
+        x = x[:,:,:self.patch_size * (x.shape[-1] // self.patch_size)]
         x = self.projection(x)
         return x
 
@@ -70,6 +108,7 @@ class Attention(nn.Module):
         super().__init__()
         self.heads = n_heads
         self.dim = dim
+        self.scale = self.dim ** -0.5
 
         self.attention = nn.MultiheadAttention(embed_dim=dim, num_heads=n_heads, dropout=dropout, batch_first=True)
 
@@ -83,6 +122,10 @@ class Attention(nn.Module):
         k = self.key(x)
         v = self.value(x)
         attn_output, attn_output_weights = self.attention(q, k, v)
+        
+        attn = (q @ k.transpose(-2, -1)) * self.scale
+        attn = attn.softmax(dim=-1)
+        
         return attn_output
 
 # Normalization

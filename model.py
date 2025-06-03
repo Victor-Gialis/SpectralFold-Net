@@ -5,38 +5,14 @@ import torch.nn.functional as F
 from einops import repeat
 from utils import PatchEmbedding, Attention, PreNorm, FeedForward, Residual
 
-def pad_series(serie, patch_size):
-    """
-    Pad the input series so that its length is a multiple of patch_size.
-    """
-    b, l = serie.shape  # batch size, length of series
-    padding_needed = (patch_size - (l % patch_size)) % patch_size
-    if padding_needed > 0:
-        serie = F.pad(serie, (0, padding_needed), mode='constant', value=0)
-    return serie, padding_needed
+class ViTEncoder(nn.Module):
+    def __init__(self, emb_dim=2**11, n_layers=6, dropout=0.1, heads=8):
+        super().__init__()
 
-
-class ViT(nn.Module):
-    def __init__(self, ch=1, serie_len=2**14, patch_size=2048, emb_dim=32,
-                n_layers=6, out_dim=2**14, dropout=0.1, heads=2):
-        super(ViT, self).__init__()
-
-        # Attributes
-        self.channels = ch
-        self.serie_len = serie_len
-        self.patch_size = patch_size
+        # parameters
+        self.emb_dim = emb_dim
         self.n_layers = n_layers
-
-        # Patching
-        self.patch_embedding = PatchEmbedding(in_channels=ch,
-                                              patch_size=patch_size,
-                                              emb_size=emb_dim)
-        # Learnable params
-        num_patches = (serie_len // patch_size) # for 1d data
-        
-        # Positional embeddings are not used in this implementation
-        self.pos_embedding = nn.Parameter(torch.randn(1, num_patches + 1, emb_dim))
-        self.cls_token = nn.Parameter(torch.rand(1, 1, emb_dim))
+        # self.num_patch = num_patch
 
         # Transformer Encoder
         self.layers = nn.ModuleList([])
@@ -46,42 +22,108 @@ class ViT(nn.Module):
                 Residual(PreNorm(emb_dim, FeedForward(emb_dim, emb_dim, dropout = dropout))))
             self.layers.append(transformer_block)
 
-        # Decoder
-        # The decoder is a linear layer that takes the output of the transformer and maps it to the original patch size.
-        # Chaque token de dimension emb_dim prédit un patch de taille patch_size
-        self.decoder = nn.Sequential(
+        self.output_head = nn.Sequential(
             nn.LayerNorm(emb_dim),
-            nn.Linear(emb_dim, emb_dim * 2),
-            nn.GELU(),
-            nn.Linear(emb_dim * 2, patch_size)
-            )
-        
-        
-    def forward(self, serie):
-        # Pad the series if necessary
-        serie, padding_needed = pad_series(serie, self.patch_size)
+            nn.Linear(emb_dim, emb_dim),
+            nn.Dropout(dropout))
 
-        # Get patch embedding vectors
-        x = self.patch_embedding(serie)  # (b, n, d)
-
-        b, n, _ = x.shape
-
-        # Add cls token to inputs
-        cls_tokens = repeat(self.cls_token, '1 1 d -> b 1 d', b=b)
-        x = torch.cat([cls_tokens, x], dim=1)
-        x += self.pos_embedding[:, :(n + 1)]
+    def forward(self, x):
+        # get patch embedding vectors
+        b, n, d = x.shape
 
         # Transformer layers
         for i in range(self.n_layers):
             x = self.layers[i](x)
 
-        # Remove cls token and decode
-        x = x[:, 1:]  # Remove cls_token
-        recon_patches = self.decoder(x)  # [B, N_patches, patch_size]
-        recon = recon_patches.flatten(1)  # [B, N_patches * patch_size]
+        x = self.output_head(x)  # [B, N_patches, emb_dim]
+        return x
 
-        # Remove padding from the reconstructed series
-        if padding_needed > 0:
-            recon = recon[:, :-padding_needed]
+class ViTDecoder(nn.Module):
+    def __init__(self, encoder_dim = 256, decoder_dim = 512, patch_size = 128, serie_len = 8192, n_layers=6, dropout=0.1, heads=8, num_patch=int):
+        super().__init__()
 
-        return recon
+        # parameters
+        self.encoder_dim = encoder_dim
+        self.decoder_dim = decoder_dim
+        self.patch_size = patch_size
+        self.serie_len = serie_len
+        self.n_layers = n_layers
+        self.num_patch = num_patch 
+
+        self.projection = nn.Sequential(
+            nn.LayerNorm(encoder_dim),
+            nn.Linear(encoder_dim, decoder_dim),
+            nn.Dropout(dropout))
+        
+        # Transformer Encoder
+        self.layers = nn.ModuleList([])
+        for _ in range(n_layers):
+            transformer_block = nn.Sequential(
+                Residual(PreNorm(decoder_dim, Attention(decoder_dim, n_heads = heads, dropout = dropout))),
+                Residual(PreNorm(decoder_dim, FeedForward(decoder_dim, decoder_dim, dropout = dropout))))
+            self.layers.append(transformer_block)
+        
+        self.output_head = nn.Sequential(
+            nn.LayerNorm(decoder_dim),
+            nn.Linear(decoder_dim, patch_size),
+            nn.GELU(),
+            nn.Linear(patch_size, patch_size),
+            nn.Flatten(start_dim=1),
+        )
+    
+    def forward(self, x):
+        b, n, d = x.shape
+
+        # Padding patch tokens
+        if n < self.num_patch :
+            bottom_padding = torch.randn(b,self.num_patch-n,d) #
+            bottom_padding = bottom_padding.to(x.device)
+            x = torch.cat([x,bottom_padding], dim=1) # bottom padding       
+
+        # get patch embedding vectors
+        x = self.projection(x)  # (b, n, d)
+
+        # Transformer layers
+        for i in range(self.n_layers):
+            x = self.layers[i](x)
+
+        # remove cls token
+        x = x[:,1:]  # [B, N_patches, emb_dim]
+
+        return self.output_head(x)
+    
+class ViTAutoencoder(nn.Module):
+    def __init__(self, encoder_dim = 2**10, decoder_dim = 2**8, serie_len = 8192, patch_size = 128, dropout = 0.1, n_layers = 6, heads = 2):
+        super().__init__()
+        self.num_patch = serie_len // patch_size
+        # Encoder-Decoder
+        self.patch_embedding = PatchEmbedding(patch_size=patch_size, emb_size=encoder_dim)
+        self.position_embedding = nn.Parameter(torch.randn(1, (serie_len // patch_size)+1, encoder_dim))
+        self.cls_token = nn.Parameter(torch.rand(1, 1, encoder_dim))
+        self.encoder = ViTEncoder(encoder_dim, n_layers, dropout, heads)
+        self.decoder = ViTDecoder(encoder_dim, decoder_dim, patch_size, serie_len, n_layers, dropout, heads, num_patch=self.num_patch)
+
+    def forward(self, x):
+        # Get patch embedding vectors
+        patch_emb = self.patch_embedding(x)
+        b, n, _ = patch_emb.shape
+
+        # Add cls token
+        cls_tokens = self.cls_token.expand(b, -1, -1)  # Étendre le cls_token pour correspondre à la taille du batch
+        x1 = torch.cat([cls_tokens, patch_emb], dim=1)  # Concaténer le cls_token avec les embeddings des patches
+
+        # Add positional embedding
+        x1 = x1 + self.position_embedding[:, :n + 1, :]
+
+        # Encoder
+        encoded_tokens = self.encoder(x1)
+
+        # Add positional embedding
+        x2 = encoded_tokens + self.position_embedding[:, :n + 1, :]
+
+        # Decoder
+        decoded_tokens = self.decoder(x2)
+
+        return patch_emb, encoded_tokens, decoded_tokens
+
+        

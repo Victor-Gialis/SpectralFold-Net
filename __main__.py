@@ -1,22 +1,29 @@
 import torch
+import logging
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
+import pandas as pd
+import plotly.express as px
+import itertools
 
 from tqdm import tqdm
-from model import ViT
+from model import ViTAutoencoder
 from torch.utils.data import DataLoader
 
 from utils import signal_normalization, global_stats
 from data.data.dataloader import CWRUDataset,custom_collate_fn
 
+# Define the device for training and testing
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 # Size of the input signal
 # The input signal is a 1D time series of length 2^14 (16384 samples).
 # The signal is divided into patches of size 1024 (2^10) samples, and the model processes these patches.
 size = 2**14 # 16384
-recovery = 0.5 # 95% overlap between patches
-# The stride is set to 5% of the window size, which means that the model will process 95% of the signal in each patch.
+recovery = 0.95 # 95% overlap between patche
 
+# The stride is set to 5% of the window size, which means that the model will process 95% of the signal in each patch.
 # The window size is set to 1024 samples (2^10), which means that the model will process 1024 samples at a time.
 # The stride is set to 5% of the window size, which means that the model will process 95% of the signal in each patch.
 dataset = CWRUDataset(
@@ -27,7 +34,8 @@ dataset = CWRUDataset(
 # Compute global mean and std for normalization
 # This is done to normalize the input signals before feeding them into the model.
 mean, std = global_stats(dataset)
-print(f"Global mean: {mean}, Global std: {std}")
+mean = mean.to(device)
+std = std.to(device)
 
 # Create the training and validation datasets
 # The dataset is split into training and validation sets using a random split.
@@ -44,85 +52,157 @@ test_dataset = CWRUDataset(
 
 # Create DataLoader for training, validation, and test datasets
 # The DataLoader is used to load the data in batches during training and evaluation.
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, collate_fn=custom_collate_fn)
-valid_loader = DataLoader(valid_dataset, batch_size=32, shuffle=False, collate_fn=custom_collate_fn)
-test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False, collate_fn=custom_collate_fn)
+batch_size = 16
+train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=custom_collate_fn)
+valid_loader = DataLoader(valid_dataset, batch_size=batch_size, shuffle=False, collate_fn=custom_collate_fn)
+test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, collate_fn=custom_collate_fn)
 
-# Define the Vision Transformer 1D model
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = ViT(serie_len=size).to(device)
+# Get size of fft
+size_fft = dataset[0]['vibration_fft_complete'].shape[-1] # 8193
 
-mean = mean.to(device)
-std = std.to(device)
+# Définir les hyperparamètres à optimiser
+param_grid = {
+    'encoder_dim': [2**9, 2**10],  # Exemple : 512, 1024
+    'decoder_dim': [2**11, 2**12],  # Exemple : 2048, 4096
+    'patch_size': [64, 128],       # Taille des patches
+    'n_layers': [1,2],           # Nombre de couches
+    'serie_len': [size_fft],       # Longueur de la série
+    'heads': [2,4],              # Nombre de têtes d'attention
+    'dropout': [0.1],        # Taux de dropout
+    'learning_rate': [1e-5, 1e-4] # Taux d'apprentissage
+}
 
-# Define the optimizer and loss function
-# The AdamW optimizer is used for training the model, and the loss function is Mean Squared Error (MSE).
-optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
+# Générer toutes les combinaisons d'hyperparamètres
+param_combinations = list(itertools.product(*param_grid.values()))
+print(f"Total combinations: {len(param_combinations)}")
 
-num_epochs = 150
-for epoch in range(num_epochs):
-    # Training
-    model.train()
-    epoch_loss = 0
+# Stocker les résultats
+results = []
 
-    for batch in tqdm(train_loader):
-        signals_reduce = torch.stack(batch['vibration_fft_reduce']).unsqueeze(1).to(device)  # (batch_size, 1, signal_length)
-        signals_complete = torch.stack(batch['vibration_fft_complete']).unsqueeze(1).to(device)  # (batch_size, 1, signal_length)
+# Configurer le logger
+logging.basicConfig(filename='training_logs.txt', level=logging.INFO, format='%(asctime)s - %(message)s')
 
-        # Normalize the signals
-        signals_reduce = signal_normalization(signals_reduce, mean, std) # (batch_size, 1, signal_length)
-        signals_complete = signal_normalization(signals_complete, mean, std) # (batch_size, 1, signal_length)
+# Boucle sur chaque combinaison d'hyperparamètres
+for i,params in enumerate(param_combinations):
+    print(f'Combinaison : {i}/{len(param_combinations)}')
 
-        # Move signals to device
-        optimizer.zero_grad()
-        predicted_signals = model(signals_reduce) # (batch_size, 1, signal_length)
+    # Enregister les hyperparamètres dans le logger
+    logging.info(f'Combinaison : {i}/{len(param_combinations)}')
 
-        # Reshape predicted signals to match the shape of the original signals
-        loss = torch.mean(torch.abs(predicted_signals - signals_complete)) 
-        loss.backward()
-        optimizer.step()
+    
+    # Extraire les hyperparamètres
+    encoder_dim, decoder_dim, patch_size, n_layers, serie_len, heads, dropout, learning_rate = params
 
-        epoch_loss += loss.item()
+    print(f"Testing combination: encoder_dim={encoder_dim}, decoder_dim={decoder_dim}, "
+          f"patch_size={patch_size}, serie_len={serie_len}, "
+          f"n_layers={n_layers}, heads={heads}, dropout={dropout}, learning_rate={learning_rate}")
+    
+    # Enregistrer les hyperparamètres dans le logger
+    logging.info(f"Testing combination: encoder_dim={encoder_dim}, decoder_dim={decoder_dim}, "
+                 f"patch_size={patch_size}, serie_len={serie_len},  "
+                 f"n_layers={n_layers}, heads={heads}, dropout={dropout}, learning_rate={learning_rate}")
 
-    print(f"Epoch {epoch}: loss = {epoch_loss / len(train_loader)}")
+    # Initialiser le modèle
+    model = ViTAutoencoder(
+        encoder_dim=encoder_dim,
+        decoder_dim=decoder_dim,
+        serie_len=serie_len,
+        patch_size=patch_size,
+        n_layers=n_layers,
+        heads=heads,
+        dropout=dropout
+    ).to(device)
 
-    # Validation
-    model.eval()
-    val_loss = 0
-    # Validation loop
-    # The validation loop is similar to the training loop, but we do not compute gradients.
-    with torch.no_grad():
-        for batch in valid_loader:
-            signals_reduce = torch.stack(batch['vibration_fft_reduce']).unsqueeze(1).to(device)
-            signals_complete = torch.stack(batch['vibration_fft_complete']).unsqueeze(1).to(device)
+    # Initialiser l'optimiseur
+    optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
 
-            # Normalize the signals
-            signals_reduce = signal_normalization(signals_reduce, mean, std) # (batch_size, 1, signal_length)
-            signals_complete = signal_normalization(signals_complete, mean, std) # (batch_size, 1, signal_length)
+    # Entraîner le modèle (1 ou 10 époques pour tester rapidement)
+    num_epochs = 10
+    for epoch in range(num_epochs):
+        model.train()
+        epoch_loss = 0
 
-            predicted_signals = model(signals_reduce)
-            loss = torch.mean(torch.abs(predicted_signals - signals_complete))
-            val_loss += loss.item()
+        for batch in tqdm(train_loader):
+            batch_loss = 0
 
-    val_loss /= len(valid_loader)
-    print(f"Epoch {epoch}: train loss = {epoch_loss / len(train_loader):.4f} | val loss = {val_loss:.4f}")
+            for signal_reduce, signal_complete in zip(batch['vibration_fft_reduce'], batch['vibration_fft_complete']):
+                # Ajouter une dimension pour correspondre à l'entrée du modèle
+                signal_reduce = signal_reduce.unsqueeze(0).unsqueeze(0).to(device)  # (1, 1, signal_length)
+                signal_complete = signal_complete.unsqueeze(0).unsqueeze(0).to(device)  # (1, signal_length)
 
-#Save the model
-torch.save(model.state_dict(), 'model.pth')
+                # Normaliser les signaux
+                signal_reduce = signal_normalization(signal_reduce, mean, std)
+                signal_complete = signal_normalization(signal_complete, mean, std)
 
-# Load the model for inference
-model = ViT(serie_len=size).to(device)
-model.load_state_dict(torch.load('model.pth'))
-model.eval()
+                # Entraînement
+                optimizer.zero_grad()
+                _, _, predicted_signal = model(signal_reduce)
+                predicted_signal = predicted_signal.unsqueeze(1)
+                b, c, s = predicted_signal.shape
 
-# Test the model on the test set
-test_loss = 0
-for batch in tqdm(test_loader):
-    signals_reduce = torch.stack(batch['vibration_fft_reduce']).unsqueeze(1).to(device)  # (batch_size, 1, signal_length)
-    signals_complete = torch.stack(batch['vibration_fft_complete']).unsqueeze(1).to(device)  # (batch_size, 1, signal_length)
+                loss = torch.mean((predicted_signal - signal_complete[:,:,:s])**2)
+                loss.backward()
+                optimizer.step()
 
-    with torch.no_grad():
-        predicted_signals = model(signals_reduce)  # (batch_size, 1, signal_length)
+                # Ajouter la perte pour ce signal
+                batch_loss += loss.item()
 
-    loss = torch.mean(torch.abs(predicted_signals - signals_complete))
-    test_loss += loss.item()
+            epoch_loss += batch_loss/len(batch['vibration_fft_reduce'])
+
+        print(f"Epoch {epoch}: train loss = {epoch_loss / len(train_loader):.4f}")
+
+        # Enregistrer la perte d'entraînement dans le logger
+        logging.info(f"Epoch {epoch}: train loss = {epoch_loss / len(train_loader):.4f}")
+
+        # Validation
+        model.eval()
+        val_loss = 0
+        with torch.no_grad():
+            for batch in valid_loader:
+                batch_loss = 0
+
+                for signal_reduce, signal_complete in zip(batch['vibration_fft_reduce'], batch['vibration_fft_complete']):
+                    signal_reduce = signal_reduce.unsqueeze(0).unsqueeze(0).to(device)
+                    signal_complete = signal_complete.unsqueeze(0).unsqueeze(0).to(device)
+
+                    # Normaliser les signaux
+                    signal_reduce = signal_normalization(signal_reduce, mean, std)
+                    signal_complete = signal_normalization(signal_complete, mean, std)
+
+                    _, _, predicted_signal = model(signal_reduce)
+                    predicted_signal = predicted_signal.unsqueeze(1)
+                    b, c, s = predicted_signal.shape
+
+                    # Compute loss for each signal
+                    loss = torch.mean((predicted_signal - signal_complete[:,:,:s])**2)
+                    batch_loss += loss.item()
+                
+                val_loss += batch_loss/len(batch['vibration_fft_reduce'])
+
+        val_loss /= len(valid_loader)
+        print(f"Validation loss = {val_loss:.4f}")
+
+        # Enregistrer la perte de validation dans le logger
+        logging.info(f"Validation loss = {val_loss:.4f}")
+
+        # Enregistrer les résultats
+        results.append({
+            'params': params,
+            'val_loss': val_loss
+        })
+
+# Trouver la meilleure combinaison d'hyperparamètres
+best_result = min(results, key=lambda x: x['val_loss'])
+print(f"Best hyperparameters: {best_result['params']}, Validation loss: {best_result['val_loss']:.4f}")
+
+# Enregistrer la meilleure combinaison d'hyperparamètres dans le logger
+logging.info(f"Best hyperparameters: {best_result['params']}, Validation loss: {best_result['val_loss']:.4f}")
+
+# Sauvegarder les resultats dans un fichier CSV
+import csv
+with open('results.csv', 'w') as file:
+    writer = csv.writer(file)
+    for row in results:
+        writer.writerow([row['params'], row['val_loss']])
+    
