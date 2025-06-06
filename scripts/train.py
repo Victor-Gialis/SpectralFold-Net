@@ -37,7 +37,7 @@ valid_loader = DataLoader(valid_dataset, batch_size=batch_size, shuffle=False, c
 
 # === 6. Instancier le modèle
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-size_fft = dataset[0]['vibration_fft_complete'].shape[-1]
+size_fft = dataset[0]['X_true'].shape[-1]
 model_params = config['model']
 model = ViTAutoencoder(
     encoder_dim=model_params.get('encoder_dim', 2**10),
@@ -69,8 +69,8 @@ for epoch in range(epochs):
     model.train()
     epoch_loss = 0
     for batch in tqdm(train_loader, desc=f"Epoch {epoch+1}/{epochs}"):
-        X_tilde = torch.stack(batch['X_tilde']).unsqueeze(1).to(device, non_blocking=True)
-        X_true = torch.stack(batch['X_true']).unsqueeze(1).to(device, non_blocking=True)
+        X_tilde = batch['X_tilde'].unsqueeze(1).to(device, non_blocking=True)
+        X_true = batch['X_true'].unsqueeze(1).to(device, non_blocking=True)
 
         # Normalisation des signaux
         X_tilde = signal_normalization(X_tilde, mean, std)
@@ -95,8 +95,8 @@ for epoch in range(epochs):
     val_loss = 0
     with torch.no_grad():
         for batch in valid_loader:
-            X_tilde = torch.stack(batch['X_tilde']).unsqueeze(1).to(device)
-            X_true = torch.stack(batch['X_true']).unsqueeze(1).to(device)
+            X_tilde = batch['X_tilde'].unsqueeze(1).to(device)
+            X_true = batch['X_true'].unsqueeze(1).to(device)
 
             # Normalisation des signaux
             X_tilde = signal_normalization(X_tilde, mean, std)

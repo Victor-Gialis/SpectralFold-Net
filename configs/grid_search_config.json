@@ -1,0 +1,23 @@
+{
+    "dataset": {
+        "name": "CWRUDataset",
+        "fault_filter": ["normal", "inner", "outer"],
+        "window_size": 16384,
+        "stride": 8192,
+        "downsample_factor": 2
+    },
+    "grid_search": {
+        "encoder_dim": [512, 1024],
+        "decoder_dim": [2048, 4096],
+        "patch_size": [64, 128],
+        "n_layers": [1, 2],
+        "serie_len": [8193],
+        "heads": [2, 4],
+        "dropout": [0.1],
+        "learning_rate": [1e-5, 1e-4]
+    },
+    "training": {
+        "batch_size": 16,
+        "num_epochs": 10
+    }
+}

@@ -1,0 +1,29 @@
+{
+  "dataset": {
+    "name": "CWRU",
+    "fault_filter": [
+      "normal"
+    ],
+    "transform_type": "psd_envelope",
+    "window_size": 16384,
+    "stride": 512,
+    "downsample_factor": 2
+  },
+  "dataloader": {
+    "batch_size": 32,
+    "shuffle": true
+  },
+  "model": {
+    "encoder_dim": 512,
+    "decoder_dim": 1024,
+    "patch_size": 128,
+    "n_layers": 2,
+    "heads": 4,
+    "dropout": 0.1
+  },
+  "training": {
+    "epochs": 15,
+    "learning_rate": 0.0001,
+    "model_name": "model_v0"
+  }
+}

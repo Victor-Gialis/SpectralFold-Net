@@ -3,8 +3,8 @@ import torch
 import numpy as np
 from datasets.base_dataset import BaseDataset, Sample
 
-class CWRUDataset(BaseDataset):
-    def __init__(self, source='end', fault_filter=None, transform_type=None, window_size=None, stride=None):
+class CWRUDataset(BaseDataset):    
+    def __init__(self, root_dir=None, source='FE', fault_filter=None, transform_type=None, window_size=None, stride=None):
         """
         Args:
             source (str): Source des données, peut être 'DE', 'FE' ou 'BA'.
@@ -16,7 +16,7 @@ class CWRUDataset(BaseDataset):
         assert source in ['DE', 'FE', 'BA'], "source must be 'DE', 'FE' or 'BA'"
         assert fault_filter is None or isinstance(fault_filter, list), "fault_filter doit être une liste ou None"
         self.source = source
-        super().__init__(root_dir=os.path.dirname(os.path.abspath(__file__)), 
+        super().__init__(root_dir=root_dir or os.path.dirname(os.path.abspath(__file__)), 
                          fault_filter=fault_filter, 
                          transform_type=transform_type, 
                          window_size=window_size, 
@@ -62,7 +62,7 @@ class CWRUDataset(BaseDataset):
                             speed, default = pattern
                             source = self.source  # Pour les fichiers en acquisition normale, on suppose que c'est la fin par défaut
                         
-                        label = self._label_from_default(default)
+                        label = self._extract_label_from_filename(default)
                         if self.fault_filter is None or label in self.fault_filter and self.source in source:
                             # On ne garde que les fichiers qui correspondent au filtre de défaut et à la source
                             self.samples.append(Sample(filepath=npz_path,

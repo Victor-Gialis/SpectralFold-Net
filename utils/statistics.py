@@ -44,7 +44,7 @@ def global_stats(dataset):
     """
     all_signals = []
     for sample in dataset:
-        signal = sample['vibration_fft_complete']
+        signal = sample['X_true']
         all_signals.append(signal)
 
     stacked = torch.stack(all_signals)

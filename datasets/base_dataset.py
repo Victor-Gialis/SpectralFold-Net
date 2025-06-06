@@ -24,7 +24,7 @@ class BaseDataset(Dataset):
         assert os.path.isdir(root_dir), f"Le répertoire {root_dir} n'existe pas ou n'est pas un répertoire."
         assert window_size is None or isinstance(window_size, int) and window_size > 0, "window_size doit être un entier positif."
         assert stride is None or isinstance(stride, int) and stride > 0, "stride doit être un entier positif."
-        assert transform_type in [None, 'normalize', 'standardize', 'envelope'], "transform_type doit être None, 'normalize', 'standardize' ou 'envelope'."
+        assert transform_type in [None, 'normalize', 'standardize','psd', 'psd_envelope'], "transform_type doit être None, 'normalize', 'standardize' ou 'envelope'."
         """
         Classe de base pour les datasets.
         Args:
@@ -98,14 +98,17 @@ class BaseDataset(Dataset):
         Applique la transformation spécifiée aux données.
         Si transform_type est None, retourne les données sans transformation.
         """
+        N = data.shape[-1]  # Longueur du signal, supposé être le dernier axe
         if self.transform_type is None:
             return data
         elif self.transform_type == 'normalize':
             return (data - torch.mean(data)) / torch.std(data)
         elif self.transform_type == 'standardize':
             return (data - torch.min(data)) / (torch.max(data) - torch.min(data))
-        elif self.transform_type == 'envelope':
-            return torch.abs(torch.from_numpy(hilbert(data)))
+        elif self.transform_type == 'psd':
+            return torch.abs(torch.fft.rfft(data - torch.mean(data)))**2/N
+        elif self.transform_type == 'psd_envelope':
+            return torch.abs(torch.fft.rfft(torch.abs(torch.from_numpy(hilbert(data - torch.mean(data))))))**2/N
         else:
             raise ValueError(f"Transformation '{self.transform_type}' non supportée.")
 
@@ -124,27 +127,31 @@ class BaseDataset(Dataset):
         label = self.windows[idx].label
         metadata = self.windows[idx].metadata
 
-        target = self._read_sample(filepath) # Lecture du sample
-        if target is None:
+        X_true = self._read_sample(filepath) # Lecture du sample
+        if X_true is None:
             raise ValueError(f"Le sample à l'index {idx} n'a pas pu être lu ou est vide.")
-        data = self._data_transform(target) # Transformation des données
 
-        target = self._transform(target)
-        data = self._transform(data)
-
+        # Si window_size est défini, on extrait la fenêtre correspondante
         if self.window_size is not None:
             start_idx = self.windows[idx].start_idx
-            data = data[..., start_idx:start_idx + self.window_size]
+            X_true= X_true[..., start_idx:start_idx + self.window_size]
 
         else:
-            data = data
+            X_tilde = X_true
 
-        return {'X_tilde':data, 'X_true':target, 'label':label, 'metadata':metadata}
+        # Alétation des données
+        X_tilde = self._data_tilde_transform(X_true) # Altération des données
+        
+        # Transformation des données
+        X_true = self._transform(X_true)
+        X_tilde = self._transform(X_tilde)
+
+        return {'X_tilde':X_tilde, 'X_true':X_true, 'label':label, 'metadata':metadata}
 
     @staticmethod
-    def _data_transform(target, downsample_factor=2):
+    def _data_tilde_transform(X_true, downsample_factor=2):
         """
         Transforme les données en les réduisant par un facteur de downsample.
         """
-        data = target[...,::downsample_factor]
-        return data
+        X_tilde = X_true[...,::downsample_factor]
+        return X_tilde

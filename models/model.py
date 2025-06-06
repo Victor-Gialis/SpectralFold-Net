@@ -48,6 +48,8 @@ class ViTDecoder(nn.Module):
         self.n_layers = n_layers
         self.num_patch = num_patch 
 
+        self.mask_token = nn.Parameter(torch.randn(1, 1, decoder_dim))  # Mask token for padding
+
         self.projection = nn.Sequential(
             nn.LayerNorm(encoder_dim),
             nn.Linear(encoder_dim, decoder_dim),
@@ -72,14 +74,14 @@ class ViTDecoder(nn.Module):
     def forward(self, x):
         b, n, d = x.shape
 
-        # Padding patch tokens
-        if n < self.num_patch :
-            bottom_padding = torch.randn(b,self.num_patch - n,d) # (b, n_patches - n, emb_dim)
-            bottom_padding = bottom_padding.to(x.device) # Move to the same device as x
-            x = torch.cat([x,bottom_padding], dim=1) # bottom padding       
-
         # get patch embedding vectors
         x = self.projection(x)  # (b, n, d)
+
+        # Padding patch tokens using mask token
+        if n < self.num_patch:
+            bottom_padding = self.mask_token.expand(b, self.num_patch - n, -1)  # Create padding tokens
+            bottom_padding = bottom_padding.to(x.device)  # Move to the same device as x
+            x = torch.cat([x, bottom_padding], dim=1)  # bottom padding
 
         # Transformer layers
         for i in range(self.n_layers):

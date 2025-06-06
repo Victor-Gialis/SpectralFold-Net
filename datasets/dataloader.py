@@ -19,4 +19,4 @@ def get_dataset(name, **kwargs):
     # Inspecte la signature du constructeur
     sig = inspect.signature(dataset_class.__init__)
     valid_args = {k: v for k, v in kwargs.items() if k in sig.parameters}
-    return dataset_class(data_dir=base_path, **valid_args)
+    return dataset_class(root_dir=base_path, **valid_args)
