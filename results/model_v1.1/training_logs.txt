@@ -1,0 +1,1249 @@
+2025-05-08 13:33:20,220 - Combinaison : 0/96
+2025-05-08 13:33:20,220 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=64, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-08 13:34:00,887 - Epoch 0: train loss = 0.8284
+2025-05-08 13:34:42,512 - Epoch 1: train loss = 0.6727
+2025-05-08 13:35:24,639 - Epoch 2: train loss = 0.5902
+2025-05-08 13:36:07,335 - Epoch 3: train loss = 0.5408
+2025-05-08 13:36:50,215 - Epoch 4: train loss = 0.5100
+2025-05-08 13:37:33,251 - Epoch 5: train loss = 0.4890
+2025-05-08 13:38:16,444 - Epoch 6: train loss = 0.4699
+2025-05-08 13:38:59,607 - Epoch 7: train loss = 0.4482
+2025-05-08 13:39:42,911 - Epoch 8: train loss = 0.4248
+2025-05-08 13:40:26,177 - Epoch 9: train loss = 0.4014
+2025-05-08 13:40:30,489 - Validation loss = 0.3458
+2025-05-08 13:40:30,489 - Combinaison : 1/96
+2025-05-08 13:40:30,489 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=64, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-08 13:41:14,276 - Epoch 0: train loss = 0.6403
+2025-05-08 13:41:57,810 - Epoch 1: train loss = 0.4143
+2025-05-08 13:42:41,392 - Epoch 2: train loss = 0.3250
+2025-05-08 13:43:24,742 - Epoch 3: train loss = 0.2857
+2025-05-08 13:44:08,187 - Epoch 4: train loss = 0.2639
+2025-05-08 13:44:51,616 - Epoch 5: train loss = 0.2453
+2025-05-08 13:45:35,190 - Epoch 6: train loss = 0.2333
+2025-05-08 13:46:18,939 - Epoch 7: train loss = 0.2238
+2025-05-08 13:47:02,468 - Epoch 8: train loss = 0.2171
+2025-05-08 13:47:46,134 - Epoch 9: train loss = 0.2100
+2025-05-08 13:47:50,582 - Validation loss = 0.1672
+2025-05-08 13:47:50,582 - Combinaison : 2/96
+2025-05-08 13:47:50,582 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=64, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-08 13:48:34,585 - Epoch 0: train loss = 0.7987
+2025-05-08 13:49:18,340 - Epoch 1: train loss = 0.6399
+2025-05-08 13:50:02,028 - Epoch 2: train loss = 0.5679
+2025-05-08 13:50:45,586 - Epoch 3: train loss = 0.5253
+2025-05-08 13:51:29,069 - Epoch 4: train loss = 0.4985
+2025-05-08 13:52:12,396 - Epoch 5: train loss = 0.4783
+2025-05-08 13:52:55,804 - Epoch 6: train loss = 0.4602
+2025-05-08 13:53:39,138 - Epoch 7: train loss = 0.4395
+2025-05-08 13:54:22,260 - Epoch 8: train loss = 0.4165
+2025-05-08 13:55:05,420 - Epoch 9: train loss = 0.3964
+2025-05-08 13:55:09,704 - Validation loss = 0.3436
+2025-05-08 13:55:09,704 - Combinaison : 3/96
+2025-05-08 13:55:09,704 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=64, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-08 13:55:53,111 - Epoch 0: train loss = 0.6136
+2025-05-08 13:56:36,856 - Epoch 1: train loss = 0.4053
+2025-05-08 13:57:20,527 - Epoch 2: train loss = 0.3161
+2025-05-08 13:58:04,070 - Epoch 3: train loss = 0.2713
+2025-05-08 13:58:47,746 - Epoch 4: train loss = 0.2452
+2025-05-08 13:59:31,505 - Epoch 5: train loss = 0.2265
+2025-05-08 14:00:15,293 - Epoch 6: train loss = 0.2132
+2025-05-08 14:00:59,131 - Epoch 7: train loss = 0.2036
+2025-05-08 14:01:42,894 - Epoch 8: train loss = 0.1954
+2025-05-08 14:02:26,718 - Epoch 9: train loss = 0.1888
+2025-05-08 14:02:31,106 - Validation loss = 0.1555
+2025-05-08 14:02:31,106 - Combinaison : 4/96
+2025-05-08 14:02:31,106 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=64, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-08 14:03:54,762 - Epoch 0: train loss = 0.8277
+2025-05-08 14:05:17,575 - Epoch 1: train loss = 0.6660
+2025-05-08 14:06:39,997 - Epoch 2: train loss = 0.5795
+2025-05-08 14:08:02,286 - Epoch 3: train loss = 0.5246
+2025-05-08 14:09:24,694 - Epoch 4: train loss = 0.4890
+2025-05-08 14:10:46,870 - Epoch 5: train loss = 0.4602
+2025-05-08 14:12:09,102 - Epoch 6: train loss = 0.4303
+2025-05-08 14:13:31,025 - Epoch 7: train loss = 0.4007
+2025-05-08 14:14:52,993 - Epoch 8: train loss = 0.3743
+2025-05-08 14:16:14,884 - Epoch 9: train loss = 0.3533
+2025-05-08 14:16:22,142 - Validation loss = 0.3004
+2025-05-08 14:16:22,142 - Combinaison : 5/96
+2025-05-08 14:16:22,142 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=64, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-08 14:17:44,440 - Epoch 0: train loss = 0.6013
+2025-05-08 14:19:06,101 - Epoch 1: train loss = 0.3711
+2025-05-08 14:20:27,845 - Epoch 2: train loss = 0.2844
+2025-05-08 14:21:49,692 - Epoch 3: train loss = 0.2431
+2025-05-08 14:23:11,653 - Epoch 4: train loss = 0.2166
+2025-05-08 14:24:33,533 - Epoch 5: train loss = 0.2015
+2025-05-08 14:25:55,459 - Epoch 6: train loss = 0.1891
+2025-05-08 14:27:17,553 - Epoch 7: train loss = 0.1820
+2025-05-08 14:28:39,524 - Epoch 8: train loss = 0.1721
+2025-05-08 14:30:01,439 - Epoch 9: train loss = 0.1671
+2025-05-08 14:30:08,738 - Validation loss = 0.1383
+2025-05-08 14:30:08,738 - Combinaison : 6/96
+2025-05-08 14:30:08,738 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=64, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-08 14:31:31,257 - Epoch 0: train loss = 0.8312
+2025-05-08 14:32:53,578 - Epoch 1: train loss = 0.6589
+2025-05-08 14:34:15,931 - Epoch 2: train loss = 0.5678
+2025-05-08 14:35:38,057 - Epoch 3: train loss = 0.5145
+2025-05-08 14:37:00,175 - Epoch 4: train loss = 0.4842
+2025-05-08 14:38:22,215 - Epoch 5: train loss = 0.4600
+2025-05-08 14:39:44,399 - Epoch 6: train loss = 0.4380
+2025-05-08 14:41:06,691 - Epoch 7: train loss = 0.4140
+2025-05-08 14:42:28,754 - Epoch 8: train loss = 0.3875
+2025-05-08 14:43:50,813 - Epoch 9: train loss = 0.3625
+2025-05-08 14:43:58,089 - Validation loss = 0.3118
+2025-05-08 14:43:58,089 - Combinaison : 7/96
+2025-05-08 14:43:58,089 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=64, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-08 14:45:20,898 - Epoch 0: train loss = 0.6060
+2025-05-08 14:46:43,187 - Epoch 1: train loss = 0.3762
+2025-05-08 14:48:05,520 - Epoch 2: train loss = 0.2812
+2025-05-08 14:49:28,014 - Epoch 3: train loss = 0.2406
+2025-05-08 14:50:50,251 - Epoch 4: train loss = 0.2196
+2025-05-08 14:52:12,418 - Epoch 5: train loss = 0.2021
+2025-05-08 14:53:34,903 - Epoch 6: train loss = 0.1911
+2025-05-08 14:54:57,148 - Epoch 7: train loss = 0.1802
+2025-05-08 14:56:19,638 - Epoch 8: train loss = 0.1733
+2025-05-08 14:57:41,965 - Epoch 9: train loss = 0.1668
+2025-05-08 14:57:49,278 - Validation loss = 0.1404
+2025-05-08 14:57:49,279 - Combinaison : 8/96
+2025-05-08 14:57:49,279 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=128, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-08 14:58:14,760 - Epoch 0: train loss = 0.8169
+2025-05-08 14:58:40,178 - Epoch 1: train loss = 0.6550
+2025-05-08 14:59:05,455 - Epoch 2: train loss = 0.5913
+2025-05-08 14:59:30,731 - Epoch 3: train loss = 0.5545
+2025-05-08 14:59:56,455 - Epoch 4: train loss = 0.5287
+2025-05-08 15:00:21,907 - Epoch 5: train loss = 0.5074
+2025-05-08 15:00:47,449 - Epoch 6: train loss = 0.4877
+2025-05-08 15:01:13,264 - Epoch 7: train loss = 0.4692
+2025-05-08 15:01:39,025 - Epoch 8: train loss = 0.4500
+2025-05-08 15:02:04,537 - Epoch 9: train loss = 0.4320
+2025-05-08 15:02:08,126 - Validation loss = 0.3784
+2025-05-08 15:02:08,126 - Combinaison : 9/96
+2025-05-08 15:02:08,126 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=128, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-08 15:02:33,810 - Epoch 0: train loss = 0.6180
+2025-05-08 15:02:59,598 - Epoch 1: train loss = 0.4389
+2025-05-08 15:03:25,529 - Epoch 2: train loss = 0.3519
+2025-05-08 15:03:51,441 - Epoch 3: train loss = 0.3044
+2025-05-08 15:04:17,595 - Epoch 4: train loss = 0.2759
+2025-05-08 15:04:43,599 - Epoch 5: train loss = 0.2546
+2025-05-08 15:05:09,705 - Epoch 6: train loss = 0.2410
+2025-05-08 15:05:36,007 - Epoch 7: train loss = 0.2326
+2025-05-08 15:06:02,015 - Epoch 8: train loss = 0.2206
+2025-05-08 15:06:27,891 - Epoch 9: train loss = 0.2129
+2025-05-08 15:06:31,511 - Validation loss = 0.1685
+2025-05-08 15:06:31,511 - Combinaison : 10/96
+2025-05-08 15:06:31,511 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=128, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-08 15:06:57,486 - Epoch 0: train loss = 0.8197
+2025-05-08 15:07:23,281 - Epoch 1: train loss = 0.6480
+2025-05-08 15:07:49,441 - Epoch 2: train loss = 0.5849
+2025-05-08 15:08:15,552 - Epoch 3: train loss = 0.5473
+2025-05-08 15:08:41,415 - Epoch 4: train loss = 0.5209
+2025-05-08 15:09:07,275 - Epoch 5: train loss = 0.4982
+2025-05-08 15:09:33,331 - Epoch 6: train loss = 0.4765
+2025-05-08 15:09:59,571 - Epoch 7: train loss = 0.4540
+2025-05-08 15:10:25,783 - Epoch 8: train loss = 0.4334
+2025-05-08 15:10:51,768 - Epoch 9: train loss = 0.4142
+2025-05-08 15:10:55,342 - Validation loss = 0.3600
+2025-05-08 15:10:55,342 - Combinaison : 11/96
+2025-05-08 15:10:55,342 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=128, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-08 15:11:21,193 - Epoch 0: train loss = 0.6098
+2025-05-08 15:11:47,078 - Epoch 1: train loss = 0.4270
+2025-05-08 15:12:13,126 - Epoch 2: train loss = 0.3391
+2025-05-08 15:12:39,151 - Epoch 3: train loss = 0.2908
+2025-05-08 15:13:05,049 - Epoch 4: train loss = 0.2633
+2025-05-08 15:13:30,916 - Epoch 5: train loss = 0.2431
+2025-05-08 15:13:56,813 - Epoch 6: train loss = 0.2268
+2025-05-08 15:14:22,736 - Epoch 7: train loss = 0.2152
+2025-05-08 15:14:48,997 - Epoch 8: train loss = 0.2069
+2025-05-08 15:15:14,799 - Epoch 9: train loss = 0.1983
+2025-05-08 15:15:18,369 - Validation loss = 0.1611
+2025-05-08 15:15:18,369 - Combinaison : 12/96
+2025-05-08 15:15:18,369 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=128, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-08 15:16:08,718 - Epoch 0: train loss = 0.8060
+2025-05-08 15:16:58,254 - Epoch 1: train loss = 0.6445
+2025-05-08 15:17:47,815 - Epoch 2: train loss = 0.5747
+2025-05-08 15:18:37,241 - Epoch 3: train loss = 0.5325
+2025-05-08 15:19:26,412 - Epoch 4: train loss = 0.4992
+2025-05-08 15:20:15,605 - Epoch 5: train loss = 0.4685
+2025-05-08 15:21:04,842 - Epoch 6: train loss = 0.4389
+2025-05-08 15:21:54,087 - Epoch 7: train loss = 0.4120
+2025-05-08 15:22:43,298 - Epoch 8: train loss = 0.3896
+2025-05-08 15:23:32,345 - Epoch 9: train loss = 0.3704
+2025-05-08 15:23:36,616 - Validation loss = 0.3187
+2025-05-08 15:23:36,616 - Combinaison : 13/96
+2025-05-08 15:23:36,616 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=128, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-08 15:24:26,142 - Epoch 0: train loss = 0.6076
+2025-05-08 15:25:15,662 - Epoch 1: train loss = 0.4099
+2025-05-08 15:26:04,920 - Epoch 2: train loss = 0.3092
+2025-05-08 15:26:54,266 - Epoch 3: train loss = 0.2589
+2025-05-08 15:27:43,407 - Epoch 4: train loss = 0.2318
+2025-05-08 15:28:32,498 - Epoch 5: train loss = 0.2106
+2025-05-08 15:29:21,484 - Epoch 6: train loss = 0.1960
+2025-05-08 15:30:10,516 - Epoch 7: train loss = 0.1845
+2025-05-08 15:30:59,646 - Epoch 8: train loss = 0.1761
+2025-05-08 15:31:48,756 - Epoch 9: train loss = 0.1703
+2025-05-08 15:31:52,995 - Validation loss = 0.1378
+2025-05-08 15:31:52,995 - Combinaison : 14/96
+2025-05-08 15:31:52,995 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=128, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-08 15:32:42,478 - Epoch 0: train loss = 0.8038
+2025-05-08 15:33:31,437 - Epoch 1: train loss = 0.6310
+2025-05-08 15:34:20,555 - Epoch 2: train loss = 0.5663
+2025-05-08 15:35:09,907 - Epoch 3: train loss = 0.5258
+2025-05-08 15:35:59,046 - Epoch 4: train loss = 0.4938
+2025-05-08 15:36:48,373 - Epoch 5: train loss = 0.4650
+2025-05-08 15:37:37,472 - Epoch 6: train loss = 0.4362
+2025-05-08 15:38:26,548 - Epoch 7: train loss = 0.4088
+2025-05-08 15:39:15,573 - Epoch 8: train loss = 0.3847
+2025-05-08 15:40:04,653 - Epoch 9: train loss = 0.3639
+2025-05-08 15:40:08,896 - Validation loss = 0.3116
+2025-05-08 15:40:08,896 - Combinaison : 15/96
+2025-05-08 15:40:08,896 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=128, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-08 15:40:58,262 - Epoch 0: train loss = 0.5963
+2025-05-08 15:41:47,184 - Epoch 1: train loss = 0.3851
+2025-05-08 15:42:36,089 - Epoch 2: train loss = 0.2886
+2025-05-08 15:43:24,890 - Epoch 3: train loss = 0.2412
+2025-05-08 15:44:14,294 - Epoch 4: train loss = 0.2138
+2025-05-08 15:45:03,872 - Epoch 5: train loss = 0.1955
+2025-05-08 15:45:53,033 - Epoch 6: train loss = 0.1802
+2025-05-08 15:46:42,216 - Epoch 7: train loss = 0.1708
+2025-05-08 15:47:31,218 - Epoch 8: train loss = 0.1612
+2025-05-08 15:48:20,548 - Epoch 9: train loss = 0.1550
+2025-05-08 15:48:24,864 - Validation loss = 0.1259
+2025-05-08 15:48:24,864 - Combinaison : 16/96
+2025-05-08 15:48:24,864 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=256, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-08 15:48:44,600 - Epoch 0: train loss = 0.8010
+2025-05-08 15:49:03,952 - Epoch 1: train loss = 0.6491
+2025-05-08 15:49:23,635 - Epoch 2: train loss = 0.6110
+2025-05-08 15:49:43,786 - Epoch 3: train loss = 0.5816
+2025-05-08 15:50:03,395 - Epoch 4: train loss = 0.5504
+2025-05-08 15:50:22,922 - Epoch 5: train loss = 0.5240
+2025-05-08 15:50:42,493 - Epoch 6: train loss = 0.5002
+2025-05-08 15:51:02,205 - Epoch 7: train loss = 0.4793
+2025-05-08 15:51:22,121 - Epoch 8: train loss = 0.4599
+2025-05-08 15:51:41,820 - Epoch 9: train loss = 0.4421
+2025-05-08 15:51:45,671 - Validation loss = 0.3911
+2025-05-08 15:51:45,671 - Combinaison : 17/96
+2025-05-08 15:51:45,672 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=256, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-08 15:52:05,498 - Epoch 0: train loss = 0.6248
+2025-05-08 15:52:25,303 - Epoch 1: train loss = 0.4538
+2025-05-08 15:52:45,015 - Epoch 2: train loss = 0.3717
+2025-05-08 15:53:04,704 - Epoch 3: train loss = 0.3255
+2025-05-08 15:53:24,606 - Epoch 4: train loss = 0.2955
+2025-05-08 15:53:44,267 - Epoch 5: train loss = 0.2757
+2025-05-08 15:54:04,375 - Epoch 6: train loss = 0.2636
+2025-05-08 15:54:24,101 - Epoch 7: train loss = 0.2545
+2025-05-08 15:54:44,078 - Epoch 8: train loss = 0.2421
+2025-05-08 15:55:04,078 - Epoch 9: train loss = 0.2342
+2025-05-08 15:55:07,544 - Validation loss = 0.1973
+2025-05-08 15:55:07,544 - Combinaison : 18/96
+2025-05-08 15:55:07,544 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=256, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-08 15:55:27,542 - Epoch 0: train loss = 0.7957
+2025-05-08 15:55:47,358 - Epoch 1: train loss = 0.6392
+2025-05-08 15:56:07,029 - Epoch 2: train loss = 0.5979
+2025-05-08 15:56:26,875 - Epoch 3: train loss = 0.5639
+2025-05-08 15:56:46,508 - Epoch 4: train loss = 0.5333
+2025-05-08 15:57:06,468 - Epoch 5: train loss = 0.5062
+2025-05-08 15:57:26,201 - Epoch 6: train loss = 0.4817
+2025-05-08 15:57:45,821 - Epoch 7: train loss = 0.4594
+2025-05-08 15:58:05,518 - Epoch 8: train loss = 0.4393
+2025-05-08 15:58:25,067 - Epoch 9: train loss = 0.4216
+2025-05-08 15:58:28,391 - Validation loss = 0.3717
+2025-05-08 15:58:28,391 - Combinaison : 19/96
+2025-05-08 15:58:28,391 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=256, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-08 15:58:48,332 - Epoch 0: train loss = 0.6204
+2025-05-08 15:59:07,973 - Epoch 1: train loss = 0.4397
+2025-05-08 15:59:27,576 - Epoch 2: train loss = 0.3540
+2025-05-08 15:59:47,138 - Epoch 3: train loss = 0.3075
+2025-05-08 16:00:06,703 - Epoch 4: train loss = 0.2793
+2025-05-08 16:00:26,656 - Epoch 5: train loss = 0.2583
+2025-05-08 16:00:46,616 - Epoch 6: train loss = 0.2446
+2025-05-08 16:01:06,202 - Epoch 7: train loss = 0.2330
+2025-05-08 16:01:25,866 - Epoch 8: train loss = 0.2246
+2025-05-08 16:01:45,800 - Epoch 9: train loss = 0.2158
+2025-05-08 16:01:49,289 - Validation loss = 0.1837
+2025-05-08 16:01:49,289 - Combinaison : 20/96
+2025-05-08 16:01:49,289 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=256, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-08 16:02:20,369 - Epoch 0: train loss = 0.7869
+2025-05-08 16:02:51,368 - Epoch 1: train loss = 0.6347
+2025-05-08 16:03:21,984 - Epoch 2: train loss = 0.5887
+2025-05-08 16:03:52,836 - Epoch 3: train loss = 0.5471
+2025-05-08 16:04:23,444 - Epoch 4: train loss = 0.5097
+2025-05-08 16:04:54,328 - Epoch 5: train loss = 0.4769
+2025-05-08 16:05:24,893 - Epoch 6: train loss = 0.4481
+2025-05-08 16:05:55,516 - Epoch 7: train loss = 0.4235
+2025-05-08 16:06:26,206 - Epoch 8: train loss = 0.4025
+2025-05-08 16:06:56,806 - Epoch 9: train loss = 0.3840
+2025-05-08 16:07:00,435 - Validation loss = 0.3331
+2025-05-08 16:07:00,435 - Combinaison : 21/96
+2025-05-08 16:07:00,435 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=256, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-08 16:07:31,378 - Epoch 0: train loss = 0.6159
+2025-05-08 16:08:01,794 - Epoch 1: train loss = 0.4197
+2025-05-08 16:08:32,366 - Epoch 2: train loss = 0.3267
+2025-05-08 16:09:02,993 - Epoch 3: train loss = 0.2812
+2025-05-08 16:09:33,615 - Epoch 4: train loss = 0.2521
+2025-05-08 16:10:04,223 - Epoch 5: train loss = 0.2328
+2025-05-08 16:10:34,619 - Epoch 6: train loss = 0.2173
+2025-05-08 16:11:05,382 - Epoch 7: train loss = 0.2056
+2025-05-08 16:11:35,999 - Epoch 8: train loss = 0.1990
+2025-05-08 16:12:07,015 - Epoch 9: train loss = 0.1902
+2025-05-08 16:12:10,667 - Validation loss = 0.1606
+2025-05-08 16:12:10,667 - Combinaison : 22/96
+2025-05-08 16:12:10,667 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=256, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-08 16:12:41,680 - Epoch 0: train loss = 0.7895
+2025-05-08 16:13:12,374 - Epoch 1: train loss = 0.6292
+2025-05-08 16:13:43,372 - Epoch 2: train loss = 0.5786
+2025-05-08 16:14:14,048 - Epoch 3: train loss = 0.5329
+2025-05-08 16:14:44,513 - Epoch 4: train loss = 0.4928
+2025-05-08 16:15:15,168 - Epoch 5: train loss = 0.4572
+2025-05-08 16:15:45,864 - Epoch 6: train loss = 0.4270
+2025-05-08 16:16:16,364 - Epoch 7: train loss = 0.4025
+2025-05-08 16:16:47,043 - Epoch 8: train loss = 0.3816
+2025-05-08 16:17:17,683 - Epoch 9: train loss = 0.3636
+2025-05-08 16:17:21,291 - Validation loss = 0.3156
+2025-05-08 16:17:21,291 - Combinaison : 23/96
+2025-05-08 16:17:21,291 - Testing combination: encoder_dim=512, decoder_dim=2048, patch_size=256, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-08 16:17:52,167 - Epoch 0: train loss = 0.6005
+2025-05-08 16:18:22,621 - Epoch 1: train loss = 0.3915
+2025-05-08 16:18:53,180 - Epoch 2: train loss = 0.3039
+2025-05-08 16:19:23,843 - Epoch 3: train loss = 0.2616
+2025-05-08 16:19:54,472 - Epoch 4: train loss = 0.2374
+2025-05-08 16:20:25,158 - Epoch 5: train loss = 0.2185
+2025-05-08 16:20:55,930 - Epoch 6: train loss = 0.2042
+2025-05-08 16:21:26,949 - Epoch 7: train loss = 0.1937
+2025-05-08 16:21:57,686 - Epoch 8: train loss = 0.1842
+2025-05-08 16:22:28,202 - Epoch 9: train loss = 0.1775
+2025-05-08 16:22:31,797 - Validation loss = 0.1516
+2025-05-08 16:22:31,797 - Combinaison : 24/96
+2025-05-08 16:22:31,797 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=64, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-08 16:24:58,559 - Epoch 0: train loss = 0.7777
+2025-05-08 16:27:22,222 - Epoch 1: train loss = 0.6323
+2025-05-08 16:29:45,396 - Epoch 2: train loss = 0.5538
+2025-05-08 16:32:08,621 - Epoch 3: train loss = 0.4906
+2025-05-08 16:34:31,874 - Epoch 4: train loss = 0.4363
+2025-05-08 16:36:54,584 - Epoch 5: train loss = 0.3965
+2025-05-08 16:39:17,409 - Epoch 6: train loss = 0.3683
+2025-05-08 16:41:40,076 - Epoch 7: train loss = 0.3457
+2025-05-08 16:44:02,919 - Epoch 8: train loss = 0.3276
+2025-05-08 16:46:25,801 - Epoch 9: train loss = 0.3126
+2025-05-08 16:46:38,907 - Validation loss = 0.2569
+2025-05-08 16:46:38,907 - Combinaison : 25/96
+2025-05-08 16:46:38,907 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=64, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-08 16:49:02,452 - Epoch 0: train loss = 0.5793
+2025-05-08 16:51:25,085 - Epoch 1: train loss = 0.3791
+2025-05-08 16:53:47,686 - Epoch 2: train loss = 0.2958
+2025-05-08 16:56:10,648 - Epoch 3: train loss = 0.2600
+2025-05-08 16:58:33,728 - Epoch 4: train loss = 0.2379
+2025-05-08 17:00:56,901 - Epoch 5: train loss = 0.2230
+2025-05-08 17:03:19,996 - Epoch 6: train loss = 0.2124
+2025-05-08 17:05:42,664 - Epoch 7: train loss = 0.2049
+2025-05-08 17:08:06,524 - Epoch 8: train loss = 0.1984
+2025-05-08 17:10:30,782 - Epoch 9: train loss = 0.1950
+2025-05-08 17:10:44,007 - Validation loss = 0.1649
+2025-05-08 17:10:44,007 - Combinaison : 26/96
+2025-05-08 17:10:44,007 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=64, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-08 17:13:08,603 - Epoch 0: train loss = 0.8022
+2025-05-08 17:15:32,606 - Epoch 1: train loss = 0.6262
+2025-05-08 17:17:56,841 - Epoch 2: train loss = 0.5201
+2025-05-08 17:20:20,865 - Epoch 3: train loss = 0.4566
+2025-05-08 17:22:44,890 - Epoch 4: train loss = 0.4065
+2025-05-08 17:25:08,313 - Epoch 5: train loss = 0.3686
+2025-05-08 17:27:31,473 - Epoch 6: train loss = 0.3409
+2025-05-08 17:29:54,807 - Epoch 7: train loss = 0.3192
+2025-05-08 17:32:18,258 - Epoch 8: train loss = 0.3022
+2025-05-08 17:34:41,485 - Epoch 9: train loss = 0.2875
+2025-05-08 17:34:54,638 - Validation loss = 0.2385
+2025-05-08 17:34:54,638 - Combinaison : 27/96
+2025-05-08 17:34:54,638 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=64, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-08 17:37:18,238 - Epoch 0: train loss = 0.5727
+2025-05-08 17:39:41,337 - Epoch 1: train loss = 0.3401
+2025-05-08 17:42:04,617 - Epoch 2: train loss = 0.2674
+2025-05-08 17:44:27,745 - Epoch 3: train loss = 0.2326
+2025-05-08 17:46:50,660 - Epoch 4: train loss = 0.2097
+2025-05-08 17:49:13,574 - Epoch 5: train loss = 0.1955
+2025-05-08 17:51:36,620 - Epoch 6: train loss = 0.1840
+2025-05-08 17:53:59,721 - Epoch 7: train loss = 0.1781
+2025-05-08 17:56:22,521 - Epoch 8: train loss = 0.1722
+2025-05-08 17:58:45,223 - Epoch 9: train loss = 0.1669
+2025-05-08 17:58:58,308 - Validation loss = 0.1404
+2025-05-08 17:58:58,308 - Combinaison : 28/96
+2025-05-08 17:58:58,308 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=64, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-08 18:03:39,085 - Epoch 0: train loss = 0.7884
+2025-05-08 18:08:17,916 - Epoch 1: train loss = 0.6147
+2025-05-08 18:12:56,627 - Epoch 2: train loss = 0.5089
+2025-05-08 18:17:35,602 - Epoch 3: train loss = 0.4376
+2025-05-08 18:22:14,498 - Epoch 4: train loss = 0.3873
+2025-05-08 18:26:53,237 - Epoch 5: train loss = 0.3525
+2025-05-08 18:31:31,805 - Epoch 6: train loss = 0.3258
+2025-05-08 18:36:11,480 - Epoch 7: train loss = 0.3048
+2025-05-08 18:40:50,840 - Epoch 8: train loss = 0.2869
+2025-05-08 18:45:30,409 - Epoch 9: train loss = 0.2721
+2025-05-08 18:45:56,164 - Validation loss = 0.2250
+2025-05-08 18:45:56,164 - Combinaison : 29/96
+2025-05-08 18:45:56,164 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=64, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-08 18:50:36,621 - Epoch 0: train loss = 0.6334
+2025-05-08 18:55:15,263 - Epoch 1: train loss = 0.3890
+2025-05-08 18:59:54,575 - Epoch 2: train loss = 0.3128
+2025-05-08 19:04:33,840 - Epoch 3: train loss = 0.2813
+2025-05-08 19:09:13,032 - Epoch 4: train loss = 0.2618
+2025-05-08 19:13:52,467 - Epoch 5: train loss = 0.2482
+2025-05-08 19:18:32,148 - Epoch 6: train loss = 0.2388
+2025-05-08 19:23:11,774 - Epoch 7: train loss = 0.2315
+2025-05-08 19:27:50,600 - Epoch 8: train loss = 0.3204
+2025-05-08 19:32:13,616 - Epoch 9: train loss = 1.0141
+2025-05-08 19:32:39,268 - Validation loss = 0.9543
+2025-05-08 19:32:39,268 - Combinaison : 30/96
+2025-05-08 19:32:39,268 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=64, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-08 19:37:19,563 - Epoch 0: train loss = 0.7960
+2025-05-08 19:41:58,758 - Epoch 1: train loss = 0.6361
+2025-05-08 19:46:38,109 - Epoch 2: train loss = 0.5302
+2025-05-08 19:51:17,188 - Epoch 3: train loss = 0.4346
+2025-05-08 19:55:56,227 - Epoch 4: train loss = 0.3732
+2025-05-08 20:00:35,254 - Epoch 5: train loss = 0.3339
+2025-05-08 20:05:13,704 - Epoch 6: train loss = 0.3059
+2025-05-08 20:09:52,257 - Epoch 7: train loss = 0.2836
+2025-05-08 20:14:30,594 - Epoch 8: train loss = 0.2665
+2025-05-08 20:19:08,626 - Epoch 9: train loss = 0.2526
+2025-05-08 20:19:34,180 - Validation loss = 0.2132
+2025-05-08 20:19:34,181 - Combinaison : 31/96
+2025-05-08 20:19:34,181 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=64, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-08 20:24:13,166 - Epoch 0: train loss = 0.6253
+2025-05-08 20:28:50,904 - Epoch 1: train loss = 0.3772
+2025-05-08 20:33:28,150 - Epoch 2: train loss = 0.2975
+2025-05-08 20:38:05,013 - Epoch 3: train loss = 0.2644
+2025-05-08 20:42:41,458 - Epoch 4: train loss = 0.2431
+2025-05-08 20:47:15,896 - Epoch 5: train loss = 0.2281
+2025-05-08 20:51:49,675 - Epoch 6: train loss = 0.2186
+2025-05-08 20:56:24,678 - Epoch 7: train loss = 0.2112
+2025-05-08 21:01:00,804 - Epoch 8: train loss = 0.2042
+2025-05-08 21:05:37,048 - Epoch 9: train loss = 0.1993
+2025-05-08 21:06:02,483 - Validation loss = 0.1818
+2025-05-08 21:06:02,483 - Combinaison : 32/96
+2025-05-08 21:06:02,483 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=128, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-08 21:07:25,707 - Epoch 0: train loss = 0.7775
+2025-05-08 21:08:48,904 - Epoch 1: train loss = 0.6088
+2025-05-08 21:10:12,096 - Epoch 2: train loss = 0.5342
+2025-05-08 21:11:35,400 - Epoch 3: train loss = 0.4893
+2025-05-08 21:12:58,843 - Epoch 4: train loss = 0.4483
+2025-05-08 21:14:22,136 - Epoch 5: train loss = 0.4143
+2025-05-08 21:15:45,436 - Epoch 6: train loss = 0.3880
+2025-05-08 21:17:08,618 - Epoch 7: train loss = 0.3656
+2025-05-08 21:18:31,935 - Epoch 8: train loss = 0.3472
+2025-05-08 21:19:55,199 - Epoch 9: train loss = 0.3312
+2025-05-08 21:20:02,048 - Validation loss = 0.2756
+2025-05-08 21:20:02,048 - Combinaison : 33/96
+2025-05-08 21:20:02,048 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=128, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-08 21:21:26,383 - Epoch 0: train loss = 0.6180
+2025-05-08 21:22:50,109 - Epoch 1: train loss = 0.4315
+2025-05-08 21:24:14,014 - Epoch 2: train loss = 0.3361
+2025-05-08 21:25:37,785 - Epoch 3: train loss = 0.2854
+2025-05-08 21:27:01,715 - Epoch 4: train loss = 0.2583
+2025-05-08 21:28:25,707 - Epoch 5: train loss = 0.2492
+2025-05-08 21:29:49,731 - Epoch 6: train loss = 0.2229
+2025-05-08 21:31:13,893 - Epoch 7: train loss = 0.2088
+2025-05-08 21:32:37,503 - Epoch 8: train loss = 0.3176
+2025-05-08 21:33:57,372 - Epoch 9: train loss = 0.8858
+2025-05-08 21:34:04,271 - Validation loss = 0.6899
+2025-05-08 21:34:04,271 - Combinaison : 34/96
+2025-05-08 21:34:04,271 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=128, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-08 21:35:28,796 - Epoch 0: train loss = 0.7711
+2025-05-08 21:36:52,920 - Epoch 1: train loss = 0.5982
+2025-05-08 21:38:17,179 - Epoch 2: train loss = 0.5239
+2025-05-08 21:39:41,224 - Epoch 3: train loss = 0.4740
+2025-05-08 21:41:05,238 - Epoch 4: train loss = 0.4323
+2025-05-08 21:42:29,613 - Epoch 5: train loss = 0.3986
+2025-05-08 21:43:53,810 - Epoch 6: train loss = 0.3709
+2025-05-08 21:45:18,092 - Epoch 7: train loss = 0.3482
+2025-05-08 21:46:42,162 - Epoch 8: train loss = 0.3294
+2025-05-08 21:48:06,306 - Epoch 9: train loss = 0.3136
+2025-05-08 21:48:13,206 - Validation loss = 0.2620
+2025-05-08 21:48:13,207 - Combinaison : 35/96
+2025-05-08 21:48:13,207 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=128, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-08 21:49:38,182 - Epoch 0: train loss = 0.5896
+2025-05-08 21:51:02,593 - Epoch 1: train loss = 0.3875
+2025-05-08 21:52:27,070 - Epoch 2: train loss = 0.2928
+2025-05-08 21:53:51,416 - Epoch 3: train loss = 0.2510
+2025-05-08 21:55:15,740 - Epoch 4: train loss = 0.2269
+2025-05-08 21:56:39,884 - Epoch 5: train loss = 0.2082
+2025-05-08 21:58:04,112 - Epoch 6: train loss = 0.1967
+2025-05-08 21:59:28,367 - Epoch 7: train loss = 0.1884
+2025-05-08 22:00:52,658 - Epoch 8: train loss = 0.1874
+2025-05-08 22:02:16,892 - Epoch 9: train loss = 0.1751
+2025-05-08 22:02:23,788 - Validation loss = 0.1447
+2025-05-08 22:02:23,788 - Combinaison : 36/96
+2025-05-08 22:02:23,788 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=128, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-08 22:05:10,532 - Epoch 0: train loss = 0.7750
+2025-05-08 22:07:55,643 - Epoch 1: train loss = 0.5834
+2025-05-08 22:10:40,379 - Epoch 2: train loss = 0.4950
+2025-05-08 22:13:25,081 - Epoch 3: train loss = 0.4352
+2025-05-08 22:16:09,784 - Epoch 4: train loss = 0.3898
+2025-05-08 22:18:54,586 - Epoch 5: train loss = 0.3552
+2025-05-08 22:21:39,300 - Epoch 6: train loss = 0.3283
+2025-05-08 22:24:24,047 - Epoch 7: train loss = 0.3067
+2025-05-08 22:27:08,510 - Epoch 8: train loss = 0.2885
+2025-05-08 22:29:52,808 - Epoch 9: train loss = 0.2732
+2025-05-08 22:30:06,558 - Validation loss = 0.2258
+2025-05-08 22:30:06,558 - Combinaison : 37/96
+2025-05-08 22:30:06,558 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=128, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-08 22:32:52,607 - Epoch 0: train loss = 0.6195
+2025-05-08 22:35:30,920 - Epoch 1: train loss = 0.8449
+2025-05-08 22:38:07,261 - Epoch 2: train loss = 0.9111
+2025-05-08 22:40:42,791 - Epoch 3: train loss = 0.8340
+2025-05-08 22:43:17,663 - Epoch 4: train loss = 0.8527
+2025-05-08 22:45:52,402 - Epoch 5: train loss = 0.8421
+2025-05-08 22:48:27,150 - Epoch 6: train loss = 0.8488
+2025-05-08 22:51:01,250 - Epoch 7: train loss = 0.9381
+2025-05-08 22:53:35,324 - Epoch 8: train loss = 0.8906
+2025-05-08 22:56:09,303 - Epoch 9: train loss = 0.8981
+2025-05-08 22:56:23,008 - Validation loss = 0.8715
+2025-05-08 22:56:23,008 - Combinaison : 38/96
+2025-05-08 22:56:23,009 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=128, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-08 22:59:09,084 - Epoch 0: train loss = 0.7854
+2025-05-08 23:01:54,155 - Epoch 1: train loss = 0.5870
+2025-05-08 23:04:38,893 - Epoch 2: train loss = 0.4847
+2025-05-08 23:07:23,890 - Epoch 3: train loss = 0.4173
+2025-05-08 23:10:08,603 - Epoch 4: train loss = 0.3685
+2025-05-08 23:12:53,369 - Epoch 5: train loss = 0.3325
+2025-05-08 23:15:38,141 - Epoch 6: train loss = 0.3060
+2025-05-08 23:18:22,819 - Epoch 7: train loss = 0.2850
+2025-05-08 23:21:07,389 - Epoch 8: train loss = 0.2685
+2025-05-08 23:23:51,966 - Epoch 9: train loss = 0.2537
+2025-05-08 23:24:05,736 - Validation loss = 0.2112
+2025-05-08 23:24:05,736 - Combinaison : 39/96
+2025-05-08 23:24:05,736 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=128, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-08 23:26:52,158 - Epoch 0: train loss = 0.6076
+2025-05-08 23:29:37,213 - Epoch 1: train loss = 0.3799
+2025-05-08 23:32:21,838 - Epoch 2: train loss = 0.2883
+2025-05-08 23:35:07,281 - Epoch 3: train loss = 0.2480
+2025-05-08 23:37:53,980 - Epoch 4: train loss = 0.2227
+2025-05-08 23:40:40,214 - Epoch 5: train loss = 0.2055
+2025-05-08 23:43:26,311 - Epoch 6: train loss = 0.1986
+2025-05-08 23:46:07,444 - Epoch 7: train loss = 0.9435
+2025-05-08 23:48:47,361 - Epoch 8: train loss = 1.0098
+2025-05-08 23:51:26,922 - Epoch 9: train loss = 1.0093
+2025-05-08 23:51:40,714 - Validation loss = 0.9602
+2025-05-08 23:51:40,714 - Combinaison : 40/96
+2025-05-08 23:51:40,714 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=256, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-08 23:52:33,324 - Epoch 0: train loss = 0.7587
+2025-05-08 23:53:25,766 - Epoch 1: train loss = 0.6036
+2025-05-08 23:54:18,502 - Epoch 2: train loss = 0.5470
+2025-05-08 23:55:11,283 - Epoch 3: train loss = 0.5023
+2025-05-08 23:56:04,201 - Epoch 4: train loss = 0.4668
+2025-05-08 23:56:57,144 - Epoch 5: train loss = 0.4376
+2025-05-08 23:57:50,202 - Epoch 6: train loss = 0.4120
+2025-05-08 23:58:43,119 - Epoch 7: train loss = 0.3915
+2025-05-08 23:59:36,002 - Epoch 8: train loss = 0.3723
+2025-05-09 00:00:28,944 - Epoch 9: train loss = 0.3549
+2025-05-09 00:00:33,178 - Validation loss = 0.3048
+2025-05-09 00:00:33,178 - Combinaison : 41/96
+2025-05-09 00:00:33,178 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=256, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-09 00:01:26,725 - Epoch 0: train loss = 0.6530
+2025-05-09 00:02:18,225 - Epoch 1: train loss = 0.5119
+2025-05-09 00:03:09,385 - Epoch 2: train loss = 0.5288
+2025-05-09 00:04:00,342 - Epoch 3: train loss = 0.4454
+2025-05-09 00:04:50,824 - Epoch 4: train loss = 0.4113
+2025-05-09 00:05:41,226 - Epoch 5: train loss = 0.4557
+2025-05-09 00:06:32,063 - Epoch 6: train loss = 0.5096
+2025-05-09 00:07:22,521 - Epoch 7: train loss = 0.4001
+2025-05-09 00:08:13,074 - Epoch 8: train loss = 0.3677
+2025-05-09 00:09:03,897 - Epoch 9: train loss = 0.3753
+2025-05-09 00:09:08,107 - Validation loss = 0.3004
+2025-05-09 00:09:08,107 - Combinaison : 42/96
+2025-05-09 00:09:08,107 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=256, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-09 00:10:01,936 - Epoch 0: train loss = 0.7742
+2025-05-09 00:10:55,044 - Epoch 1: train loss = 0.6020
+2025-05-09 00:11:47,982 - Epoch 2: train loss = 0.5334
+2025-05-09 00:12:41,039 - Epoch 3: train loss = 0.4824
+2025-05-09 00:13:34,135 - Epoch 4: train loss = 0.4427
+2025-05-09 00:14:27,178 - Epoch 5: train loss = 0.4108
+2025-05-09 00:15:20,232 - Epoch 6: train loss = 0.3844
+2025-05-09 00:16:13,297 - Epoch 7: train loss = 0.3624
+2025-05-09 00:17:06,482 - Epoch 8: train loss = 0.3436
+2025-05-09 00:17:59,563 - Epoch 9: train loss = 0.3282
+2025-05-09 00:18:03,810 - Validation loss = 0.2813
+2025-05-09 00:18:03,810 - Combinaison : 43/96
+2025-05-09 00:18:03,810 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=256, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-09 00:18:57,530 - Epoch 0: train loss = 0.6424
+2025-05-09 00:19:49,776 - Epoch 1: train loss = 0.4547
+2025-05-09 00:20:41,609 - Epoch 2: train loss = 0.3559
+2025-05-09 00:21:33,257 - Epoch 3: train loss = 0.3619
+2025-05-09 00:22:24,388 - Epoch 4: train loss = 0.3804
+2025-05-09 00:23:15,238 - Epoch 5: train loss = 0.3420
+2025-05-09 00:24:06,011 - Epoch 6: train loss = 0.3024
+2025-05-09 00:24:56,654 - Epoch 7: train loss = 0.2939
+2025-05-09 00:25:47,293 - Epoch 8: train loss = 0.3244
+2025-05-09 00:26:37,571 - Epoch 9: train loss = 0.2761
+2025-05-09 00:26:41,781 - Validation loss = 0.2512
+2025-05-09 00:26:41,781 - Combinaison : 44/96
+2025-05-09 00:26:41,782 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=256, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-09 00:28:26,980 - Epoch 0: train loss = 0.7480
+2025-05-09 00:30:10,446 - Epoch 1: train loss = 0.5774
+2025-05-09 00:31:53,501 - Epoch 2: train loss = 0.4975
+2025-05-09 00:33:36,621 - Epoch 3: train loss = 0.4406
+2025-05-09 00:35:19,516 - Epoch 4: train loss = 0.3982
+2025-05-09 00:37:02,356 - Epoch 5: train loss = 0.3656
+2025-05-09 00:38:45,251 - Epoch 6: train loss = 0.3401
+2025-05-09 00:40:28,303 - Epoch 7: train loss = 0.3194
+2025-05-09 00:42:11,285 - Epoch 8: train loss = 0.3020
+2025-05-09 00:43:54,192 - Epoch 9: train loss = 0.2877
+2025-05-09 00:44:01,764 - Validation loss = 0.2441
+2025-05-09 00:44:01,764 - Combinaison : 45/96
+2025-05-09 00:44:01,764 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=256, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-09 00:45:44,713 - Epoch 0: train loss = 0.7593
+2025-05-09 00:47:23,094 - Epoch 1: train loss = 0.7556
+2025-05-09 00:49:45,904 - Epoch 2: train loss = 0.8095
+2025-05-09 00:51:30,785 - Epoch 3: train loss = 0.8610
+2025-05-09 00:53:21,917 - Epoch 4: train loss = 0.9329
+2025-05-09 00:55:18,365 - Epoch 5: train loss = 0.9659
+2025-05-09 00:57:29,856 - Epoch 6: train loss = 0.9410
+2025-05-09 00:59:53,575 - Epoch 7: train loss = 0.9122
+2025-05-09 01:02:22,564 - Epoch 8: train loss = 0.8982
+2025-05-09 01:04:56,805 - Epoch 9: train loss = 0.9098
+2025-05-09 01:05:07,238 - Validation loss = 0.8386
+2025-05-09 01:05:07,238 - Combinaison : 46/96
+2025-05-09 01:05:07,238 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=256, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-09 01:07:54,832 - Epoch 0: train loss = 0.7514
+2025-05-09 01:10:43,754 - Epoch 1: train loss = 0.5711
+2025-05-09 01:13:36,171 - Epoch 2: train loss = 0.4848
+2025-05-09 01:16:30,957 - Epoch 3: train loss = 0.4243
+2025-05-09 01:19:27,127 - Epoch 4: train loss = 0.3814
+2025-05-09 01:22:24,406 - Epoch 5: train loss = 0.3493
+2025-05-09 01:25:27,301 - Epoch 6: train loss = 0.3244
+2025-05-09 01:28:24,109 - Epoch 7: train loss = 0.3041
+2025-05-09 01:31:20,868 - Epoch 8: train loss = 0.2867
+2025-05-09 01:34:16,840 - Epoch 9: train loss = 0.2732
+2025-05-09 01:34:30,496 - Validation loss = 0.2329
+2025-05-09 01:34:30,496 - Combinaison : 47/96
+2025-05-09 01:34:30,496 - Testing combination: encoder_dim=512, decoder_dim=4096, patch_size=256, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-09 01:37:34,283 - Epoch 0: train loss = 0.7438
+2025-05-09 01:40:32,608 - Epoch 1: train loss = 0.8545
+2025-05-09 01:43:29,103 - Epoch 2: train loss = 0.9041
+2025-05-09 01:46:25,121 - Epoch 3: train loss = 0.9107
+2025-05-09 01:49:20,801 - Epoch 4: train loss = 0.8794
+2025-05-09 01:52:17,388 - Epoch 5: train loss = 0.9124
+2025-05-09 01:55:13,502 - Epoch 6: train loss = 0.9391
+2025-05-09 01:58:16,116 - Epoch 7: train loss = 0.9189
+2025-05-09 02:01:11,967 - Epoch 8: train loss = 0.9341
+2025-05-09 02:04:10,514 - Epoch 9: train loss = 0.9184
+2025-05-09 02:04:23,983 - Validation loss = 0.8585
+2025-05-09 02:04:23,983 - Combinaison : 48/96
+2025-05-09 02:04:23,983 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=64, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-09 02:06:00,612 - Epoch 0: train loss = 0.8079
+2025-05-09 02:07:37,256 - Epoch 1: train loss = 0.6394
+2025-05-09 02:09:11,226 - Epoch 2: train loss = 0.5574
+2025-05-09 02:10:41,575 - Epoch 3: train loss = 0.5094
+2025-05-09 02:12:17,611 - Epoch 4: train loss = 0.4788
+2025-05-09 02:13:53,553 - Epoch 5: train loss = 0.4466
+2025-05-09 02:15:29,448 - Epoch 6: train loss = 0.4138
+2025-05-09 02:17:05,830 - Epoch 7: train loss = 0.3889
+2025-05-09 02:18:41,777 - Epoch 8: train loss = 0.3688
+2025-05-09 02:20:17,151 - Epoch 9: train loss = 0.3531
+2025-05-09 02:20:26,338 - Validation loss = 0.3023
+2025-05-09 02:20:26,338 - Combinaison : 49/96
+2025-05-09 02:20:26,338 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=64, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-09 02:22:02,324 - Epoch 0: train loss = 0.5784
+2025-05-09 02:23:38,143 - Epoch 1: train loss = 0.3722
+2025-05-09 02:25:12,675 - Epoch 2: train loss = 0.3031
+2025-05-09 02:26:48,233 - Epoch 3: train loss = 0.2635
+2025-05-09 02:28:19,344 - Epoch 4: train loss = 0.2397
+2025-05-09 02:29:56,503 - Epoch 5: train loss = 0.2254
+2025-05-09 02:31:30,731 - Epoch 6: train loss = 0.2100
+2025-05-09 02:33:04,941 - Epoch 7: train loss = 0.2017
+2025-05-09 02:34:37,164 - Epoch 8: train loss = 0.1941
+2025-05-09 02:36:12,854 - Epoch 9: train loss = 0.1866
+2025-05-09 02:36:21,956 - Validation loss = 0.1543
+2025-05-09 02:36:21,956 - Combinaison : 50/96
+2025-05-09 02:36:21,957 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=64, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-09 02:38:00,881 - Epoch 0: train loss = 0.8421
+2025-05-09 02:39:34,229 - Epoch 1: train loss = 0.6691
+2025-05-09 02:41:11,564 - Epoch 2: train loss = 0.5746
+2025-05-09 02:42:46,517 - Epoch 3: train loss = 0.5170
+2025-05-09 02:44:20,696 - Epoch 4: train loss = 0.4845
+2025-05-09 02:45:56,534 - Epoch 5: train loss = 0.4600
+2025-05-09 02:47:31,228 - Epoch 6: train loss = 0.4300
+2025-05-09 02:49:07,266 - Epoch 7: train loss = 0.3981
+2025-05-09 02:50:44,015 - Epoch 8: train loss = 0.3733
+2025-05-09 02:52:20,169 - Epoch 9: train loss = 0.3524
+2025-05-09 02:52:28,172 - Validation loss = 0.3049
+2025-05-09 02:52:28,172 - Combinaison : 51/96
+2025-05-09 02:52:28,172 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=64, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-09 02:54:04,760 - Epoch 0: train loss = 0.5850
+2025-05-09 02:55:41,118 - Epoch 1: train loss = 0.3675
+2025-05-09 02:57:16,898 - Epoch 2: train loss = 0.2876
+2025-05-09 02:58:53,464 - Epoch 3: train loss = 0.2495
+2025-05-09 03:00:29,634 - Epoch 4: train loss = 0.2272
+2025-05-09 03:02:06,293 - Epoch 5: train loss = 0.2105
+2025-05-09 03:03:42,562 - Epoch 6: train loss = 0.1974
+2025-05-09 03:05:19,431 - Epoch 7: train loss = 0.1887
+2025-05-09 03:06:56,368 - Epoch 8: train loss = 0.1808
+2025-05-09 03:08:32,605 - Epoch 9: train loss = 0.1755
+2025-05-09 03:08:42,295 - Validation loss = 0.1463
+2025-05-09 03:08:42,295 - Combinaison : 52/96
+2025-05-09 03:08:42,295 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=64, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-09 03:11:36,206 - Epoch 0: train loss = 0.8080
+2025-05-09 03:14:31,049 - Epoch 1: train loss = 0.6321
+2025-05-09 03:17:25,553 - Epoch 2: train loss = 0.5390
+2025-05-09 03:20:19,881 - Epoch 3: train loss = 0.4890
+2025-05-09 03:23:14,564 - Epoch 4: train loss = 0.4547
+2025-05-09 03:26:09,358 - Epoch 5: train loss = 0.4129
+2025-05-09 03:29:04,264 - Epoch 6: train loss = 0.3787
+2025-05-09 03:31:59,484 - Epoch 7: train loss = 0.3538
+2025-05-09 03:34:54,394 - Epoch 8: train loss = 0.3341
+2025-05-09 03:37:49,863 - Epoch 9: train loss = 0.3173
+2025-05-09 03:38:05,380 - Validation loss = 0.2719
+2025-05-09 03:38:05,380 - Combinaison : 53/96
+2025-05-09 03:38:05,380 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=64, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-09 03:41:00,997 - Epoch 0: train loss = 0.5793
+2025-05-09 03:43:55,839 - Epoch 1: train loss = 0.3558
+2025-05-09 03:46:51,237 - Epoch 2: train loss = 0.2723
+2025-05-09 03:49:46,796 - Epoch 3: train loss = 0.2292
+2025-05-09 03:52:42,344 - Epoch 4: train loss = 0.2065
+2025-05-09 03:55:37,480 - Epoch 5: train loss = 0.1910
+2025-05-09 03:58:33,362 - Epoch 6: train loss = 0.1779
+2025-05-09 04:01:28,314 - Epoch 7: train loss = 0.1696
+2025-05-09 04:04:23,098 - Epoch 8: train loss = 0.1626
+2025-05-09 04:07:18,159 - Epoch 9: train loss = 0.1562
+2025-05-09 04:07:35,344 - Validation loss = 0.1325
+2025-05-09 04:07:35,344 - Combinaison : 54/96
+2025-05-09 04:07:35,344 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=64, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-09 04:10:34,501 - Epoch 0: train loss = 0.8030
+2025-05-09 04:13:27,587 - Epoch 1: train loss = 0.6358
+2025-05-09 04:16:22,653 - Epoch 2: train loss = 0.5544
+2025-05-09 04:19:16,993 - Epoch 3: train loss = 0.5048
+2025-05-09 04:22:11,871 - Epoch 4: train loss = 0.4664
+2025-05-09 04:25:06,304 - Epoch 5: train loss = 0.4276
+2025-05-09 04:28:00,120 - Epoch 6: train loss = 0.3890
+2025-05-09 04:30:54,152 - Epoch 7: train loss = 0.3576
+2025-05-09 04:33:48,735 - Epoch 8: train loss = 0.3334
+2025-05-09 04:36:42,858 - Epoch 9: train loss = 0.3143
+2025-05-09 04:36:58,409 - Validation loss = 0.2710
+2025-05-09 04:36:58,409 - Combinaison : 55/96
+2025-05-09 04:36:58,409 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=64, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-09 04:39:53,408 - Epoch 0: train loss = 0.5920
+2025-05-09 04:42:48,454 - Epoch 1: train loss = 0.3396
+2025-05-09 04:45:43,412 - Epoch 2: train loss = 0.2537
+2025-05-09 04:48:44,112 - Epoch 3: train loss = 0.2132
+2025-05-09 04:51:35,722 - Epoch 4: train loss = 0.1919
+2025-05-09 04:54:31,710 - Epoch 5: train loss = 0.1743
+2025-05-09 04:57:26,248 - Epoch 6: train loss = 0.1625
+2025-05-09 05:00:22,623 - Epoch 7: train loss = 0.1533
+2025-05-09 05:03:18,887 - Epoch 8: train loss = 0.1454
+2025-05-09 05:06:14,629 - Epoch 9: train loss = 0.1407
+2025-05-09 05:06:32,609 - Validation loss = 0.1197
+2025-05-09 05:06:32,609 - Combinaison : 56/96
+2025-05-09 05:06:32,609 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=128, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-09 05:07:32,507 - Epoch 0: train loss = 0.8183
+2025-05-09 05:08:35,031 - Epoch 1: train loss = 0.6419
+2025-05-09 05:09:37,443 - Epoch 2: train loss = 0.5663
+2025-05-09 05:10:36,131 - Epoch 3: train loss = 0.5267
+2025-05-09 05:11:37,068 - Epoch 4: train loss = 0.4974
+2025-05-09 05:12:39,050 - Epoch 5: train loss = 0.4690
+2025-05-09 05:13:40,926 - Epoch 6: train loss = 0.4418
+2025-05-09 05:14:42,810 - Epoch 7: train loss = 0.4181
+2025-05-09 05:15:44,956 - Epoch 8: train loss = 0.3963
+2025-05-09 05:16:47,002 - Epoch 9: train loss = 0.3785
+2025-05-09 05:16:52,819 - Validation loss = 0.3267
+2025-05-09 05:16:52,819 - Combinaison : 57/96
+2025-05-09 05:16:52,819 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=128, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-09 05:17:52,555 - Epoch 0: train loss = 0.5888
+2025-05-09 05:18:52,140 - Epoch 1: train loss = 0.4001
+2025-05-09 05:19:53,908 - Epoch 2: train loss = 0.3186
+2025-05-09 05:20:55,886 - Epoch 3: train loss = 0.2764
+2025-05-09 05:21:57,866 - Epoch 4: train loss = 0.2522
+2025-05-09 05:22:59,720 - Epoch 5: train loss = 0.2324
+2025-05-09 05:24:01,639 - Epoch 6: train loss = 0.2195
+2025-05-09 05:25:03,540 - Epoch 7: train loss = 0.2114
+2025-05-09 05:26:05,355 - Epoch 8: train loss = 0.2016
+2025-05-09 05:27:07,336 - Epoch 9: train loss = 0.1941
+2025-05-09 05:27:13,022 - Validation loss = 0.1597
+2025-05-09 05:27:13,022 - Combinaison : 58/96
+2025-05-09 05:27:13,022 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=128, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-09 05:28:15,161 - Epoch 0: train loss = 0.8080
+2025-05-09 05:29:17,118 - Epoch 1: train loss = 0.6294
+2025-05-09 05:30:18,574 - Epoch 2: train loss = 0.5581
+2025-05-09 05:31:20,414 - Epoch 3: train loss = 0.5171
+2025-05-09 05:32:22,413 - Epoch 4: train loss = 0.4883
+2025-05-09 05:33:24,275 - Epoch 5: train loss = 0.4618
+2025-05-09 05:34:26,233 - Epoch 6: train loss = 0.4324
+2025-05-09 05:35:28,327 - Epoch 7: train loss = 0.4056
+2025-05-09 05:36:30,007 - Epoch 8: train loss = 0.3832
+2025-05-09 05:37:31,676 - Epoch 9: train loss = 0.3651
+2025-05-09 05:37:37,285 - Validation loss = 0.3148
+2025-05-09 05:37:37,285 - Combinaison : 59/96
+2025-05-09 05:37:37,285 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=128, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-09 05:38:39,011 - Epoch 0: train loss = 0.5835
+2025-05-09 05:39:37,107 - Epoch 1: train loss = 0.3834
+2025-05-09 05:40:38,558 - Epoch 2: train loss = 0.3003
+2025-05-09 05:41:41,219 - Epoch 3: train loss = 0.2590
+2025-05-09 05:42:44,021 - Epoch 4: train loss = 0.2333
+2025-05-09 05:43:46,253 - Epoch 5: train loss = 0.2179
+2025-05-09 05:44:45,210 - Epoch 6: train loss = 0.2045
+2025-05-09 05:45:49,497 - Epoch 7: train loss = 0.1935
+2025-05-09 05:46:52,614 - Epoch 8: train loss = 0.1866
+2025-05-09 05:47:55,055 - Epoch 9: train loss = 0.1789
+2025-05-09 05:48:00,682 - Validation loss = 0.1495
+2025-05-09 05:48:00,682 - Combinaison : 60/96
+2025-05-09 05:48:00,682 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=128, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-09 05:49:49,463 - Epoch 0: train loss = 0.7997
+2025-05-09 05:51:34,602 - Epoch 1: train loss = 0.6267
+2025-05-09 05:53:24,400 - Epoch 2: train loss = 0.5488
+2025-05-09 05:55:09,582 - Epoch 3: train loss = 0.5030
+2025-05-09 05:56:55,520 - Epoch 4: train loss = 0.4641
+2025-05-09 05:58:40,775 - Epoch 5: train loss = 0.4254
+2025-05-09 06:00:26,527 - Epoch 6: train loss = 0.3923
+2025-05-09 06:02:13,381 - Epoch 7: train loss = 0.3664
+2025-05-09 06:04:02,412 - Epoch 8: train loss = 0.3444
+2025-05-09 06:05:50,503 - Epoch 9: train loss = 0.3273
+2025-05-09 06:06:01,690 - Validation loss = 0.2784
+2025-05-09 06:06:01,690 - Combinaison : 61/96
+2025-05-09 06:06:01,690 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=128, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-09 06:07:51,125 - Epoch 0: train loss = 0.5750
+2025-05-09 06:09:37,063 - Epoch 1: train loss = 0.3507
+2025-05-09 06:11:21,213 - Epoch 2: train loss = 0.2687
+2025-05-09 06:13:08,695 - Epoch 3: train loss = 0.2301
+2025-05-09 06:14:56,918 - Epoch 4: train loss = 0.2056
+2025-05-09 06:16:46,794 - Epoch 5: train loss = 0.1911
+2025-05-09 06:18:30,889 - Epoch 6: train loss = 0.1785
+2025-05-09 06:20:17,519 - Epoch 7: train loss = 0.1692
+2025-05-09 06:22:03,639 - Epoch 8: train loss = 0.1618
+2025-05-09 06:23:49,626 - Epoch 9: train loss = 0.1556
+2025-05-09 06:23:57,315 - Validation loss = 0.1310
+2025-05-09 06:23:57,316 - Combinaison : 62/96
+2025-05-09 06:23:57,316 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=128, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-09 06:25:44,589 - Epoch 0: train loss = 0.8057
+2025-05-09 06:27:29,981 - Epoch 1: train loss = 0.6187
+2025-05-09 06:29:17,287 - Epoch 2: train loss = 0.5421
+2025-05-09 06:31:08,255 - Epoch 3: train loss = 0.4972
+2025-05-09 06:32:53,691 - Epoch 4: train loss = 0.4579
+2025-05-09 06:34:46,522 - Epoch 5: train loss = 0.4188
+2025-05-09 06:36:36,705 - Epoch 6: train loss = 0.3851
+2025-05-09 06:38:24,211 - Epoch 7: train loss = 0.3585
+2025-05-09 06:40:11,601 - Epoch 8: train loss = 0.3369
+2025-05-09 06:41:58,419 - Epoch 9: train loss = 0.3190
+2025-05-09 06:42:09,653 - Validation loss = 0.2717
+2025-05-09 06:42:09,653 - Combinaison : 63/96
+2025-05-09 06:42:09,653 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=128, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-09 06:43:58,270 - Epoch 0: train loss = 0.5782
+2025-05-09 06:45:44,358 - Epoch 1: train loss = 0.3459
+2025-05-09 06:47:31,907 - Epoch 2: train loss = 0.2602
+2025-05-09 06:49:20,171 - Epoch 3: train loss = 0.2200
+2025-05-09 06:51:07,393 - Epoch 4: train loss = 0.1946
+2025-05-09 06:52:53,018 - Epoch 5: train loss = 0.1797
+2025-05-09 06:54:42,459 - Epoch 6: train loss = 0.1691
+2025-05-09 06:56:29,547 - Epoch 7: train loss = 0.1587
+2025-05-09 06:58:20,186 - Epoch 8: train loss = 0.1518
+2025-05-09 07:00:06,255 - Epoch 9: train loss = 0.1459
+2025-05-09 07:00:16,096 - Validation loss = 0.1218
+2025-05-09 07:00:16,096 - Combinaison : 64/96
+2025-05-09 07:00:16,096 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=256, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-09 07:01:00,009 - Epoch 0: train loss = 0.7957
+2025-05-09 07:01:42,350 - Epoch 1: train loss = 0.6384
+2025-05-09 07:02:25,920 - Epoch 2: train loss = 0.5837
+2025-05-09 07:03:07,591 - Epoch 3: train loss = 0.5433
+2025-05-09 07:03:49,429 - Epoch 4: train loss = 0.5085
+2025-05-09 07:04:28,075 - Epoch 5: train loss = 0.4796
+2025-05-09 07:05:12,666 - Epoch 6: train loss = 0.4540
+2025-05-09 07:05:54,234 - Epoch 7: train loss = 0.4323
+2025-05-09 07:06:36,129 - Epoch 8: train loss = 0.4127
+2025-05-09 07:07:17,963 - Epoch 9: train loss = 0.3954
+2025-05-09 07:07:23,281 - Validation loss = 0.3450
+2025-05-09 07:07:23,281 - Combinaison : 65/96
+2025-05-09 07:07:23,281 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=256, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-09 07:08:04,811 - Epoch 0: train loss = 0.6095
+2025-05-09 07:08:48,389 - Epoch 1: train loss = 0.4264
+2025-05-09 07:09:28,743 - Epoch 2: train loss = 0.3456
+2025-05-09 07:10:10,270 - Epoch 3: train loss = 0.3018
+2025-05-09 07:10:56,007 - Epoch 4: train loss = 0.2766
+2025-05-09 07:11:39,722 - Epoch 5: train loss = 0.2612
+2025-05-09 07:12:21,011 - Epoch 6: train loss = 0.2480
+2025-05-09 07:13:02,755 - Epoch 7: train loss = 0.2376
+2025-05-09 07:13:47,871 - Epoch 8: train loss = 0.2213
+2025-05-09 07:14:27,017 - Epoch 9: train loss = 0.2458
+2025-05-09 07:14:32,213 - Validation loss = 0.3072
+2025-05-09 07:14:32,213 - Combinaison : 66/96
+2025-05-09 07:14:32,213 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=256, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-09 07:15:17,473 - Epoch 0: train loss = 0.7926
+2025-05-09 07:16:01,426 - Epoch 1: train loss = 0.6301
+2025-05-09 07:16:43,356 - Epoch 2: train loss = 0.5769
+2025-05-09 07:17:22,924 - Epoch 3: train loss = 0.5339
+2025-05-09 07:18:04,223 - Epoch 4: train loss = 0.4983
+2025-05-09 07:18:48,007 - Epoch 5: train loss = 0.4672
+2025-05-09 07:19:32,029 - Epoch 6: train loss = 0.4397
+2025-05-09 07:20:15,921 - Epoch 7: train loss = 0.4160
+2025-05-09 07:20:59,629 - Epoch 8: train loss = 0.3957
+2025-05-09 07:21:43,528 - Epoch 9: train loss = 0.3779
+2025-05-09 07:21:48,718 - Validation loss = 0.3294
+2025-05-09 07:21:48,718 - Combinaison : 67/96
+2025-05-09 07:21:48,718 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=256, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-09 07:22:28,689 - Epoch 0: train loss = 0.6038
+2025-05-09 07:23:13,374 - Epoch 1: train loss = 0.4109
+2025-05-09 07:23:57,810 - Epoch 2: train loss = 0.3258
+2025-05-09 07:24:40,123 - Epoch 3: train loss = 0.2826
+2025-05-09 07:25:20,734 - Epoch 4: train loss = 0.2565
+2025-05-09 07:26:06,661 - Epoch 5: train loss = 0.2384
+2025-05-09 07:26:48,723 - Epoch 6: train loss = 0.2240
+2025-05-09 07:27:29,369 - Epoch 7: train loss = 0.2138
+2025-05-09 07:28:10,075 - Epoch 8: train loss = 0.2041
+2025-05-09 07:28:50,992 - Epoch 9: train loss = 0.1972
+2025-05-09 07:28:56,120 - Validation loss = 0.1665
+2025-05-09 07:28:56,120 - Combinaison : 68/96
+2025-05-09 07:28:56,120 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=256, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-09 07:30:08,707 - Epoch 0: train loss = 0.7834
+2025-05-09 07:31:20,308 - Epoch 1: train loss = 0.6210
+2025-05-09 07:32:32,260 - Epoch 2: train loss = 0.5622
+2025-05-09 07:33:41,407 - Epoch 3: train loss = 0.5120
+2025-05-09 07:34:51,791 - Epoch 4: train loss = 0.4686
+2025-05-09 07:36:03,393 - Epoch 5: train loss = 0.4328
+2025-05-09 07:37:13,307 - Epoch 6: train loss = 0.4028
+2025-05-09 07:38:23,722 - Epoch 7: train loss = 0.3793
+2025-05-09 07:39:33,623 - Epoch 8: train loss = 0.3593
+2025-05-09 07:40:43,409 - Epoch 9: train loss = 0.3423
+2025-05-09 07:40:49,536 - Validation loss = 0.2946
+2025-05-09 07:40:49,536 - Combinaison : 69/96
+2025-05-09 07:40:49,545 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=256, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-09 07:42:04,645 - Epoch 0: train loss = 0.5999
+2025-05-09 07:43:17,310 - Epoch 1: train loss = 0.3897
+2025-05-09 07:44:24,140 - Epoch 2: train loss = 0.3013
+2025-05-09 07:45:37,896 - Epoch 3: train loss = 0.2600
+2025-05-09 07:46:48,805 - Epoch 4: train loss = 0.2326
+2025-05-09 07:48:03,996 - Epoch 5: train loss = 0.2127
+2025-05-09 07:49:14,203 - Epoch 6: train loss = 0.2013
+2025-05-09 07:50:24,432 - Epoch 7: train loss = 0.1901
+2025-05-09 07:51:35,093 - Epoch 8: train loss = 0.1885
+2025-05-09 07:52:45,745 - Epoch 9: train loss = 0.1742
+2025-05-09 07:52:52,040 - Validation loss = 0.1467
+2025-05-09 07:52:52,040 - Combinaison : 70/96
+2025-05-09 07:52:52,040 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=256, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-09 07:54:04,862 - Epoch 0: train loss = 0.7776
+2025-05-09 07:55:21,156 - Epoch 1: train loss = 0.6199
+2025-05-09 07:56:31,769 - Epoch 2: train loss = 0.5539
+2025-05-09 07:57:42,407 - Epoch 3: train loss = 0.5002
+2025-05-09 07:58:54,016 - Epoch 4: train loss = 0.4555
+2025-05-09 08:00:10,209 - Epoch 5: train loss = 0.4184
+2025-05-09 08:01:20,992 - Epoch 6: train loss = 0.3884
+2025-05-09 08:02:32,105 - Epoch 7: train loss = 0.3644
+2025-05-09 08:03:43,002 - Epoch 8: train loss = 0.3442
+2025-05-09 08:04:53,886 - Epoch 9: train loss = 0.3275
+2025-05-09 08:05:00,183 - Validation loss = 0.2813
+2025-05-09 08:05:00,183 - Combinaison : 71/96
+2025-05-09 08:05:00,183 - Testing combination: encoder_dim=1024, decoder_dim=2048, patch_size=256, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-09 08:06:15,805 - Epoch 0: train loss = 0.5868
+2025-05-09 08:07:32,591 - Epoch 1: train loss = 0.3583
+2025-05-09 08:08:45,496 - Epoch 2: train loss = 0.2795
+2025-05-09 08:09:58,263 - Epoch 3: train loss = 0.2410
+2025-05-09 08:11:10,993 - Epoch 4: train loss = 0.2183
+2025-05-09 08:12:23,798 - Epoch 5: train loss = 0.2005
+2025-05-09 08:13:36,752 - Epoch 6: train loss = 0.1879
+2025-05-09 08:14:49,509 - Epoch 7: train loss = 0.1771
+2025-05-09 08:16:02,189 - Epoch 8: train loss = 0.1689
+2025-05-09 08:17:15,098 - Epoch 9: train loss = 0.1623
+2025-05-09 08:17:21,703 - Validation loss = 0.1385
+2025-05-09 08:17:21,703 - Combinaison : 72/96
+2025-05-09 08:17:21,703 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=64, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-09 08:22:08,869 - Epoch 0: train loss = 0.7657
+2025-05-09 08:26:48,919 - Epoch 1: train loss = 0.5940
+2025-05-09 08:31:34,341 - Epoch 2: train loss = 0.5056
+2025-05-09 08:36:13,119 - Epoch 3: train loss = 0.4396
+2025-05-09 08:40:53,716 - Epoch 4: train loss = 0.3901
+2025-05-09 08:45:33,120 - Epoch 5: train loss = 0.3559
+2025-05-09 08:50:06,958 - Epoch 6: train loss = 0.3322
+2025-05-09 08:54:40,793 - Epoch 7: train loss = 0.3131
+2025-05-09 08:59:15,362 - Epoch 8: train loss = 0.2983
+2025-05-09 09:03:50,181 - Epoch 9: train loss = 0.2858
+2025-05-09 09:04:15,483 - Validation loss = 0.2382
+2025-05-09 09:04:15,483 - Combinaison : 73/96
+2025-05-09 09:04:15,483 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=64, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-09 09:08:52,535 - Epoch 0: train loss = 0.5635
+2025-05-09 09:13:35,126 - Epoch 1: train loss = 0.3464
+2025-05-09 09:18:10,502 - Epoch 2: train loss = 0.2706
+2025-05-09 09:22:47,344 - Epoch 3: train loss = 0.2324
+2025-05-09 09:27:18,684 - Epoch 4: train loss = 0.2137
+2025-05-09 09:31:38,072 - Epoch 5: train loss = 0.2010
+2025-05-09 09:36:12,506 - Epoch 6: train loss = 0.1928
+2025-05-09 09:40:52,156 - Epoch 7: train loss = 0.1854
+2025-05-09 09:45:42,078 - Epoch 8: train loss = 0.1799
+2025-05-09 09:50:29,746 - Epoch 9: train loss = 0.7636
+2025-05-09 09:50:55,919 - Validation loss = 0.9504
+2025-05-09 09:50:55,919 - Combinaison : 74/96
+2025-05-09 09:50:55,919 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=64, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-09 09:55:39,819 - Epoch 0: train loss = 0.8044
+2025-05-09 10:00:25,619 - Epoch 1: train loss = 0.6335
+2025-05-09 10:05:11,556 - Epoch 2: train loss = 0.5322
+2025-05-09 10:09:57,425 - Epoch 3: train loss = 0.4506
+2025-05-09 10:14:42,864 - Epoch 4: train loss = 0.3929
+2025-05-09 10:19:28,387 - Epoch 5: train loss = 0.3550
+2025-05-09 10:24:19,117 - Epoch 6: train loss = 0.3275
+2025-05-09 10:29:19,544 - Epoch 7: train loss = 0.3056
+2025-05-09 10:34:16,212 - Epoch 8: train loss = 0.2879
+2025-05-09 10:39:07,574 - Epoch 9: train loss = 0.2737
+2025-05-09 10:39:36,324 - Validation loss = 0.2311
+2025-05-09 10:39:36,324 - Combinaison : 75/96
+2025-05-09 10:39:36,324 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=64, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-09 10:44:35,547 - Epoch 0: train loss = 0.5411
+2025-05-09 10:49:28,783 - Epoch 1: train loss = 0.3087
+2025-05-09 10:54:30,978 - Epoch 2: train loss = 0.2456
+2025-05-09 10:59:23,743 - Epoch 3: train loss = 0.2111
+2025-05-09 11:04:18,021 - Epoch 4: train loss = 0.1940
+2025-05-09 11:09:22,470 - Epoch 5: train loss = 0.1819
+2025-05-09 11:14:17,001 - Epoch 6: train loss = 0.1745
+2025-05-09 11:19:10,225 - Epoch 7: train loss = 0.1675
+2025-05-09 11:24:06,985 - Epoch 8: train loss = 0.1626
+2025-05-09 11:28:57,694 - Epoch 9: train loss = 0.1582
+2025-05-09 11:29:24,233 - Validation loss = 0.1368
+2025-05-09 11:29:24,233 - Combinaison : 76/96
+2025-05-09 11:29:24,233 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=64, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-09 11:38:48,425 - Epoch 0: train loss = 0.7700
+2025-05-09 11:48:08,066 - Epoch 1: train loss = 0.5750
+2025-05-09 11:57:27,442 - Epoch 2: train loss = 0.4545
+2025-05-09 12:06:47,296 - Epoch 3: train loss = 0.3827
+2025-05-09 12:16:14,066 - Epoch 4: train loss = 0.3398
+2025-05-09 12:25:54,200 - Epoch 5: train loss = 0.3114
+2025-05-09 12:35:33,737 - Epoch 6: train loss = 0.2885
+2025-05-09 12:45:00,352 - Epoch 7: train loss = 0.2700
+2025-05-09 12:54:31,003 - Epoch 8: train loss = 0.2542
+2025-05-09 13:03:56,364 - Epoch 9: train loss = 0.2410
+2025-05-09 13:04:48,697 - Validation loss = 0.2037
+2025-05-09 13:04:48,697 - Combinaison : 77/96
+2025-05-09 13:04:48,697 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=64, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-09 13:14:56,040 - Epoch 0: train loss = 0.6021
+2025-05-09 13:24:42,080 - Epoch 1: train loss = 0.3626
+2025-05-09 13:34:13,140 - Epoch 2: train loss = 0.2787
+2025-05-09 13:43:45,310 - Epoch 3: train loss = 0.2445
+2025-05-09 13:53:34,293 - Epoch 4: train loss = 0.2271
+2025-05-09 14:03:20,783 - Epoch 5: train loss = 0.2198
+2025-05-09 14:12:46,817 - Epoch 6: train loss = 0.6002
+2025-05-09 14:22:09,765 - Epoch 7: train loss = 1.0106
+2025-05-09 14:31:53,231 - Epoch 8: train loss = 1.0097
+2025-05-09 14:41:18,469 - Epoch 9: train loss = 1.0098
+2025-05-09 14:42:09,559 - Validation loss = 0.9605
+2025-05-09 14:42:09,560 - Combinaison : 78/96
+2025-05-09 14:42:09,560 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=64, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-09 14:52:10,672 - Epoch 0: train loss = 0.7558
+2025-05-09 15:01:36,618 - Epoch 1: train loss = 0.5633
+2025-05-09 15:11:30,369 - Epoch 2: train loss = 0.4580
+2025-05-09 15:21:00,215 - Epoch 3: train loss = 0.3817
+2025-05-09 15:30:30,751 - Epoch 4: train loss = 0.3340
+2025-05-09 15:40:13,657 - Epoch 5: train loss = 0.3010
+2025-05-09 15:50:19,440 - Epoch 6: train loss = 0.2757
+2025-05-09 16:00:00,789 - Epoch 7: train loss = 0.2564
+2025-05-09 16:09:31,058 - Epoch 8: train loss = 0.2402
+2025-05-09 16:19:21,924 - Epoch 9: train loss = 0.2270
+2025-05-09 16:20:10,567 - Validation loss = 0.1897
+2025-05-09 16:20:10,567 - Combinaison : 79/96
+2025-05-09 16:20:10,567 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=64, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-09 16:29:50,286 - Epoch 0: train loss = 0.6629
+2025-05-09 16:39:22,986 - Epoch 1: train loss = 0.4017
+2025-05-09 16:48:53,375 - Epoch 2: train loss = 0.3147
+2025-05-09 16:58:17,290 - Epoch 3: train loss = 0.2711
+2025-05-09 17:07:42,081 - Epoch 4: train loss = 0.2444
+2025-05-09 17:17:20,218 - Epoch 5: train loss = 0.2299
+2025-05-09 17:27:13,187 - Epoch 6: train loss = 0.2176
+2025-05-09 17:37:36,960 - Epoch 7: train loss = 0.2094
+2025-05-09 17:47:30,406 - Epoch 8: train loss = 0.2014
+2025-05-09 17:57:08,926 - Epoch 9: train loss = 0.1968
+2025-05-09 17:58:02,060 - Validation loss = 0.1798
+2025-05-09 17:58:02,060 - Combinaison : 80/96
+2025-05-09 17:58:02,060 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=128, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-09 18:01:02,159 - Epoch 0: train loss = 0.7603
+2025-05-09 18:04:06,742 - Epoch 1: train loss = 0.5816
+2025-05-09 18:07:06,275 - Epoch 2: train loss = 0.5060
+2025-05-09 18:10:11,556 - Epoch 3: train loss = 0.4499
+2025-05-09 18:13:14,894 - Epoch 4: train loss = 0.4068
+2025-05-09 18:16:18,373 - Epoch 5: train loss = 0.3739
+2025-05-09 18:19:21,934 - Epoch 6: train loss = 0.3481
+2025-05-09 18:22:19,952 - Epoch 7: train loss = 0.3276
+2025-05-09 18:25:20,830 - Epoch 8: train loss = 0.3100
+2025-05-09 18:28:19,862 - Epoch 9: train loss = 0.2960
+2025-05-09 18:28:35,447 - Validation loss = 0.2448
+2025-05-09 18:28:35,448 - Combinaison : 81/96
+2025-05-09 18:28:35,448 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=128, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-09 18:31:37,943 - Epoch 0: train loss = 0.5798
+2025-05-09 18:34:36,780 - Epoch 1: train loss = 0.3737
+2025-05-09 18:37:40,165 - Epoch 2: train loss = 0.2824
+2025-05-09 18:40:43,241 - Epoch 3: train loss = 0.2385
+2025-05-09 18:43:41,975 - Epoch 4: train loss = 0.2216
+2025-05-09 18:46:34,945 - Epoch 5: train loss = 0.8906
+2025-05-09 18:49:23,930 - Epoch 6: train loss = 0.9205
+2025-05-09 18:52:11,200 - Epoch 7: train loss = 0.8712
+2025-05-09 18:54:58,334 - Epoch 8: train loss = 0.8341
+2025-05-09 18:57:44,972 - Epoch 9: train loss = 0.8310
+2025-05-09 18:57:58,603 - Validation loss = 0.7925
+2025-05-09 18:57:58,603 - Combinaison : 82/96
+2025-05-09 18:57:58,603 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=128, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-09 19:01:02,064 - Epoch 0: train loss = 0.7706
+2025-05-09 19:04:02,171 - Epoch 1: train loss = 0.5849
+2025-05-09 19:06:55,149 - Epoch 2: train loss = 0.5022
+2025-05-09 19:09:49,647 - Epoch 3: train loss = 0.4436
+2025-05-09 19:12:44,051 - Epoch 4: train loss = 0.3957
+2025-05-09 19:15:38,401 - Epoch 5: train loss = 0.3598
+2025-05-09 19:18:32,462 - Epoch 6: train loss = 0.3329
+2025-05-09 19:21:26,495 - Epoch 7: train loss = 0.3113
+2025-05-09 19:24:21,383 - Epoch 8: train loss = 0.2935
+2025-05-09 19:27:21,133 - Epoch 9: train loss = 0.2788
+2025-05-09 19:27:36,331 - Validation loss = 0.2355
+2025-05-09 19:27:36,331 - Combinaison : 83/96
+2025-05-09 19:27:36,331 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=128, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-09 19:30:37,343 - Epoch 0: train loss = 0.5568
+2025-05-09 19:33:42,937 - Epoch 1: train loss = 0.3381
+2025-05-09 19:36:52,880 - Epoch 2: train loss = 0.2620
+2025-05-09 19:40:08,553 - Epoch 3: train loss = 0.2195
+2025-05-09 19:43:24,277 - Epoch 4: train loss = 0.2008
+2025-05-09 19:46:39,397 - Epoch 5: train loss = 0.1872
+2025-05-09 19:49:45,701 - Epoch 6: train loss = 0.1774
+2025-05-09 19:52:52,212 - Epoch 7: train loss = 0.1674
+2025-05-09 19:55:58,374 - Epoch 8: train loss = 0.1597
+2025-05-09 19:59:02,967 - Epoch 9: train loss = 0.1551
+2025-05-09 19:59:15,794 - Validation loss = 0.1324
+2025-05-09 19:59:15,795 - Combinaison : 84/96
+2025-05-09 19:59:15,795 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=128, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-09 20:05:04,464 - Epoch 0: train loss = 0.7550
+2025-05-09 20:10:48,995 - Epoch 1: train loss = 0.5568
+2025-05-09 20:16:40,952 - Epoch 2: train loss = 0.4578
+2025-05-09 20:22:34,425 - Epoch 3: train loss = 0.3954
+2025-05-09 20:28:27,512 - Epoch 4: train loss = 0.3535
+2025-05-09 20:34:22,736 - Epoch 5: train loss = 0.3212
+2025-05-09 20:40:12,432 - Epoch 6: train loss = 0.2970
+2025-05-09 20:46:05,597 - Epoch 7: train loss = 0.2773
+2025-05-09 20:51:56,704 - Epoch 8: train loss = 0.2614
+2025-05-09 20:57:45,285 - Epoch 9: train loss = 0.2472
+2025-05-09 20:58:14,469 - Validation loss = 0.2052
+2025-05-09 20:58:14,469 - Combinaison : 85/96
+2025-05-09 20:58:14,469 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=128, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-09 21:04:07,244 - Epoch 0: train loss = 0.7433
+2025-05-09 21:09:41,287 - Epoch 1: train loss = 0.9912
+2025-05-09 21:15:12,918 - Epoch 2: train loss = 0.9822
+2025-05-09 21:20:50,053 - Epoch 3: train loss = 1.0071
+2025-05-09 21:26:26,020 - Epoch 4: train loss = 1.0062
+2025-05-09 21:32:00,929 - Epoch 5: train loss = 1.0061
+2025-05-09 21:37:38,213 - Epoch 6: train loss = 1.0084
+2025-05-09 21:43:11,914 - Epoch 7: train loss = 1.0085
+2025-05-09 21:48:46,213 - Epoch 8: train loss = 1.0083
+2025-05-09 21:54:18,705 - Epoch 9: train loss = 1.0088
+2025-05-09 21:54:47,239 - Validation loss = 0.9599
+2025-05-09 21:54:47,239 - Combinaison : 86/96
+2025-05-09 21:54:47,239 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=128, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-09 22:00:44,715 - Epoch 0: train loss = 0.7888
+2025-05-09 22:06:32,421 - Epoch 1: train loss = 0.5793
+2025-05-09 22:12:25,180 - Epoch 2: train loss = 0.4592
+2025-05-09 22:18:21,438 - Epoch 3: train loss = 0.3865
+2025-05-09 22:24:25,187 - Epoch 4: train loss = 0.3383
+2025-05-09 22:30:35,041 - Epoch 5: train loss = 0.3040
+2025-05-09 22:36:31,182 - Epoch 6: train loss = 0.2785
+2025-05-09 22:42:27,396 - Epoch 7: train loss = 0.2585
+2025-05-09 22:48:23,145 - Epoch 8: train loss = 0.2429
+2025-05-09 22:54:19,464 - Epoch 9: train loss = 0.2293
+2025-05-09 22:54:47,664 - Validation loss = 0.1904
+2025-05-09 22:54:47,664 - Combinaison : 87/96
+2025-05-09 22:54:47,664 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=128, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-09 23:00:44,844 - Epoch 0: train loss = 0.5801
+2025-05-09 23:06:39,859 - Epoch 1: train loss = 0.3377
+2025-05-09 23:12:34,987 - Epoch 2: train loss = 0.2503
+2025-05-09 23:18:29,510 - Epoch 3: train loss = 0.2100
+2025-05-09 23:24:23,790 - Epoch 4: train loss = 0.1875
+2025-05-09 23:30:17,923 - Epoch 5: train loss = 0.1723
+2025-05-09 23:36:06,416 - Epoch 6: train loss = 0.1598
+2025-05-09 23:41:55,428 - Epoch 7: train loss = 0.1527
+2025-05-09 23:47:44,896 - Epoch 8: train loss = 0.1447
+2025-05-09 23:53:34,625 - Epoch 9: train loss = 0.1367
+2025-05-09 23:54:03,184 - Validation loss = 0.1216
+2025-05-09 23:54:03,184 - Combinaison : 88/96
+2025-05-09 23:54:03,184 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=256, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-09 23:55:55,143 - Epoch 0: train loss = 0.7566
+2025-05-09 23:57:46,673 - Epoch 1: train loss = 0.5935
+2025-05-09 23:59:37,035 - Epoch 2: train loss = 0.5255
+2025-05-10 00:01:27,258 - Epoch 3: train loss = 0.4725
+2025-05-10 00:03:18,418 - Epoch 4: train loss = 0.4310
+2025-05-10 00:05:08,445 - Epoch 5: train loss = 0.3973
+2025-05-10 00:06:59,341 - Epoch 6: train loss = 0.3698
+2025-05-10 00:08:53,327 - Epoch 7: train loss = 0.3468
+2025-05-10 00:10:44,504 - Epoch 8: train loss = 0.3282
+2025-05-10 00:12:36,675 - Epoch 9: train loss = 0.3125
+2025-05-10 00:12:45,984 - Validation loss = 0.2666
+2025-05-10 00:12:45,984 - Combinaison : 89/96
+2025-05-10 00:12:45,984 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=256, serie_len=8193,  n_layers=1, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-10 00:14:40,305 - Epoch 0: train loss = 0.6722
+2025-05-10 00:16:32,322 - Epoch 1: train loss = 0.5473
+2025-05-10 00:18:23,878 - Epoch 2: train loss = 0.4945
+2025-05-10 00:20:20,839 - Epoch 3: train loss = 0.7204
+2025-05-10 00:22:15,306 - Epoch 4: train loss = 0.7982
+2025-05-10 00:24:13,611 - Epoch 5: train loss = 0.7179
+2025-05-10 00:26:02,798 - Epoch 6: train loss = 0.6631
+2025-05-10 00:28:03,550 - Epoch 7: train loss = 0.6699
+2025-05-10 00:29:56,456 - Epoch 8: train loss = 0.6680
+2025-05-10 00:31:49,595 - Epoch 9: train loss = 0.7117
+2025-05-10 00:31:58,868 - Validation loss = 0.6666
+2025-05-10 00:31:58,868 - Combinaison : 90/96
+2025-05-10 00:31:58,868 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=256, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-10 00:33:59,899 - Epoch 0: train loss = 0.7406
+2025-05-10 00:35:59,487 - Epoch 1: train loss = 0.5814
+2025-05-10 00:37:58,007 - Epoch 2: train loss = 0.5111
+2025-05-10 00:39:52,123 - Epoch 3: train loss = 0.4562
+2025-05-10 00:41:46,766 - Epoch 4: train loss = 0.4143
+2025-05-10 00:43:49,546 - Epoch 5: train loss = 0.3812
+2025-05-10 00:45:51,357 - Epoch 6: train loss = 0.3545
+2025-05-10 00:47:51,007 - Epoch 7: train loss = 0.3326
+2025-05-10 00:49:51,072 - Epoch 8: train loss = 0.3142
+2025-05-10 00:51:50,804 - Epoch 9: train loss = 0.2986
+2025-05-10 00:52:01,461 - Validation loss = 0.2561
+2025-05-10 00:52:01,462 - Combinaison : 91/96
+2025-05-10 00:52:01,462 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=256, serie_len=8193,  n_layers=1, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-10 00:53:58,769 - Epoch 0: train loss = 0.5903
+2025-05-10 00:55:53,719 - Epoch 1: train loss = 0.5085
+2025-05-10 00:57:51,524 - Epoch 2: train loss = 0.5027
+2025-05-10 00:59:44,529 - Epoch 3: train loss = 0.5631
+2025-05-10 01:01:37,731 - Epoch 4: train loss = 0.4914
+2025-05-10 01:03:30,815 - Epoch 5: train loss = 0.4196
+2025-05-10 01:05:24,007 - Epoch 6: train loss = 0.3928
+2025-05-10 01:07:17,094 - Epoch 7: train loss = 0.3620
+2025-05-10 01:09:10,306 - Epoch 8: train loss = 0.6250
+2025-05-10 01:11:03,401 - Epoch 9: train loss = 0.7233
+2025-05-10 01:11:12,404 - Validation loss = 0.6054
+2025-05-10 01:11:12,404 - Combinaison : 92/96
+2025-05-10 01:11:12,405 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=256, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=1e-05
+2025-05-10 01:14:43,393 - Epoch 0: train loss = 0.7374
+2025-05-10 01:18:15,202 - Epoch 1: train loss = 0.5566
+2025-05-10 01:21:47,445 - Epoch 2: train loss = 0.4707
+2025-05-10 01:25:20,475 - Epoch 3: train loss = 0.4102
+2025-05-10 01:28:53,763 - Epoch 4: train loss = 0.3666
+2025-05-10 01:32:26,148 - Epoch 5: train loss = 0.3341
+2025-05-10 01:36:00,263 - Epoch 6: train loss = 0.3090
+2025-05-10 01:39:33,004 - Epoch 7: train loss = 0.2891
+2025-05-10 01:43:05,096 - Epoch 8: train loss = 0.2728
+2025-05-10 01:46:39,150 - Epoch 9: train loss = 0.2589
+2025-05-10 01:46:54,816 - Validation loss = 0.2206
+2025-05-10 01:46:54,817 - Combinaison : 93/96
+2025-05-10 01:46:54,817 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=256, serie_len=8193,  n_layers=2, heads=2, dropout=0.1, learning_rate=0.0001
+2025-05-10 01:50:28,112 - Epoch 0: train loss = 0.8267
+2025-05-10 01:53:57,503 - Epoch 1: train loss = 0.9208
+2025-05-10 01:57:23,203 - Epoch 2: train loss = 0.9272
+2025-05-10 02:00:47,351 - Epoch 3: train loss = 0.8878
+2025-05-10 02:04:12,336 - Epoch 4: train loss = 0.9828
+2025-05-10 02:07:36,074 - Epoch 5: train loss = 1.0039
+2025-05-10 02:11:02,497 - Epoch 6: train loss = 1.0057
+2025-05-10 02:14:29,483 - Epoch 7: train loss = 1.0026
+2025-05-10 02:17:55,137 - Epoch 8: train loss = 0.9795
+2025-05-10 02:21:17,777 - Epoch 9: train loss = 0.9711
+2025-05-10 02:21:33,448 - Validation loss = 0.8955
+2025-05-10 02:21:33,448 - Combinaison : 94/96
+2025-05-10 02:21:33,448 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=256, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=1e-05
+2025-05-10 02:25:09,347 - Epoch 0: train loss = 0.7273
+2025-05-10 02:28:43,107 - Epoch 1: train loss = 0.5435
+2025-05-10 02:32:16,809 - Epoch 2: train loss = 0.4539
+2025-05-10 02:35:51,125 - Epoch 3: train loss = 0.3928
+2025-05-10 02:39:27,943 - Epoch 4: train loss = 0.3508
+2025-05-10 02:43:03,099 - Epoch 5: train loss = 0.3197
+2025-05-10 02:46:37,010 - Epoch 6: train loss = 0.2957
+2025-05-10 02:50:08,844 - Epoch 7: train loss = 0.2762
+2025-05-10 02:53:42,220 - Epoch 8: train loss = 0.2605
+2025-05-10 02:57:13,796 - Epoch 9: train loss = 0.2471
+2025-05-10 02:57:29,423 - Validation loss = 0.2105
+2025-05-10 02:57:29,423 - Combinaison : 95/96
+2025-05-10 02:57:29,423 - Testing combination: encoder_dim=1024, decoder_dim=4096, patch_size=256, serie_len=8193,  n_layers=2, heads=4, dropout=0.1, learning_rate=0.0001
+2025-05-10 03:01:05,368 - Epoch 0: train loss = 0.8529
+2025-05-10 03:04:33,516 - Epoch 1: train loss = 1.0071
+2025-05-10 03:08:00,171 - Epoch 2: train loss = 1.0054
+2025-05-10 03:11:27,683 - Epoch 3: train loss = 1.0055
+2025-05-10 03:14:55,929 - Epoch 4: train loss = 1.0033
+2025-05-10 03:18:24,275 - Epoch 5: train loss = 1.0087
+2025-05-10 03:21:55,907 - Epoch 6: train loss = 1.0076
+2025-05-10 03:25:24,579 - Epoch 7: train loss = 0.9911
+2025-05-10 03:28:52,337 - Epoch 8: train loss = 0.9925
+2025-05-10 03:32:18,690 - Epoch 9: train loss = 1.0065
+2025-05-10 03:32:34,547 - Validation loss = 0.9570
+2025-05-10 03:32:34,547 - Best hyperparameters: (1024, 2048, 64, 2, 8193, 4, 0.1, 0.0001), Validation loss: 0.1197

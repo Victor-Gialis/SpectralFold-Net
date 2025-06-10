@@ -106,9 +106,12 @@ class BaseDataset(Dataset):
         elif self.transform_type == 'standardize':
             return (data - torch.min(data)) / (torch.max(data) - torch.min(data))
         elif self.transform_type == 'psd':
-            return torch.abs(torch.fft.rfft(data - torch.mean(data)))**2/N
+            psd = torch.abs(torch.fft.rfft(data - torch.mean(data)))**2/N
+            return psd[:-1]
         elif self.transform_type == 'psd_envelope':
-            return torch.abs(torch.fft.rfft(torch.abs(torch.from_numpy(hilbert(data - torch.mean(data))))))**2/N
+            envelope = torch.abs(torch.from_numpy(hilbert(data - torch.mean(data))))
+            psd_envelope = torch.abs(torch.fft.rfft(envelope-torch.mean(envelope)))**2/N
+            return psd_envelope[:-1]
         else:
             raise ValueError(f"Transformation '{self.transform_type}' non supportée.")
 

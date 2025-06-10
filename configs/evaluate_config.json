@@ -1,0 +1,25 @@
+{
+    "model_name" : "model_v3.1",
+    "dataset": {
+        "name":"LASPI",
+        "fault_filter":["normal","inner", "outer"]
+    },
+
+    "CWRU":{
+        "sampling_frequency": 12000,
+        "target_orders": {
+            "BPFI": 4.9469,
+            "BPFO": 3.0530,
+            "FTF": 0.3817,
+            "BSF": 3.9874}
+    },
+
+    "LASPI":{
+        "sampling_frequency": 25600,
+        "target_orders": {
+            "BPFI": 4.9469,
+            "BPFO": 3.0530,
+            "FTF": 0.3817,
+            "BSF": 3.9874}
+    }
+}

@@ -4,12 +4,12 @@ import numpy as np
 from datasets.base_dataset import BaseDataset, Sample
 
 class LASPIDataset(BaseDataset):
-    def __init__(self, fault_filter=None, transform_type=None, window_size=None, stride=None):
+    def __init__(self, root_dir=None, fault_filter=None, transform_type=None, window_size=None, stride=None):
         """
         Args:
             transform (callable, optional): Transformation à appliquer aux données.
         """
-        super().__init__(root_dir=os.path.dirname(os.path.abspath(__file__)), 
+        super().__init__(root_dir=root_dir, 
                          fault_filter=fault_filter, 
                          transform_type=transform_type, 
                          window_size=window_size, 
@@ -52,7 +52,7 @@ class LASPIDataset(BaseDataset):
                 for file in os.listdir(cond_path):
                     if file.endswith('.csv'):
                         csv_path = os.path.join(cond_path, file)
-                        label = self._label_from_default(default) # Convertit le nom du défaut en étiquette
+                        label = self._extract_label_from_filename(default) # Convertit le nom du défaut en étiquette
                         if self.fault_filter is  None or label in self.fault_filter:
                             self.samples.append(Sample(filepath=csv_path,
                                                         label=label,
