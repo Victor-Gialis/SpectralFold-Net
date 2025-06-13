@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Étape 1 : Charger les données
-model_name = 'model_v1.1'  # Nom du modèle ou du projet
+model_name = 'model_v3.1'  # Nom du modèle ou du projet
 true_filepath = os.path.join('results', model_name, 'evaluation', 'fault_energy_ratio_true.csv')  # Chemin vers le fichier true
 predict_filepath = os.path.join('results', model_name, 'evaluation', 'fault_energy_ratio_predict.csv')  # Chemin vers le fichier predict
 
@@ -24,9 +24,9 @@ df = pd.concat([df_true, df_predict], ignore_index=True)
 indicators = ['BPFI', 'BPFO', 'FTF', 'BSF']
 
 # Normaliser les indicateurs entre 0 et 1
-max_values = df[indicators].max()  # Calculer le maximum pour chaque indicateur
-min_values = df[indicators].min()  # Calculer le minimum pour chaque indicateur
-df[indicators] = (df[indicators] - min_values) / (max_values - min_values)
+# max_values = df[indicators].max()  # Calculer le maximum pour chaque indicateur
+# min_values = df[indicators].min()  # Calculer le minimum pour chaque indicateur
+# df[indicators] = (df[indicators] - min_values) / (max_values - min_values)
 
 # Obtenir les labels uniques
 labels = df['label'].unique()
@@ -84,4 +84,3 @@ plt.tight_layout()
 
 # Sauvegarder le diagramme en araignée
 plt.savefig(os.path.join('results',model_name,'evaluation','radar_chart_true_predict.jpeg'))
-plt.show()

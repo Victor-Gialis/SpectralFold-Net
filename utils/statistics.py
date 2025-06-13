@@ -2,6 +2,49 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 
+import torch
+from torch import Tensor
+
+def custom_loss(x: Tensor, y: Tensor, alpha: float = 1.0, beta: float = 0.5, ceta: float = 0.5) -> Tensor:
+    """
+    Compute a custom loss combining MSE, Pearson correlation, and Cosine similarity.
+    Loss = alpha * MSE + beta * (1 - Pearson) + ceta * (1 - Cosine similarity)
+
+    Args:
+        x (Tensor): True signal (batch_size, signal_length).
+        y (Tensor): Predicted signal (batch_size, signal_length).
+        alpha (float): Weight for MSE loss.
+        beta (float): Weight for Pearson correlation loss.
+        ceta (float): Weight for Cosine similarity loss.
+
+    Returns:
+        Tensor: Combined loss value.
+    """
+    # Ensure x and y have the same length
+    b, n = y.shape
+    x = x[:, :n]
+
+    # Compute MSE loss
+    mse = torch.mean((x - y) ** 2)
+
+    # Compute Pearson correlation
+    x_mean = torch.mean(x, dim=-1, keepdim=True)
+    y_mean = torch.mean(y, dim=-1, keepdim=True)
+    x_centered = x - x_mean
+    y_centered = y - y_mean
+    numerator = torch.sum(x_centered * y_centered, dim=-1)
+    denominator = torch.sqrt(torch.sum(x_centered ** 2, dim=-1) * torch.sum(y_centered ** 2, dim=-1))
+    pearson = numerator / (denominator + 1e-8)  # Add epsilon to avoid division by zero
+    pearson_loss = 1 - pearson.mean()
+
+    # Compute Cosine similarity
+    cosine_similarity = torch.nn.functional.cosine_similarity(x, y, dim=-1)
+    cosine_loss = 1 - cosine_similarity.mean()
+
+    # Combine losses
+    total_loss = alpha * mse + beta * pearson_loss + ceta * cosine_loss
+    return mse, pearson_loss, cosine_loss, total_loss
+
 def mse_loss(x: Tensor, y: Tensor) -> Tensor:
     """
     Compute the Mean Squared Error (MSE).

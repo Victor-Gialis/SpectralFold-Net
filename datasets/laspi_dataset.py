@@ -4,13 +4,14 @@ import numpy as np
 from datasets.base_dataset import BaseDataset, Sample
 
 class LASPIDataset(BaseDataset):
-    def __init__(self, root_dir=None, fault_filter=None, transform_type=None, window_size=None, stride=None):
+    def __init__(self, root_dir=None, fault_filter=None, speed_filter=None, transform_type=None, window_size=None, stride=None):
         """
         Args:
             transform (callable, optional): Transformation à appliquer aux données.
         """
         super().__init__(root_dir=root_dir, 
                          fault_filter=fault_filter, 
+                         speed_filter=speed_filter,
                          transform_type=transform_type, 
                          window_size=window_size, 
                          stride=stride)
@@ -54,9 +55,10 @@ class LASPIDataset(BaseDataset):
                         csv_path = os.path.join(cond_path, file)
                         label = self._extract_label_from_filename(default) # Convertit le nom du défaut en étiquette
                         if self.fault_filter is  None or label in self.fault_filter:
-                            self.samples.append(Sample(filepath=csv_path,
-                                                        label=label,
-                                                        metadata={'freq': freq, 'load': load, 'speed': speed}))
+                            if self.speed_filter is None or speed in self.speed_filter:
+                                self.samples.append(Sample(filepath=csv_path,
+                                                            label=label,
+                                                            metadata={'freq': freq, 'load': load, 'speed': speed}))
 
     def _extract_label_from_filename(self, default):
 

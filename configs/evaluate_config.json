@@ -17,9 +17,9 @@
     "LASPI":{
         "sampling_frequency": 25600,
         "target_orders": {
-            "BPFI": 4.9469,
-            "BPFO": 3.0530,
-            "FTF": 0.3817,
-            "BSF": 3.9874}
+            "BPFI": 5.4277,
+            "BPFO": 3.5722,
+            "FTF": 0.3969,
+            "BSF": 2.3220}
     }
 }

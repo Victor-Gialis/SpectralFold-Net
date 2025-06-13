@@ -20,7 +20,7 @@ class SampleWindow:
     metadata: dict = None
 
 class BaseDataset(Dataset):
-    def __init__(self, root_dir, fault_filter=None, transform_type=None, window_size=None, stride=None):
+    def __init__(self, root_dir, fault_filter=None, speed_filter=None, transform_type=None, window_size=None, stride=None):
         assert os.path.isdir(root_dir), f"Le répertoire {root_dir} n'existe pas ou n'est pas un répertoire."
         assert window_size is None or isinstance(window_size, int) and window_size > 0, "window_size doit être un entier positif."
         assert stride is None or isinstance(stride, int) and stride > 0, "stride doit être un entier positif."
@@ -36,6 +36,7 @@ class BaseDataset(Dataset):
         """
         self.root_dir = root_dir
         self.fault_filter = fault_filter
+        self.speed_filter = speed_filter
         self.transform_type = transform_type
         self.window_size = window_size
         self.stride = stride

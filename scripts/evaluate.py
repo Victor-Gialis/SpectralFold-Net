@@ -119,6 +119,7 @@ for batch in tqdm(dataset_loader):
         _, _, X_pred = model(X_input)  # (batch_size, 1, signal_length)
 
     X_true = X_true.squeeze(1)
+
     X_pred = X_pred.cpu().numpy()
     X_true = X_true.cpu().numpy()
 
