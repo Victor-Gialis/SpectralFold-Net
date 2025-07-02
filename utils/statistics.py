@@ -55,7 +55,7 @@ def mse_loss(x: Tensor, y: Tensor) -> Tensor:
     Returns : 
         Tensor: Mean Squared Error (MSE).
     """
-    b, n = y.shape
+    b,c, n = y.shape
     x = x[:,:n]
     return torch.mean((x - y)**2)
 
@@ -108,4 +108,4 @@ def signal_normalization(signal: Tensor, mean: Tensor, std: Tensor) -> Tensor:
         Tensor: The normalized signal.
     """
     N = signal.shape[-1]
-    return (signal - mean[:N]) / std[:N]
+    return (signal - mean[:,:,:N]) / std[:,:,:N]

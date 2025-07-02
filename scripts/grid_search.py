@@ -7,7 +7,7 @@ import os
 from tqdm import tqdm
 from torch.utils.data import DataLoader
 from models.model import ViTAutoencoder
-from utils.statistics import signal_normalization, global_stats
+from utils.statistics import signal_normalization, global_stats, mse_loss
 from datasets.dataloader import get_dataset
 
 # === 1. Chargement de la configuration ===
@@ -16,15 +16,20 @@ with open('configs/grid_search_config.json', 'r') as f:
 
 # === 2. Paramètres globaux ===
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-dataset_params = config['dataset']
+dataset_name = config['dataset']['name']
+dataset_params = {k: v for k, v in config['dataset'].items() if k != 'name'}
 grid_params = config['grid_search']
 training_params = config['training']
 
 # === 3. Chargement du dataset ===
-dataset = get_dataset(dataset_params['name'], **dataset_params)
-mean, std = global_stats(dataset)
-mean = mean.to(device)
-std = std.to(device)
+dataset = get_dataset(dataset_name, **dataset_params)
+size_fft = dataset[0]['X_true'].shape[-1]
+
+collate_fn = getattr(dataset, '_collate_fn', None)
+if collate_fn is None:
+    # fallback: use a default collate_fn if not present
+    from torch.utils.data.dataloader import default_collate
+    collate_fn = default_collate
 
 # Split train/valid datasets
 train_size = int(0.8 * len(dataset))
@@ -33,8 +38,14 @@ train_dataset, valid_dataset = torch.utils.data.random_split(dataset, [train_siz
 
 # DataLoaders
 batch_size = training_params['batch_size']
-train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-valid_loader = DataLoader(valid_dataset, batch_size=batch_size, shuffle=False)
+train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
+valid_loader = DataLoader(valid_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
+
+# Global statistics
+mean, std = global_stats(train_dataset)
+mean = mean.to(device)
+std = std.to(device)
+print('Global statistics: mean = {mean.shape}, std = {std.shape}')
 
 # === 4. Définir les hyperparamètres à optimiser ===
 param_combinations = list(itertools.product(*grid_params.values()))
@@ -65,7 +76,7 @@ for i, params in enumerate(param_combinations):
     model = ViTAutoencoder(
         encoder_dim=encoder_dim,
         decoder_dim=decoder_dim,
-        serie_len=serie_len,
+        serie_len=size_fft,
         patch_size=patch_size,
         n_layers=n_layers,
         heads=heads,
@@ -83,29 +94,25 @@ for i, params in enumerate(param_combinations):
         epoch_loss = 0
 
         for batch in tqdm(train_loader):
-            batch_loss = 0
+            X_tilde = batch['X_tilde'].unsqueeze(1).to(device, non_blocking=True)
+            X_true = batch['X_true'].unsqueeze(1).to(device, non_blocking=True)
 
-            for signal_reduce, signal_complete in zip(batch['vibration_fft_reduce'], batch['vibration_fft_complete']):
-                signal_reduce = signal_reduce.unsqueeze(0).unsqueeze(0).to(device)
-                signal_complete = signal_complete.unsqueeze(0).unsqueeze(0).to(device)
+            b,_,_ = X_true.shape
 
-                # Normaliser les signaux
-                signal_reduce = signal_normalization(signal_reduce, mean, std)
-                signal_complete = signal_normalization(signal_complete, mean, std)
+            # Normalisation des signaux
+            X_tilde = signal_normalization(X_tilde, mean.expand(b, 1, -1), std.expand(b, 1, -1))
+            X_true = signal_normalization(X_true, mean.expand(b, 1, -1), std.expand(b, 1, -1))
+        
+            _, _, X_pred = model(X_tilde)
+            X_pred = X_pred.unsqueeze(1)
 
-                # Entraînement
-                optimizer.zero_grad()
-                _, _, predicted_signal = model(signal_reduce)
-                predicted_signal = predicted_signal.unsqueeze(1)
-                b, c, s = predicted_signal.shape
+            X_true = X_true * std + mean
+            X_pred = X_pred * std + mean
 
-                loss = torch.mean((predicted_signal - signal_complete[:, :, :s])**2)
-                loss.backward()
-                optimizer.step()
-
-                batch_loss += loss.item()
-
-            epoch_loss += batch_loss / len(batch['vibration_fft_reduce'])
+            loss = mse_loss(X_true, X_pred)
+            loss.backward()
+            optimizer.step()
+            epoch_loss += loss.item()
 
         print(f"Epoch {epoch + 1}: train loss = {epoch_loss / len(train_loader):.4f}")
         logging.info(f"Epoch {epoch + 1}: train loss = {epoch_loss / len(train_loader):.4f}")
@@ -115,26 +122,26 @@ for i, params in enumerate(param_combinations):
         val_loss = 0
         with torch.no_grad():
             for batch in valid_loader:
-                batch_loss = 0
+                X_tilde = batch['X_tilde'].unsqueeze(1).to(device, non_blocking=True)
+                X_true = batch['X_true'].unsqueeze(1).to(device, non_blocking=True)
 
-                for signal_reduce, signal_complete in zip(batch['vibration_fft_reduce'], batch['vibration_fft_complete']):
-                    signal_reduce = signal_reduce.unsqueeze(0).unsqueeze(0).to(device)
-                    signal_complete = signal_complete.unsqueeze(0).unsqueeze(0).to(device)
+                b,_,_ = X_true.shape
 
-                    signal_reduce = signal_normalization(signal_reduce, mean, std)
-                    signal_complete = signal_normalization(signal_complete, mean, std)
+                # Normalisation des signaux
+                X_tilde = signal_normalization(X_tilde, mean.expand(b, 1, -1), std.expand(b, 1, -1))
+                X_true = signal_normalization(X_true, mean.expand(b, 1, -1), std.expand(b, 1, -1))
+            
+                _, _, X_pred = model(X_tilde)
+                X_pred = X_pred.unsqueeze(1)
 
-                    _, _, predicted_signal = model(signal_reduce)
-                    predicted_signal = predicted_signal.unsqueeze(1)
-                    b, c, s = predicted_signal.shape
+                X_true = X_true * std + mean
+                X_pred = X_pred * std + mean
 
-                    loss = torch.mean((predicted_signal - signal_complete[:, :, :s])**2)
-                    batch_loss += loss.item()
-
-                val_loss += batch_loss / len(batch['vibration_fft_reduce'])
-
+                loss = mse_loss(X_true, X_pred)
+                val_loss += loss.item()
+                
         val_loss /= len(valid_loader)
-        print(f"Validation loss = {val_loss:.4f}")
+        print(f"Epoch {epoch}: val loss = {val_loss:.4f}")
         logging.info(f"Validation loss = {val_loss:.4f}")
 
         results.append({

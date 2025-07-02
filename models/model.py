@@ -29,7 +29,7 @@ class ViTAutoencoder(nn.Module):
         )
 
         # Decoder
-        self.mask_token = nn.Parameter(torch.zeros(1, 1, decoder_dim))  # Mask token for padding
+        self.mask_token = nn.Parameter(torch.zeros(1, 1, encoder_dim))  # Mask token for padding
 
         self.decoder_projection = nn.Sequential(
             nn.LayerNorm(encoder_dim),
@@ -107,17 +107,18 @@ class ViTAutoencoder(nn.Module):
 
     def forward_decoder(self, encoded_tokens, n, b):
         """Decodes the encoded tokens using the decoder."""
-        # Add positional embedding
-        x = encoded_tokens + self.position_embedding[:, :n + 1, :]
-
-        # Decoder projection
-        x = self.decoder_projection(x)
 
         # Padding patch tokens using mask token
         if n < self.num_patch:
             bottom_padding = self.mask_token.expand(b, self.num_patch - n, -1)  # Create padding tokens
-            bottom_padding = bottom_padding.to(x.device)  # Move to the same device as x
-            x = torch.cat([x, bottom_padding], dim=1)  # bottom padding
+            bottom_padding = bottom_padding.to(encoded_tokens.device)  # Move to the same device as x
+            x = torch.  cat([encoded_tokens, bottom_padding], dim=1)  # bottom padding
+
+        # Add positional embedding
+        x = x + self.position_embedding
+
+        # Decoder projection
+        x = self.decoder_projection(x)
 
         # Decoder layers
         for layer in self.decoder_layers:

@@ -72,15 +72,17 @@ for epoch in range(epochs):
         X_tilde = batch['X_tilde'].unsqueeze(1).to(device, non_blocking=True)
         X_true = batch['X_true'].unsqueeze(1).to(device, non_blocking=True)
 
+        b,_,_ = X_true.shape
+
         # Normalisation des signaux
-        X_tilde = signal_normalization(X_tilde, mean, std)
-        X_true = signal_normalization(X_true, mean, std)
-
-        optimizer.zero_grad() # Reset gradients
-
-        # Forward pass
+        X_tilde = signal_normalization(X_tilde, mean.expand(b, 1, -1), std.expand(b, 1, -1))
+        X_true = signal_normalization(X_true, mean.expand(b, 1, -1), std.expand(b, 1, -1))
+    
         _, _, X_pred = model(X_tilde)
-        X_true = X_true.squeeze(1) # Remove channel dimension
+        X_pred = X_pred.unsqueeze(1)
+
+        X_true = X_true * std + mean
+        X_pred = X_pred * std + mean
 
         loss = mse_loss(X_true, X_pred)
         loss.backward()
@@ -95,15 +97,20 @@ for epoch in range(epochs):
     val_loss = 0
     with torch.no_grad():
         for batch in valid_loader:
-            X_tilde = batch['X_tilde'].unsqueeze(1).to(device)
-            X_true = batch['X_true'].unsqueeze(1).to(device)
+            X_tilde = batch['X_tilde'].unsqueeze(1).to(device, non_blocking=True)
+            X_true = batch['X_true'].unsqueeze(1).to(device, non_blocking=True)
+
+            b,_,_ = X_true.shape
 
             # Normalisation des signaux
-            X_tilde = signal_normalization(X_tilde, mean, std)
-            X_true = signal_normalization(X_true, mean, std)
-
+            X_tilde = signal_normalization(X_tilde, mean.expand(b, 1, -1), std.expand(b, 1, -1))
+            X_true = signal_normalization(X_true, mean.expand(b, 1, -1), std.expand(b, 1, -1))
+        
             _, _, X_pred = model(X_tilde)
-            X_true = X_true.squeeze(1) # Remove channel dimension
+            X_pred = X_pred.unsqueeze(1)
+
+            X_true = X_true * std + mean
+            X_pred = X_pred * std + mean
 
             loss = mse_loss(X_true, X_pred)
             val_loss += loss.item()

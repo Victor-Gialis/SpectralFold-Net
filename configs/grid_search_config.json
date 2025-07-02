@@ -1,9 +1,11 @@
 {
     "dataset": {
-        "name": "CWRUDataset",
-        "fault_filter": ["normal", "inner", "outer"],
+        "name": "CWRU",
+        "fault_filter": ["normal", "inner", "outer","ball"],
+        "speed_filter": ["1730", "1797"],
+        "transform_type":"psd",
         "window_size": 16384,
-        "stride": 8192,
+        "stride": 819,
         "downsample_factor": 2
     },
     "grid_search": {
@@ -17,7 +19,7 @@
         "learning_rate": [1e-5, 1e-4]
     },
     "training": {
-        "batch_size": 16,
+        "batch_size": 32,
         "num_epochs": 10
     }
 }
