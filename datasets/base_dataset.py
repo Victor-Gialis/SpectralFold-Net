@@ -20,7 +20,7 @@ class SampleWindow:
     metadata: dict = None
 
 class BaseDataset(Dataset):
-    def __init__(self, root_dir, fault_filter=None, speed_filter=None, transform_type=None, window_size=None, stride=None):
+    def __init__(self, flip:bool, root_dir = None, downsample_factor = 1, fault_filter=None, speed_filter=None, transform_type=None, window_size=None, stride=None):
         assert os.path.isdir(root_dir), f"Le répertoire {root_dir} n'existe pas ou n'est pas un répertoire."
         assert window_size is None or isinstance(window_size, int) and window_size > 0, "window_size doit être un entier positif."
         assert stride is None or isinstance(stride, int) and stride > 0, "stride doit être un entier positif."
@@ -40,6 +40,8 @@ class BaseDataset(Dataset):
         self.transform_type = transform_type
         self.window_size = window_size
         self.stride = stride
+        self.downsample_factor = downsample_factor
+        self.flip = flip
 
         self.samples = []
         self.windows = []
@@ -107,11 +109,11 @@ class BaseDataset(Dataset):
         elif self.transform_type == 'standardize':
             return (data - torch.min(data)) / (torch.max(data) - torch.min(data))
         elif self.transform_type == 'psd':
-            psd = torch.abs(torch.fft.rfft(data - torch.mean(data)))**2/N
+            psd = torch.abs(torch.fft.rfft(data - torch.mean(data)))/N
             return psd[:-1]
         elif self.transform_type == 'psd_envelope':
             envelope = torch.abs(torch.from_numpy(hilbert(data - torch.mean(data))))
-            psd_envelope = torch.abs(torch.fft.rfft(envelope-torch.mean(envelope)))**2/N
+            psd_envelope = torch.abs(torch.fft.rfft(envelope-torch.mean(envelope)))/N
             return psd_envelope[:-1]
         else:
             raise ValueError(f"Transformation '{self.transform_type}' non supportée.")
@@ -149,13 +151,17 @@ class BaseDataset(Dataset):
         # Transformation des données
         X_true = self._transform(X_true)
         X_tilde = self._transform(X_tilde)
+        
+        if self.flip :
+            # tentative de flip
+            X_tilde = torch.cat((X_tilde,torch.flip(X_tilde, [0])))
+            # X_tilde = 2*X_tilde
 
         return {'X_tilde':X_tilde, 'X_true':X_true, 'label':label, 'metadata':metadata}
 
-    @staticmethod
-    def _data_tilde_transform(X_true, downsample_factor=2):
+    def _data_tilde_transform(self, X_true):
         """
         Transforme les données en les réduisant par un facteur de downsample.
         """
-        X_tilde = X_true[...,::downsample_factor]
+        X_tilde = X_true[...,::self.downsample_factor]
         return X_tilde

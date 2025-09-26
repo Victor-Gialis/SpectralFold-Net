@@ -1,29 +1,29 @@
 {
   "dataset": {
     "name": "CWRU",
-    "fault_filter": [
-      "normal"
-    ],
-    "transform_type": "psd_envelope",
-    "window_size": 16384,
-    "stride": 512,
+    "fault_filter": null,
+    "speed_filter": null,
+    "transform_type": "psd",
+    "window_size": 2048,
+    "stride": 256,
+    "flip": true,
     "downsample_factor": 2
   },
   "dataloader": {
-    "batch_size": 32,
+    "batch_size": 256,
     "shuffle": true
   },
   "model": {
-    "encoder_dim": 512,
-    "decoder_dim": 1024,
-    "patch_size": 128,
-    "n_layers": 2,
-    "heads": 4,
-    "dropout": 0.1
+    "encoder_dim": 128,
+    "decoder_dim": 256,
+    "patch_size": 64,
+    "n_layers": 4,
+    "heads": 8,
+    "dropout": 0.4
   },
   "training": {
-    "epochs": 15,
-    "learning_rate": 0.0001,
+    "epochs": 100,
+    "learning_rate": 1e-05,
     "model_name": "model_v0"
   }
 }

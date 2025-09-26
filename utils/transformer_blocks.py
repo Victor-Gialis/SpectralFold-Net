@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 from torch import Tensor
 from einops.layers.torch import Rearrange
@@ -88,3 +89,12 @@ class Residual(nn.Module):
 
     def forward(self, x, *args, **kwargs):
         return x + self.fn(x, *args, **kwargs)
+    
+
+def _sincos_pos_enc(num_patch, encoder_dim):
+    position_embedding = nn.Parameter(torch.zeros(1, num_patch + 1, encoder_dim), requires_grad=False) 
+    position = torch.arange(0, position_embedding.shape[1], dtype=torch.float).unsqueeze(1)
+    div_term = torch.exp(torch.arange(0, position_embedding.shape[2], 2).float() * -(torch.log(torch.tensor(10000.0)) / position_embedding.shape[2]))
+    position_embedding[:, :, 0::2] = torch.sin(position * div_term)
+    position_embedding[:, :, 1::2] = torch.cos(position * div_term)
+    return position_embedding

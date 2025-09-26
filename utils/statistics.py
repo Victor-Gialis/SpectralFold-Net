@@ -3,6 +3,7 @@ import torch.nn as nn
 from torch import Tensor
 
 import torch
+from tqdm import tqdm
 from torch import Tensor
 
 def custom_loss(x: Tensor, y: Tensor, alpha: float = 1.0, beta: float = 0.5, ceta: float = 0.5) -> Tensor:
@@ -57,7 +58,24 @@ def mse_loss(x: Tensor, y: Tensor) -> Tensor:
     """
     b,c, n = y.shape
     x = x[:,:n]
+    # return torch.mean((x - y)**2)/torch.mean(x**2)
     return torch.mean((x - y)**2)
+
+
+def regularized_loss(x: Tensor, y: Tensor, model, lambda_l1 = 0.0, lambda_l2 = 0.0):
+    loss = mse_loss(x, y)
+    l1_penalty = 0.0
+    l2_penalty = 0.0
+
+    for name, param in model.parameters():
+        if "biais" not in name :
+            if lambda_l1 > 0:
+                l1_penalty += torch.sum(torch.abs(param))
+            if lambda_l2 > 0:
+                l2_penalty += torch.sum(param ** 2)
+
+    total_loss = loss + lambda_l1 * l1_penalty + lambda_l2 * l2_penalty
+    return total_loss
 
 def covariance_matrix(x: Tensor) -> Tensor:
     x -= torch.mean(x, dim=-1, keepdim=True)
@@ -86,7 +104,7 @@ def global_stats(dataset):
     Compute the global mean and standard deviation of the dataset.
     """
     all_signals = []
-    for sample in dataset:
+    for sample in tqdm(dataset, desc="Computing global stats"):
         signal = sample['X_true']
         all_signals.append(signal)
 
@@ -95,7 +113,7 @@ def global_stats(dataset):
     std = stacked.std(axis=0)
     return mean, std
 
-def signal_normalization(signal: Tensor, mean: Tensor, std: Tensor) -> Tensor:
+def _z_norm(x: Tensor, mean: Tensor, std: Tensor) -> Tensor:
     """
     Normalize the input signal using the provided mean and standard deviation.
     
@@ -107,5 +125,27 @@ def signal_normalization(signal: Tensor, mean: Tensor, std: Tensor) -> Tensor:
     Returns:
         Tensor: The normalized signal.
     """
-    N = signal.shape[-1]
-    return (signal - mean[:,:,:N]) / std[:,:,:N]
+    N = x.shape[-1]
+    return (x - mean[:,:,:N]) / std[:,:,:N]
+
+def _log_norm(x : Tensor) -> Tensor :
+    """
+    Normalise chaque spectre individuellement
+    x: tensor de shape [batch_size,channel,lenght]
+    """
+    x_log = torch.log1p(x)
+    x_max = x_log.max(dim=-1, keepdim=True).values
+    x_min = x_log.min(dim=-1, keepdim=True).values
+    x_norm = (x_log - x_min) / (x_max - x_min + 1e-8)
+    return x_norm
+
+def _log_denorm(x ,x_norm : Tensor)-> Tensor :
+    """
+    Dénormalise chaque spectre individuellement
+    x: tensor de shape [batch_size,channel,lenght]
+    """
+    x_max = x.max(dim=-1, keepdim=True).values
+    x_min = x.min(dim=-1, keepdim=True).values
+    x_denorm = x_norm * (x_max - x_min + 1e-8) + x_min
+    x_exp = torch.expm1(x_denorm)
+    return x_exp

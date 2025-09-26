@@ -4,7 +4,7 @@ import numpy as np
 from datasets.base_dataset import BaseDataset, Sample
 
 class CWRUDataset(BaseDataset):    
-    def __init__(self, root_dir=None, source='FE', fault_filter=None, speed_filter=None, transform_type=None, window_size=None, stride=None):
+    def __init__(self, flip:bool, root_dir=None, downsample_factor = 1, source='FE', fault_filter=None, speed_filter=None, transform_type=None, window_size=None, stride=None):
         """
         Args:
             source (str): Source des données, peut être 'DE', 'FE' ou 'BA'.
@@ -18,6 +18,8 @@ class CWRUDataset(BaseDataset):
         assert speed_filter is None or isinstance(speed_filter, list), "speed_filter doit être une liste ou None"
         self.source = source
         super().__init__(root_dir=root_dir or os.path.dirname(os.path.abspath(__file__)), 
+                         flip = flip,
+                         downsample_factor=downsample_factor,
                          fault_filter=fault_filter,
                          speed_filter=speed_filter,
                          transform_type=transform_type, 
@@ -57,23 +59,33 @@ class CWRUDataset(BaseDataset):
                         position = None
 
                         if len(pattern) == 4:
+                            # Cas des fichiers avec position et diamètre du défaut
                             speed, default, diameter, source = pattern
                             if '@' in default:
                                 default, position = default.split('@')
                         else:
+                            # Cas des fichiers en fonctionnement normal
                             speed, default = pattern
                             source = self.source  # Pour les fichiers en acquisition normale, on suppose que c'est la fin par défaut
                         
+                        # On extrait le label standardisé du nom du fichier
                         label = self._extract_label_from_filename(default)
-                        if self.fault_filter is None or label in self.fault_filter and self.source in source:
-                            # On ne garde que les fichiers qui correspondent au filtre de défaut et à la source
-                            if self.speed_filter is None or speed in self.speed_filter:
-                                self.samples.append(Sample(filepath=npz_path,
-                                                    label=label,
-                                                    metadata={'speed': speed, 'position': position, 'diameter': diameter, 'source': source}))
+
+                        if self.source is None or source in self.source:
+                            # On ne garde que les fichiers qui correspondent à la source
+                            if self.fault_filter is None or label in self.fault_filter and self.source in source:
+                                # On ne garde que les fichiers qui correspondent au filtre de défaut et à la source
+                                if self.speed_filter is None or speed in self.speed_filter:
+                                    # On ne garde que les fichiers qui correspondent au filtre de vitesse
+                                    self.samples.append(Sample(filepath=npz_path,
+                                                        label=label,
+                                                        metadata={'speed': speed, 
+                                                                'position': position, 
+                                                                'diameter': diameter, 
+                                                                'source': source}))
 
     def _extract_label_from_filename(self, default):
-
+        # labels de classes standardisés
         mapping = {'Normal':'normal',
                     'IR':'inner', 
                     'OR':'outer', 
