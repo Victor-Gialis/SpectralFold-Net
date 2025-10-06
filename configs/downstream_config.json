@@ -14,11 +14,11 @@
       "shuffle": true
     },
     "pretrained_model": {
-      "model_name": "model_v0"
+      "model_name": "model_v3.2"
     },
     "training": {
-      "epochs": 100,
+      "epochs": 200,
       "learning_rate": 1e-5,
-      "labeled_percentage":0.5
+      "labeled_percentage":0.2
     }
 }

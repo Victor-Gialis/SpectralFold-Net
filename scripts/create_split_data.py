@@ -12,9 +12,16 @@ from sklearn.model_selection import train_test_split
 def _make_strata(dataset):
     strata = []
     for sample in tqdm(dataset):
-        cls = sample['label']
-        speed = sample['metadata']['speed']
-        strata.append(f'{cls}_{speed}')
+        informations = list()
+        informations.append(sample['label'])
+        for meta, data in sample['metadata'].items():
+            if data != None:
+                metadata = f'{meta}_{data}'
+            else :
+                metadata = f'{meta}_None'
+            informations.append(metadata)
+        informations = '_'.join(informations)
+        strata.append(informations)
     strata =np.array(strata)
     return strata
 
@@ -34,93 +41,110 @@ dataset_name = dataset_config['name']
 dataset_params = {k: v for k, v in dataset_config.items()}
 dataset = get_dataset(**dataset_params)
 
-input_size = dataset[0]['X_true'].shape[-1]
-print(f"Dataset '{dataset_name}' loaded with {len(dataset)} samples. FFT size: {input_size}")
-
-train_size = int(0.7 * len(dataset))
-valid_size = int(0.2 * len(dataset))
-test_size = len(dataset) - train_size - valid_size
-
-indice = np.arange(len(dataset))
-strata = _make_strata(dataset)
-
-train_val_idx, test_idx = train_test_split(
-    indice,
-    test_size = 0.2,
-    stratify=strata,
-    random_state=42
-)
-
-train_idx, valid_idx = train_test_split(
-    train_val_idx,
-    test_size = 0.13,
-    stratify=strata[train_val_idx],
-    random_state=42
-)
-
-generator =torch.Generator().manual_seed(42)
-train_dataset, valid_dataset, test_dataset = torch.utils.data.random_split(dataset, [train_size, valid_size, test_size], generator=generator)
-
-train_dataset = Subset(dataset, train_idx)
-valid_dataset = Subset(dataset, valid_idx)
-test_dataset = Subset(dataset, test_idx)
-
-labels = [sample['label'] for sample in tqdm(train_dataset)]
-classes, class_counts = np.unique(labels, return_counts=True)
-
-class_weights = 1. / class_counts
-claas_weights = class_weights / class_weights.sum()
-class_weights = {cls: weight for cls, weight in zip(classes, class_weights)}
-
-sample_weights = [class_weights[label] for label in labels]
-sample_weights = torch.DoubleTensor(sample_weights)
-
-sampler = WeightedRandomSampler(
-    weights=sample_weights,
-    num_samples=len(sample_weights),
-    replacement=True
-)
-
+# Create DataLoaders
+batch_size = 256
 collate_fn = getattr(dataset, '_collate_fn', None)
 if collate_fn is None:
     # fallback: use a default collate_fn if not present
     from torch.utils.data.dataloader import default_collate
     collate_fn = default_collate
 
-# dataloader = DataLoader(
-#     train_dataset, 
-#     batch_size=batch_size, 
-#     collate_fn=collate_fn
+# Pourcentage de données étiquetées dans l'ensemble d'entraînement
+labeled_percentage = 1.0
+
+# Taille des spectres FFT
+input_size = dataset[0]['X_true'].shape[-1]
+print(f"Dataset '{dataset_name}' loaded with {len(dataset)} samples. FFT size: {input_size}")
+
+# Create train, valid, test splits with stratification
+indice = np.arange(len(dataset))
+strata = _make_strata(dataset)
+
+train_idx, test_val_idx = train_test_split(
+    indice,
+    test_size = 0.4,
+    stratify=strata,
+    random_state=42
+)
+
+valid_idx, test_idx = train_test_split(
+    test_val_idx,
+    test_size = 0.5,
+    stratify=strata[test_val_idx],
+    random_state=42
+)
+
+if labeled_percentage < 1.0:
+    _, train_idx = train_test_split(
+    train_idx,
+    test_size = labeled_percentage,
+    stratify=strata[train_idx],
+    random_state=42
+)
+
+train_dataset = Subset(dataset, train_idx)
+valid_dataset = Subset(dataset, valid_idx)
+test_dataset = Subset(dataset, test_idx)
+
+datasets = {
+    "train": train_dataset,
+    "valid": valid_dataset,
+    "test": test_dataset
+}
+
+# samplers = dict()
+# dataloaders = dict()
+
+# for split, data in datasets.items():
+#     print(f"{split} dataset: {len(data)} samples")
+#     # Weighted random sampler to balance classes in the training set
+#     labels = [sample['label'] for sample in tqdm(data)]
+#     classes, class_counts = np.unique(labels, return_counts=True)
+
+#     class_weights = 1. / class_counts
+#     claas_weights = class_weights / class_weights.sum()
+#     class_weights = {cls: weight for cls, weight in zip(classes, class_weights)}
+
+#     sample_weights = [class_weights[label] for label in labels]
+#     sample_weights = torch.DoubleTensor(sample_weights)
+
+#     sampler = WeightedRandomSampler(
+#         weights=sample_weights,
+#         num_samples=len(sample_weights),
+#         replacement=True
 #     )
 
-dataloader = DataLoader(
-    train_dataset,
-    batch_size=batch_size,
-    sampler=sampler,
-    collate_fn=collate_fn
-    )
+#     samplers[split] = sampler
+#     dataloaders[split] = DataLoader(dataset, batch_size=batch_size, sampler=sampler, collate_fn=collate_fn)
 
-result = {"batch":[],
-            "normal":[],
-            "inner":[],
-            "outer":[],
-            "ball":[]
-            }
+# for split,loader in dataloaders.items():
+#     result = {"batch":[],
+#                 "normal":[],
+#                 "inner":[],
+#                 "outer":[],
+#                 "ball":[]
+#                 }
 
-for i,batch in tqdm(enumerate(dataloader)): 
-    if i>20:
-        break
-    df = pd.DataFrame(batch['metadata'])
-    df['label'] = batch['label']
-    count = df.groupby(['label'])['source'].count()
+#     for i,batch in tqdm(enumerate(loader)): 
+#         if i>20:
+#             break
+#         df = pd.DataFrame(batch['metadata'])
+#         df['label'] = batch['label']
+#         count = df.groupby(['label'])['source'].count()
 
-    result['batch'].append(i)
-    for cls in classes :
-        result[cls].append(count.get(cls,0))
+#         result['batch'].append(i)
+#         for cls in classes :
+#             result[cls].append(count.get(cls,0))
 
-result = pd.DataFrame(result)
-print(result)
+#     result = pd.DataFrame(result)
+#     print(result)
 
-result.plot(x='batch', kind='bar')
-plt.ylabel('Number of samples')
-plt.savefig('data_distribution.png')
+#     result.plot(x='batch', kind='bar')
+#     plt.ylabel('Number of samples')
+#     plt.savefig(f'{split}_data_distribution.png')
+
+for split, data in datasets.items():
+    print(f"{split} dataset: {len(data)} samples")
+    # Weighted random sampler to balance classes in the training set
+    labels = _make_strata(data)
+    classes, class_counts = np.unique(labels, return_counts=True)

@@ -15,26 +15,35 @@ from models.model import PretrainedModel
 from datasets.dataloader import get_dataset
 from utils.statistics import _z_norm, _log_norm, _log_denorm, global_stats, mse_loss
 
-def _model_foward(model, batch, device, mean, std):
+def _model_foward(model, batch, device, mean, std,norm='z'):
+    assert norm in ['z','log'], "norm must be 'z' or 'log'"
+    # Récupération des tenseurs
     X_tilde = batch['X_tilde'].unsqueeze(1).to(device, non_blocking=True)
     X_true = batch['X_true'].unsqueeze(1).to(device, non_blocking=True)
-    
+    # Récupération des métadonnées
     metadata = pd.DataFrame(batch['metadata'])
     metadata['label'] = batch['label']
-
-    # Get batch size
+    # Récupération de la taille du batch
     b,_,_ = X_true.shape
 
     # Normalisation des signaux
-    X_tilde_norm = _z_norm(X_tilde, mean.expand(b, 1, -1), std.expand(b, 1, -1))
+    if norm == 'z':
+        X_tilde_norm = _z_norm(x=X_tilde, mean=mean.expand(b, 1, -1), std=std.expand(b, 1, -1))
+    elif norm == 'log':
+        X_tilde_norm = _log_norm(x=X_tilde)
 
     # Prédiction du modèle
-    X_pred_norm  = model(X_tilde_norm )
+    X_pred_norm  = model(X_tilde_norm)
     X_pred_norm  = X_pred_norm .unsqueeze(1)
 
     # Dénormalisation des signaux
-    X_pred = X_pred_norm * std + mean
+    if norm == 'z':
+        X_pred = X_pred_norm * std + mean
+    elif norm == 'log':
+        X_pred = _log_denorm(x=X_true, x_norm=X_pred_norm)
 
+    # valeur purement positive
+    X_pred = torch.clamp(X_pred, min=0)
     return X_pred, X_true, X_tilde, metadata
 
 # Définir le device
@@ -72,11 +81,6 @@ test_size = len(dataset) - train_size - valid_size
 generator =torch.Generator().manual_seed(42)
 train_dataset, valid_dataset, test_dataset = torch.utils.data.random_split(dataset, [train_size, valid_size, test_size], generator=generator)
 
-# Extract globale statistics from train dataset
-mean, std = global_stats(train_dataset)
-mean = mean.to(device)
-std = std.to(device)
-
 # Split DataLoaders
 batch_size = config.get('dataloader', {}).get('batch_size', 16)
 collate_fn = getattr(dataset, '_collate_fn', None)
@@ -105,9 +109,19 @@ model = PretrainedModel(
 # Optimizer & Scheduler
 training_params = config['training']
 epochs = training_params.get('epochs', 100)
+normalization = training_params.get('normalization', 'z')
 learning_rate = training_params.get('learning_rate', 1e-3) * batch_size / 256
 optimizer = torch.optim.AdamW(model.parameters(), lr= learning_rate, weight_decay=1e-4)
 scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=training_params.get('epochs', 100), eta_min=1e-6)
+
+# Statistiques globales pour la normalisation
+if normalization == 'z':
+    mean, std = global_stats(train_dataset)
+    mean = mean.to(device)
+    std = std.to(device)
+
+elif normalization == 'log':
+    mean, std = None, None
 
 # Training loop
 save_path = training_params.get('save_path', 'results/model_v0/')
@@ -130,7 +144,7 @@ for epoch in range(epochs):
     for batch in tqdm(train_loader, desc=f"Epoch {epoch+1}/{epochs}"):
         optimizer.zero_grad() # Remise à zéro des gradients
 
-        X_pred, X_true, X_tilde, metadata = _model_foward(model, batch, device, mean, std)
+        X_pred, X_true, X_tilde, metadata = _model_foward(model, batch, device, mean, std, norm=normalization)
 
         # Calcul de la loss
         loss = loss_function(X_pred, X_true)
@@ -143,7 +157,7 @@ for epoch in range(epochs):
         train_results.append(metadata)
 
     train_loss.append(epoch_loss / len(train_loader))
-    print(f"Epoch {epoch}: train loss = {epoch_loss / len(train_loader):.4f}")
+    print(f"Epoch {epoch+1}: train loss = {epoch_loss / len(train_loader):.4f}")
 
     # Validation
     model.eval()
@@ -151,7 +165,7 @@ for epoch in range(epochs):
     with torch.no_grad():
         for batch in tqdm(valid_loader):
 
-            X_pred, X_true, X_tilde, metadata = _model_foward(model, batch, device, mean, std)
+            X_pred, X_true, X_tilde, metadata = _model_foward(model, batch, device, mean, std, norm=normalization)
 
             # Calcul de la loss
             loss = loss_function(X_pred, X_true)
@@ -159,7 +173,7 @@ for epoch in range(epochs):
             
     val_loss /= len(valid_loader)
     valid_loss.append(val_loss)
-    print(f"Epoch {epoch}: val loss = {val_loss:.4f}")
+    print(f"Epoch {epoch+1}: val loss = {val_loss:.4f}")
 
     scheduler.step()
 
@@ -198,7 +212,7 @@ test_result = list()
 # Plot la loss en fonction des classes et de la vitesse
 for batch in tqdm(test_loader):
 
-    X_pred, X_true, X_tilde, metadata = _model_foward(model, batch, device, mean, std)
+    X_pred, X_true, X_tilde, metadata = _model_foward(model, batch, device, mean, std, norm=normalization)
 
     # Calcul de la loss par échantillon
     loss = torch.mean((X_true - X_pred)**2,dim=-1).reshape(-1)
@@ -208,7 +222,17 @@ for batch in tqdm(test_loader):
 train_results = pd.concat(train_results, ignore_index=True)
 test_result = pd.concat(test_result, ignore_index=True)
 
-fig = px.box(test_result, x='label',y='loss',color='speed')
+speeds = list(test_result['speed'].unique())
+speeds.sort(key=int)
+
+classes = list(test_result['label'].unique())
+classes.sort()
+
+fig = px.box(test_result,
+             x='label',
+             y='loss',
+             color='speed',
+             color_discrete_map={speed: px.colors.qualitative.Plotly[i % len(px.colors.qualitative.Plotly)] for i, speed in enumerate(speeds)})
 fig.write_html(os.path.join(results_dir, 'loss_by_label_speed.html'))
 
 # Training delay
