@@ -18,16 +18,6 @@ from models.model import PretrainedModel, DownstreamClassifier, Encoder
 from datasets.dataloader import get_dataset
 from utils.statistics import _z_norm, global_stats
 
-start = datetime.datetime.now()
-
-folder_experiment= os.path.join('results','downstream',os.path.basename(__file__))
-os.makedirs(folder_experiment, exist_ok=True)
-
-SCRATCH = 'scratch'
-PRETRAIN = 'pretrain'
-FROZEN = 'frozen'
-FINETUNE = 'finetune'
-
 def _make_strata(dataset):
     strata = []
     for sample in tqdm(dataset):
@@ -40,23 +30,35 @@ def _make_strata(dataset):
 def _model_foward(model, batch, lb, device):
     X_true = batch['X_true'].unsqueeze(1).to(device, non_blocking=True)
     labels = batch['label']
-    diameters = batch['metadata']['diameter']
-    classes = labels + '-' + diameters
     # One-hot encode labels
-    y_true = lb.transform(classes)
+    y_true = lb.transform(labels)
     y_true = torch.tensor(y_true, dtype=torch.float32).to(device, non_blocking=True)
     # Get batch size
     b,_,_ = X_true.shape
     # Normalisation des signaux
-    X_true = _z_norm(X_true, mean.expand(b, 1, -1), std.expand(b, 1, -1))
+    X_true_norm = _z_norm(X_true, mean.expand(b, 1, -1), std.expand(b, 1, -1))
     # Prédiction du modèle
-    y_pred = model(X_true)
+    y_pred = model(X_true_norm)
     return y_pred, y_true
 
+# Constantes globales
+SCRATCH = 'scratch'
+PRETRAIN = 'pretrain'
+FROZEN = 'frozen'
+FINETUNE = 'finetune'
+
+start = datetime.datetime.now()
+
+# Créer le dossier pour sauvegarder les résultats
+filename = os.path.basename(__file__).split('.')[0]
+folder_experiment= os.path.join('results','downstream',filename)
+os.makedirs(folder_experiment, exist_ok=True)
+
+# Configurer le device CUDA
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Charger la config
-with open('configs/downstream_config.json', 'r') as f:
+with open(f'configs/{filename}_config.json', 'r') as f:
     downstrean_config = json.load(f)
 
 training_params = downstrean_config['training']
@@ -67,8 +69,7 @@ dataset_name = downstrean_config['dataset']['name']
 dataset_params = {k: v for k, v in downstrean_config['dataset'].items() if k != 'name'}
 dataset = get_dataset(dataset_name, **dataset_params)
 
-# Create DataLoaders
-batch_size = downstrean_config.get('dataloader', {}).get('batch_size', 16)
+# Cr DataLoaders
 collate_fn = getattr(dataset, '_collate_fn', None)
 if collate_fn is None:
     # fallback: use a default collate_fn if not present
@@ -79,11 +80,12 @@ if collate_fn is None:
 pretrain_model_name = downstrean_config['pretrained_model'].get('model_name', 'default_pretrain_model')
 
 # Charger la config du pré-entraînement pour les hyperparamètres
-with open(f'results/{pretrain_model_name}/used_config.json', 'r') as f:
+with open(f'results/pretrain/{pretrain_model_name}/used_config.json', 'r') as f:
     pretrain_config = json.load(f)
 pretrain_params = pretrain_config['model']
 
-# Logging downstream parameters
+# Charger les paramètres d'entraînement et ajuster le learning rate en fonction du batch size
+batch_size = downstrean_config.get('dataloader', {}).get('batch_size', 16)
 training_params = downstrean_config['training']
 epochs = training_params.get('epochs', 100)
 learning_rate = training_params.get('learning_rate', 1e-3) * batch_size / 256
@@ -92,7 +94,7 @@ learning_rate = training_params.get('learning_rate', 1e-3) * batch_size / 256
 input_size = dataset[0]['X_true'].shape[-1]
 print(f"Dataset '{dataset_name}' loaded with {len(dataset)} samples. FFT size: {input_size}")
 
-# Create train, valid, test splits with stratification
+# Créer train, valid, test splits avec stratification
 indice = np.arange(len(dataset))
 strata = _make_strata(dataset)
 
@@ -118,11 +120,17 @@ results = {"Labeled Percentage": [],
            "Test Loss": [], 
            "Test F1 Score": []}
 
+# Créer le dossier pour sauvegarder les résultats
 folder_results = os.path.join(folder_experiment,f'{dataset_name}_dataset_{pretrain_model_name}_backbone')
-os.makedirs(folder_results)
+os.makedirs(folder_results, exist_ok=True)
 
-for labeled_percentage in [1.0, 0.5, 0.25, 0.2, 0.15, 0.1, 0.05]:
+# Boucle sur les pourcentages de données étiquetées
+# for labeled_percentage in [1.0, 0.5, 0.25, 0.2, 0.15, 0.1, 0.05]:
+for labeled_percentage in [1.0] :
     print(f"Labeled percentage: {labeled_percentage*100}%")
+
+    folder_scarcity = os.path.join(folder_results,f'{int(100*labeled_percentage)}%_scarcity')
+    os.makedirs(folder_scarcity, exist_ok=True)
 
     if labeled_percentage < 1.0:
         _, scarcity_train_idx = train_test_split(
@@ -135,12 +143,13 @@ for labeled_percentage in [1.0, 0.5, 0.25, 0.2, 0.15, 0.1, 0.05]:
     else :
         scarcity_train_idx = train_idx
 
+    # Sous datasets stratifiés
     train_dataset = Subset(dataset, scarcity_train_idx)
     valid_dataset = Subset(dataset, valid_idx)
     test_dataset = Subset(dataset, test_idx)
 
-    # Weighted random sampler to balance classes in the training set
-    labels = [sample['label'] + '_' + sample['metadata']['diameter'] for sample in tqdm(train_dataset)]
+    # Pondération des classes pour le sampler
+    labels = [sample['label'] for sample in tqdm(train_dataset)]
     classes, class_counts = np.unique(labels, return_counts=True)
 
     class_weights = 1. / class_counts
@@ -156,7 +165,7 @@ for labeled_percentage in [1.0, 0.5, 0.25, 0.2, 0.15, 0.1, 0.05]:
         replacement=True
     )
 
-    # Extract globale statistics from train dataset
+    # Extraire les stats globales du dataset d'entraînement pour la normalisation
     mean, std = global_stats(train_dataset)
     mean = mean.to(device)
     std = std.to(device)
@@ -165,14 +174,16 @@ for labeled_percentage in [1.0, 0.5, 0.25, 0.2, 0.15, 0.1, 0.05]:
     valid_loader = DataLoader(valid_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
 
-    # All classes on the dataset, One hot encoding
+    # One hot encoding des classes pour le calcul de la cross entropy
     lb = LabelBinarizer()
     lb.fit(classes)
 
     for init_type in [SCRATCH, PRETRAIN]:
+    # for init_type in [PRETRAIN] :
         for downstream in [FROZEN, FINETUNE]:
+        # for downstream in [FROZEN] :
 
-            folder_model = os.path.join(folder_results,f'{labeled_percentage}_scarcity_{init_type}_init_{downstream}_downstream')
+            folder_model = os.path.join(folder_scarcity,f'{init_type}_init_{downstream}_downstream')
             os.makedirs(folder_model, exist_ok=True)
             
             # Répétition de plusieurs entraînement avec même config
@@ -181,7 +192,7 @@ for labeled_percentage in [1.0, 0.5, 0.25, 0.2, 0.15, 0.1, 0.05]:
                 folder_seed =os.path.join(folder_model,f'seed_{seed+1}')
                 os.makedirs(folder_seed, exist_ok=True)
 
-                # Logging the backbone
+                # Chargement du backbone (encodeur)
                 backbone = Encoder(
                     num_patch= input_size // pretrain_params.get('patch_size', 64),
                     patch_size= pretrain_params.get('patch_size', 64),
@@ -193,6 +204,7 @@ for labeled_percentage in [1.0, 0.5, 0.25, 0.2, 0.15, 0.1, 0.05]:
 
                 # Downstrean factory
                 if init_type == SCRATCH and downstream == FROZEN :
+                    # Backbone non pré-entraîné et gelé
                     model = DownstreamClassifier(
                         backbone= backbone,
                         num_classes= len(classes),
@@ -200,6 +212,7 @@ for labeled_percentage in [1.0, 0.5, 0.25, 0.2, 0.15, 0.1, 0.05]:
                     ).to(device)
 
                 elif init_type == SCRATCH and downstream == FINETUNE :
+                    # Backbone non pré-entraîné et entraînable
                     model = DownstreamClassifier(
                         backbone= backbone,
                         num_classes= len(classes),
@@ -207,6 +220,7 @@ for labeled_percentage in [1.0, 0.5, 0.25, 0.2, 0.15, 0.1, 0.05]:
                     ).to(device)
 
                 elif init_type == PRETRAIN and downstream == FROZEN :
+                    # Backbone pré-entraîné et gelé
                     backbone.load_state_dict(torch.load(f'checkpoint/{pretrain_model_name}/model.pth'))
                     model = DownstreamClassifier(
                         backbone= backbone,
@@ -215,24 +229,26 @@ for labeled_percentage in [1.0, 0.5, 0.25, 0.2, 0.15, 0.1, 0.05]:
                     ).to(device)
 
                 elif init_type == PRETRAIN and downstream == FINETUNE :
+                    # Backbone pré-entraîné et entraînable
                     backbone.load_state_dict(torch.load(f'checkpoint/{pretrain_model_name}/model.pth'))
                     model = DownstreamClassifier(
                         backbone= backbone,
                         num_classes= len(classes),
                         freeze_backbone= False,
                     ).to(device)
-                    
+                
+                # Optimizer et scheduler
                 optimizer = torch.optim.AdamW(model.parameters(), lr= learning_rate, weight_decay=1e-4)
                 scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=training_params.get('epochs', 100), eta_min=1e-6)
 
-                # Save all metrics
+                # Sauvegarder les métriques
                 all_train_loss = []
                 all_valid_loss = []
 
                 all_train_score = []
                 all_valid_score = []
 
-                # === Training loop ===
+                # Boucle d'entraînement et de validation
                 for epoch in range(1,epochs+1):
                     model.train()
                     train_loss = 0
@@ -260,7 +276,7 @@ for labeled_percentage in [1.0, 0.5, 0.25, 0.2, 0.15, 0.1, 0.05]:
                     all_train_loss.append(train_loss)
                     all_train_score.append(train_score)
 
-                    print(f"Epoch {epoch+1}: train loss = {train_loss:.4f}")
+                    print(f"Epoch {epoch}: train loss = {train_loss:.4f}")
 
                     model.eval()
                     valid_loss = 0
@@ -287,11 +303,10 @@ for labeled_percentage in [1.0, 0.5, 0.25, 0.2, 0.15, 0.1, 0.05]:
                     all_valid_loss.append(valid_loss)
                     all_valid_score.append(valid_score)
 
-                    print(f"Epoch {epoch+1}: valid loss = {valid_loss:.4f}")
+                    print(f"Epoch {epoch}: valid loss = {valid_loss:.4f}")
 
-                    scheduler.step()
+                    scheduler.step() # Mettre à jour le scheduler
 
-                # === End training loop ===
                 # Sauvegarde du modèle et des courbes de loss
                 plt.figure(figsize=(10, 5))
                 plt.plot(all_train_loss, label='Train Loss')
@@ -314,7 +329,7 @@ for labeled_percentage in [1.0, 0.5, 0.25, 0.2, 0.15, 0.1, 0.05]:
 
                 plt.close('all')
 
-                # Testing loop
+                # Boucle de test (évaluation finale)
                 model.eval()
                 test_loss = 0
                 test_score = 0
@@ -344,9 +359,10 @@ for labeled_percentage in [1.0, 0.5, 0.25, 0.2, 0.15, 0.1, 0.05]:
                 score = f1_score(all_targets, all_predictions, average='weighted', zero_division=0)
                 print(f"Test loss = {test_loss:.4f}, Test F1 Score = {test_score:.4f}, Overall F1 Score = {score:.4f}")
 
-                cm = confusion_matrix(all_targets, all_predictions, normalize='true',labels=[0,1,2,3])
+                cm = confusion_matrix(all_targets, all_predictions, normalize='true',labels=list(range(len(classes))))
                 print("Confusion Matrix:\n", cm)
 
+                # Matrice de confusion des données de test
                 plt.figure(figsize=(8, 6))
                 disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=classes)
                 disp.plot(cmap=plt.cm.Blues)
@@ -361,14 +377,14 @@ for labeled_percentage in [1.0, 0.5, 0.25, 0.2, 0.15, 0.1, 0.05]:
                 results["Test F1 Score"].append(score)
 
 results_df = pd.DataFrame(results)
-results_df.to_csv(f'{folder_model}/results.csv', index=False)
+results_df.to_csv(f'{folder_results}/results.csv', index=False)
 
-# End of training
 end = datetime.datetime.now()
 interval = (end - start)
 
 print(f"Total execution time: {interval}")
 
+# Visualisation des résultats
 
 plt.figure(figsize=(10, 6))
 
@@ -397,4 +413,4 @@ plt.ylabel('Test F1 Score')
 plt.title('Downstream Task Performance')
 plt.legend()
 plt.grid(True)
-plt.savefig(f'{folder_model}/performance.png')
+plt.savefig(f'{folder_results}/performance.png')

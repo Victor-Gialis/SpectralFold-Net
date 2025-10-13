@@ -53,75 +53,86 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 with open('configs/pretrain_config.json', 'r') as f:
     config = json.load(f)
 
-# Instancier le dataset via la factory
-dataset_name = config['dataset']['name']
-dataset_params = {k: v for k, v in config['dataset'].items() if k != 'name'}
-dataset = get_dataset(dataset_name, **dataset_params)
+# Boucle sur les différentes configurations
+for transform_type in ['psd','psd_envelope']:
+    for patch_size in [16,32,64]:
+        for pretext_task in ['flip','mask']:
 
-# Taille des spectres FFT
-size_fft = dataset[0]['X_true'].shape[-1]
-print(f"Dataset '{dataset_name}' loaded with {len(dataset)} samples. FFT size: {size_fft}")
+            config['dataset']['transform_type'] = transform_type
+            config['dataset']['pretext_task'] = pretext_task
+            print(f"Training with transform_type={transform_type}, patch_size={patch_size}, pretext_task={pretext_task}")
+            
+            # Instancier le dataset via la factory
+            dataset_name = config['dataset']['name']
+            dataset_params = {k: v for k, v in config['dataset'].items() if k != 'name'}
+            dataset = get_dataset(dataset_name, **dataset_params)
 
-# Récupère le nom du sous-dossier depuis la config
-save_name = config['training']['model_name'].strip('/\\')
+            # Taille des spectres FFT
+            input_size = dataset[0]['X_true'].shape[-1]
+            print(f"Dataset '{dataset_name}' loaded with {len(dataset)} samples. FFT size: {input_size}")
 
-# Dossiers pour checkpoints et résultats
-checkpoint_dir = os.path.join('checkpoint', save_name)
-results_dir = os.path.join('results', save_name)
+            # Récupère le nom du sous-dossier depuis la config
+            save_name = f"{config['training']['model_name'].strip('/\\')}_transf-{transform_type}_win-{window_size}_task-{pretext_task}"
 
-# Crée les dossiers s'ils n'existent pas
-os.makedirs(checkpoint_dir, exist_ok=True)
-os.makedirs(results_dir, exist_ok=True)
+            # Dossiers pour checkpoints et résultats
+            checkpoint_dir = os.path.join('checkpoint', save_name)
+            results_dir = os.path.join('results', save_name)
 
-# Split train/valid/test
-train_size = int(0.7 * len(dataset))
-valid_size = int(0.2 * len(dataset))
-test_size = len(dataset) - train_size - valid_size
+            # Crée les dossiers s'ils n'existent pas
+            os.makedirs(checkpoint_dir, exist_ok=True)
+            os.makedirs(results_dir, exist_ok=True)
 
-generator =torch.Generator().manual_seed(42)
-train_dataset, valid_dataset, test_dataset = torch.utils.data.random_split(dataset, [train_size, valid_size, test_size], generator=generator)
+            # Split train/valid/test
+            train_size = int(0.7 * len(dataset))
+            valid_size = int(0.2 * len(dataset))
+            test_size = len(dataset) - train_size - valid_size
 
-# Split DataLoaders
-batch_size = config.get('dataloader', {}).get('batch_size', 16)
-collate_fn = getattr(dataset, '_collate_fn', None)
-if collate_fn is None:
-    # fallback: use a default collate_fn if not present
-    from torch.utils.data.dataloader import default_collate
-    collate_fn = default_collate
+            generator =torch.Generator().manual_seed(42)
+            train_dataset, valid_dataset, test_dataset = torch.utils.data.random_split(dataset, [train_size, valid_size, test_size], generator=generator)
 
-train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
-valid_loader = DataLoader(valid_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
-test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
+            # Split DataLoaders
+            batch_size = config.get('dataloader', {}).get('batch_size', 16)
+            collate_fn = getattr(dataset, '_collate_fn', None)
+            if collate_fn is None:
+                # fallback: use a default collate_fn if not present
+                from torch.utils.data.dataloader import default_collate
+                collate_fn = default_collate
 
-# Instancier le modèle en autosupervision
+            train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
+            valid_loader = DataLoader(valid_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
+            test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
 
-model_params = config['model']
-model = PretrainedModel(
-    input_size=size_fft,
-    encoder_dim=model_params.get('encoder_dim', 128),
-    decoder_dim=model_params.get('decoder_dim', 256),
-    patch_size=model_params.get('patch_size', 64),
-    n_layers=model_params.get('n_layers', 4),
-    heads=model_params.get('heads', 8),
-    dropout=model_params.get('dropout', 0.4)
-).to(device)
+            print(f"DataLoaders created: train ({len(train_loader)} batches), valid ({len(valid_loader)} batches), test ({len(test_loader)} batches)")
+            
+            # Instancier le modèle en autosupervision
+            model_params = config['model']
+            model = PretrainedModel(
+                input_size=input_size,
+                encoder_dim=model_params.get('encoder_dim', 128),
+                decoder_dim=model_params.get('decoder_dim', 256),
+                patch_size=model_params.get('patch_size', 64),
+                n_layers=model_params.get('n_layers', 4),
+                heads=model_params.get('heads', 8),
+                dropout=model_params.get('dropout', 0.4)
+            ).to(device)
 
-# Optimizer & Scheduler
-training_params = config['training']
-epochs = training_params.get('epochs', 100)
-normalization = training_params.get('normalization', 'z')
-learning_rate = training_params.get('learning_rate', 1e-3) * batch_size / 256
-optimizer = torch.optim.AdamW(model.parameters(), lr= learning_rate, weight_decay=1e-4)
-scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=training_params.get('epochs', 100), eta_min=1e-6)
+            # Optimizer & Scheduler
+            training_params = config['training']
+            epochs = training_params.get('epochs', 100)
+            normalization = training_params.get('normalization', 'z')
+            learning_rate = training_params.get('learning_rate', 1e-3) * batch_size / 256
 
-# Statistiques globales pour la normalisation
-if normalization == 'z':
-    mean, std = global_stats(train_dataset)
-    mean = mean.to(device)
-    std = std.to(device)
+            optimizer = torch.optim.AdamW(model.parameters(), lr= learning_rate, weight_decay=1e-4)
+            scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=training_params.get('epochs', 100), eta_min=1e-6)
 
-elif normalization == 'log':
-    mean, std = None, None
+            # Statistiques globales pour la normalisation
+            if normalization == 'z':
+                mean, std = global_stats(train_dataset)
+                mean = mean.to(device)
+                std = std.to(device)
+
+            elif normalization == 'log':
+                mean, std = None, None
 
 # Training loop
 save_path = training_params.get('save_path', 'results/model_v0/')

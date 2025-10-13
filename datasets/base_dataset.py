@@ -20,15 +20,19 @@ class SampleWindow:
     metadata: dict = None
 
 class BaseDataset(Dataset):
-    def __init__(self, flip:bool, root_dir = None, downsample_factor = 1, fault_filter=None, speed_filter=None, transform_type=None, window_size=None, stride=None):
+    def __init__(self, pretext_task = None, root_dir = None, downsample_factor = 1, fault_filter=None, speed_filter=None, transform_type=None, window_size=None, stride=None):
         assert os.path.isdir(root_dir), f"Le répertoire {root_dir} n'existe pas ou n'est pas un répertoire."
         assert window_size is None or isinstance(window_size, int) and window_size > 0, "window_size doit être un entier positif."
         assert stride is None or isinstance(stride, int) and stride > 0, "stride doit être un entier positif."
         assert transform_type in [None, 'normalize', 'standardize','psd', 'psd_envelope'], "transform_type doit être None, 'normalize', 'standardize' ou 'envelope'."
+        assert pretext_task in [None,'flip','mask'], "pretext_task doit être None, 'flip' ou 'mask'."
         """
         Classe de base pour les datasets.
         Args:
             root_dir (str): Chemin vers le répertoire racine du dataset.
+            pretext_task (str, optional): Tâche prétexte à appliquer. Options: None, 'flip', 'mask'.
+            downsample_factor (int): Facteur de réduction de la fréquence d'échantillonnage.
+            speed_filter (list, optional): Liste des vitesses à filtrer. Si None, toutes les vitesses sont incluses.
             fault_filter (list, optional): Liste des défauts à filtrer. Si None, tous les défauts sont inclus.
             transform_type (str, optional): Type de transformation à appliquer aux données. Options: 'normalize', 'standardize', 'envelope'.
             window_size (int, optional): Taille de la fenêtre pour les échantillons. Si None, chaque échantillon est une fenêtre unique.
@@ -41,7 +45,7 @@ class BaseDataset(Dataset):
         self.window_size = window_size
         self.stride = stride
         self.downsample_factor = downsample_factor
-        self.flip = flip
+        self.pretext_task = pretext_task
 
         self.samples = []
         self.windows = []
@@ -152,9 +156,9 @@ class BaseDataset(Dataset):
         X_true = self._transform(X_true)
         X_tilde = self._transform(X_tilde)
         
-        if self.flip :
-            # tentative de flip
-            X_tilde = torch.cat((X_tilde,torch.flip(X_tilde, [0])))
+        if self.pretext_task == 'flip':
+            # tentative de pretext_task
+            X_tilde = torch.cat((X_tilde,torch.pretext_task(X_tilde, [0])))
             # X_tilde = 2*X_tilde
 
         return {'X_tilde':X_tilde, 'X_true':X_true, 'label':label, 'metadata':metadata}

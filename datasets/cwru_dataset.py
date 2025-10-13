@@ -55,8 +55,8 @@ class CWRUDataset(BaseDataset):
                         pattern = filename.split('_')
                         # On suppose que le nom de fichier est toujours au format speed_fault_diameter_end
                         # Par exemple : 1700_1_1_DE.npz ou 1700_1_1_1_DE.npz
-                        diameter = None
-                        position = None
+                        diameter = 'none'
+                        position = 'none'
 
                         if len(pattern) == 4:
                             # Cas des fichiers avec position et diamètre du défaut
@@ -77,6 +77,7 @@ class CWRUDataset(BaseDataset):
                                 # On ne garde que les fichiers qui correspondent au filtre de défaut et à la source
                                 if self.speed_filter is None or speed in self.speed_filter:
                                     # On ne garde que les fichiers qui correspondent au filtre de vitesse
+                                    label = label + '_' + diameter 
                                     self.samples.append(Sample(filepath=npz_path,
                                                         label=label,
                                                         metadata={'speed': speed, 
