@@ -2,43 +2,351 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Résultats interactifs — SpectralFolded-Net</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpectralFolded-Net — Résultats interactifs</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    header {
+      background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+      color: white;
+      padding: 50px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: moveGrid 20s linear infinite;
+    }
+    
+    @keyframes moveGrid {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(50px, 50px);
+      }
+    }
+    
+    h1 {
+      font-size: 2.5em;
+      font-weight: 700;
+      margin-bottom: 15px;
+      position: relative;
+      z-index: 1;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .subtitle {
+      font-size: 1.1em;
+      opacity: 0.9;
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .content {
+      padding: 40px;
+    }
+    
+    .section {
+      margin-bottom: 40px;
+      animation: slideIn 0.5s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    h2 {
+      color: #2d3748;
+      font-size: 1.6em;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid #667eea;
+      display: inline-block;
+    }
+    
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      border-left: 4px solid #667eea;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+    
+    .card:hover::before {
+      opacity: 1;
+    }
+    
+    .card a {
+      text-decoration: none;
+      color: #2d3748;
+      display: block;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .card-label {
+      font-weight: 600;
+      font-size: 1em;
+      color: #667eea;
+      margin-bottom: 8px;
+    }
+    
+    .card-description {
+      font-size: 0.95em;
+      color: #4a5568;
+      line-height: 1.5;
+    }
+    
+    .icon {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+    
+    .status-normal {
+      background: #c6f6d5;
+      color: #22543d;
+    }
+    
+    .status-defect {
+      background: #fed7d7;
+      color: #742a2a;
+    }
+    
+    .status-analysis {
+      background: #bee3f8;
+      color: #2c5282;
+    }
+    
+    footer {
+      background: #2d3748;
+      color: white;
+      text-align: center;
+      padding: 30px;
+      font-size: 0.95em;
+    }
+    
+    footer em {
+      opacity: 0.8;
+    }
+    
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.8em;
+      }
+      
+      .content {
+        padding: 20px;
+      }
+      
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>SpectralFolded-Net — Visualisations interactives</h1>
-  <p>Figures issues des expérimentations sur le dépliement spectrale de spectre de signaux vibratoire de la base CWRU.</p>
-
-  <h2>Dépliement spectrale - Fonctionnement normal (sain) </h2>
-  <ul>
-    <li><a href="comparison_label_normal_none.html">A — Taille de défaut : none</a></li>
-  </ul>
-
-  <h2>Dépliement spectrale - Défaut de bille </h2>
-  <ul>
-    <li><a href="comparison_label_ball_7.html">A1 — Taille de défaut : 7 inch</a></li>
-    <li><a href="comparison_label_ball_21.html">A2 — Taille de défaut : 21 inch</a></li>
-  </ul>
-
-  <h2>Dépliement spectrale - Défaut de bague interne </h2>
-  <ul>
-    <li><a href="comparison_label_inner_14.html">B1 — Taille de défaut : 14 inch</a></li>
-    <li><a href="comparison_label_inner_21.html">B2 — Taille de défaut : 21 inch</a></li>
-  </ul>
-
-  <h2>Dépliement spectrale - Défaut de bague externe </h2>
-  <ul>
-    <li><a href="comparison_label_outer_7.html">C1 — Taille de défaut : 7 inch</a></li>
-    <li><a href="comparison_label_outer_14.html">C2 — Taille de défaut : 14 inch</a></li>
-    <li><a href="comparison_label_outer_21.html">C3 — Taille de défaut : 21 inch</a></li>
-  </ul>
-
-  <h2>Erreur de reconstruction (MSE) en fonction de classe (type + sévérité défaut) et de la vitesse (en RPM) </h2>
-  <ul>
-    <li><a href="loss_by_label_speed.html">B1 — erreur reconstruction SpectralFold-Net </a></li>
-  </ul>
-
-  <footer>
-    <p><em>Maintenu par Victor — SpectralFolded-Net (2025)</em></p>
-  </footer>
+  <div class="container">
+    <header>
+      <h1>🔬 SpectralFolded-Net</h1>
+      <p class="subtitle">Visualisations interactives du dépliement spectral de signaux vibratoires issus de la base de données CWRU</p>
+    </header>
+    
+    <div class="content">
+      <!-- Section normale -->
+      <div class="section">
+        <h2>🟢 Fonctionnement Normal (Sain)</h2>
+        <div class="card-grid">
+          <div class="card">
+            <a href="comparison_label_normal_none.html">
+              <div class="card-label">Référence A — État sain</div>
+              <div class="card-description">Dépliement spectral du signal sans défaut</div>
+              <span class="status-badge status-normal">Aucun défaut</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Section défaut de bille -->
+      <div class="section">
+        <h2>🔴 Défauts de Bille</h2>
+        <div class="card-grid">
+          <div class="card">
+            <a href="comparison_label_ball_7.html">
+              <div class="card-label">Expérience A1</div>
+              <div class="card-description">Taille de défaut : 7 mils (0.007 inch)</div>
+              <span class="status-badge status-defect">Défaut léger</span>
+            </a>
+          </div>
+          <div class="card">
+            <a href="comparison_label_ball_21.html">
+              <div class="card-label">Expérience A2</div>
+              <div class="card-description">Taille de défaut : 21 mils (0.021 inch)</div>
+              <span class="status-badge status-defect">Défaut sévère</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Section bague interne -->
+      <div class="section">
+        <h2>🟠 Défauts de Bague Interne</h2>
+        <div class="card-grid">
+          <div class="card">
+            <a href="comparison_label_inner_14.html">
+              <div class="card-label">Expérience B1</div>
+              <div class="card-description">Taille de défaut : 14 mils (0.014 inch)</div>
+              <span class="status-badge status-defect">Défaut moyen</span>
+            </a>
+          </div>
+          <div class="card">
+            <a href="comparison_label_inner_21.html">
+              <div class="card-label">Expérience B2</div>
+              <div class="card-description">Taille de défaut : 21 mils (0.021 inch)</div>
+              <span class="status-badge status-defect">Défaut sévère</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Section bague externe -->
+      <div class="section">
+        <h2>🟡 Défauts de Bague Externe</h2>
+        <div class="card-grid">
+          <div class="card">
+            <a href="comparison_label_outer_7.html">
+              <div class="card-label">Expérience C1</div>
+              <div class="card-description">Taille de défaut : 7 mils (0.007 inch)</div>
+              <span class="status-badge status-defect">Défaut léger</span>
+            </a>
+          </div>
+          <div class="card">
+            <a href="comparison_label_outer_14.html">
+              <div class="card-label">Expérience C2</div>
+              <div class="card-description">Taille de défaut : 14 mils (0.014 inch)</div>
+              <span class="status-badge status-defect">Défaut moyen</span>
+            </a>
+          </div>
+          <div class="card">
+            <a href="comparison_label_outer_21.html">
+              <div class="card-label">Expérience C3</div>
+              <div class="card-description">Taille de défaut : 21 mils (0.021 inch)</div>
+              <span class="status-badge status-defect">Défaut sévère</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Section analyse -->
+      <div class="section">
+        <h2>📊 Analyse de Performance</h2>
+        <div class="card-grid">
+          <div class="card">
+            <a href="loss_by_label_speed.html">
+              <div class="card-label">Analyse MSE</div>
+              <div class="card-description">Erreur de reconstruction (MSE) par type de défaut et vitesse de rotation (RPM)</div>
+              <span class="status-badge status-analysis">Analyse globale</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <footer>
+      <p><em>Maintenu par Victor — SpectralFolded-Net © 2025</em></p>
+      <p style="margin-top: 10px; opacity: 0.7; font-size: 0.9em;">Analyse vibratoire avancée pour la détection de défauts dans les roulements</p>
+    </footer>
+  </div>
 </body>
 </html>
