@@ -209,6 +209,47 @@
       color: #2c5282;
     }
     
+    .performance-section {
+      margin-top: 30px;
+    }
+    
+    .image-card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+    
+    .image-card img {
+      display: block;
+      margin: 0 auto;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .image-description {
+      margin-top: 25px;
+      padding: 20px;
+      background: #f7fafc;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+    }
+    
+    .image-description p {
+      margin-bottom: 10px;
+      color: #2d3748;
+      line-height: 1.6;
+    }
+    
+    .image-description ul {
+      margin-left: 20px;
+      color: #4a5568;
+    }
+    
+    .image-description li {
+      margin-bottom: 5px;
+    }
+    
     footer {
       background: #2d3748;
       color: white;
@@ -334,18 +375,30 @@
         <div class="card-grid">
           <div class="card">
             <a href="loss_by_label_speed.html">
-              <div class="card-label">Pré-entraînement - Analyse MSE</div>
+              <div class="card-label">Analyse MSE — Pré-entraînement</div>
               <div class="card-description">Erreur de reconstruction (MSE) par type de défaut et vitesse de rotation (RPM)</div>
-              <span class="status-badge status-analysis">Analyse globale</span>
+              <span class="status-badge status-analysis">Phase de pré-entraînement</span>
             </a>
           </div>
         </div>
-        <div class="card">
-            <a href="downstream_performance.png">
-              <div class="card-label">Spécialisation - Analyse F1 score</div>
-              <div class="card-description">Performance de classification (F1) en fonction pour pourcentage de données étiquettées utilisées lors du finetuning, et du type d'initialisation du backbone</div>
-              <span class="status-badge status-analysis">Analyse globale</span>
-            </a>
+        
+        <div class="performance-section">
+          <h3 style="color: #4a5568; font-size: 1.3em; margin: 30px 0 15px 0;">Performance en Classification (Fine-tuning)</h3>
+          <div class="image-card">
+            <img src="downstream_performance.png" alt="Performance de classification en fonction du pourcentage de données d'entraînement" style="width: 100%; height: auto; border-radius: 8px;">
+            <div class="image-description">
+              <p><strong>Score F1 vs. Pourcentage de données étiquetées</strong></p>
+              <p>Comparaison des performances de classification selon 4 configurations :</p>
+              <ul style="margin-top: 10px; line-height: 1.8;">
+                <li>🔴 Backbone pré-entraîné (pretrain) + Fine-tuning complet (finetune) </li>
+                <li>🟢 Backbone pré-entraîné (pretrain) + Backbone figé (frozen) </li>
+                <li>🔵Backbone non pré-entraîné (scratch) + Fine-tuning complet (finetune) </li>
+                <li>🟠 Backbone non pré-entraîné (scratch) + Backbone figé (frozen) </li>
+              </ul>
+              <p style="margin-top: 15px; font-style: italic; color: #718096;">
+                Cette analyse démontre l'efficacité du pré-entraînement, particulièrement dans les régimes de données limitées.
+              </p>
+            </div>
           </div>
         </div>
       </div>
