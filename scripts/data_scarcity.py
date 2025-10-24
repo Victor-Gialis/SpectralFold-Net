@@ -125,8 +125,7 @@ folder_results = os.path.join(folder_experiment,f'{dataset_name}_dataset_{pretra
 os.makedirs(folder_results, exist_ok=True)
 
 # Boucle sur les pourcentages de données étiquetées
-# for labeled_percentage in [1.0, 0.5, 0.25, 0.2, 0.15, 0.1, 0.05]:
-for labeled_percentage in [1.0] :
+for labeled_percentage in [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 1.0]:
     print(f"Labeled percentage: {labeled_percentage*100}%")
 
     folder_scarcity = os.path.join(folder_results,f'{int(100*labeled_percentage)}%_scarcity')
@@ -187,10 +186,15 @@ for labeled_percentage in [1.0] :
             os.makedirs(folder_model, exist_ok=True)
             
             # Répétition de plusieurs entraînement avec même config
-            for seed in range(5) :
-
+            for seed in range(10) :
                 folder_seed =os.path.join(folder_model,f'seed_{seed+1}')
-                os.makedirs(folder_seed, exist_ok=True)
+
+                if os.path.exists(folder_seed):
+                    print(f"Results for seed {seed+1} already exist. Skipping...")
+                    continue
+                
+                else :
+                    os.makedirs(folder_seed, exist_ok=True)
 
                 # Chargement du backbone (encodeur)
                 backbone = Encoder(
@@ -248,13 +252,14 @@ for labeled_percentage in [1.0] :
                 all_train_score = []
                 all_valid_score = []
 
+                print(f"Starting training: Init type = {init_type}, Downstream = {downstream}, Seed = {seed+1}")
                 # Boucle d'entraînement et de validation
-                for epoch in range(1,epochs+1):
+                for epoch in tqdm(range(1,epochs+1), desc="Overall Training"):
                     model.train()
                     train_loss = 0
                     train_score = 0
 
-                    for batch in tqdm(train_loader, desc=f"Epoch {epoch}/{epochs}"):
+                    for batch in train_loader:
                         optimizer.zero_grad()
                         y_pred, y_true = _model_foward(model=model, batch=batch, lb=lb, device=device)
 
@@ -276,13 +281,13 @@ for labeled_percentage in [1.0] :
                     all_train_loss.append(train_loss)
                     all_train_score.append(train_score)
 
-                    print(f"Epoch {epoch}: train loss = {train_loss:.4f}")
+                    # print(f"Epoch {epoch}: train loss = {train_loss:.4f}")
 
                     model.eval()
                     valid_loss = 0
                     valid_score = 0
 
-                    for batch in tqdm(valid_loader, desc=f"Epoch {epoch}/{epochs}"):
+                    for batch in valid_loader:
                         
                         y_pred, y_true = _model_foward(model=model, batch=batch, lb=lb, device=device)
 
@@ -303,7 +308,7 @@ for labeled_percentage in [1.0] :
                     all_valid_loss.append(valid_loss)
                     all_valid_score.append(valid_score)
 
-                    print(f"Epoch {epoch}: valid loss = {valid_loss:.4f}")
+                    # print(f"Epoch {epoch}: valid loss = {valid_loss:.4f}")
 
                     scheduler.step() # Mettre à jour le scheduler
 
@@ -337,7 +342,7 @@ for labeled_percentage in [1.0] :
                 all_predictions = []
                 all_targets = []
 
-                for batch in tqdm(test_loader, desc="Testing"):
+                for batch in test_loader:
                     
                     y_pred, y_true = _model_foward(model=model, batch=batch, lb=lb, device=device)
 
@@ -360,7 +365,6 @@ for labeled_percentage in [1.0] :
                 print(f"Test loss = {test_loss:.4f}, Test F1 Score = {test_score:.4f}, Overall F1 Score = {score:.4f}")
 
                 cm = confusion_matrix(all_targets, all_predictions, normalize='true',labels=list(range(len(classes))))
-                print("Confusion Matrix:\n", cm)
 
                 # Matrice de confusion des données de test
                 plt.figure(figsize=(8, 6))
@@ -376,7 +380,13 @@ for labeled_percentage in [1.0] :
                 results["Test Loss"].append(test_loss)
                 results["Test F1 Score"].append(score)
 
+# Sauvegarde des résultats dans un fichier CSV
 results_df = pd.DataFrame(results)
+
+if os.path.exists(f'{folder_results}/results.csv'):
+    existing_results_df = pd.read_csv(f'{folder_results}/results.csv')
+    results_df = pd.concat([existing_results_df, results_df], ignore_index=True)
+
 results_df.to_csv(f'{folder_results}/results.csv', index=False)
 
 end = datetime.datetime.now()
@@ -385,14 +395,27 @@ interval = (end - start)
 print(f"Total execution time: {interval}")
 
 # Visualisation des résultats
+labeleds_percentage = list(results_df['Labeled Percentage'].unique())
+labeleds_percentage.sort()
 
 plt.figure(figsize=(10, 6))
 
 for init_type in [SCRATCH, PRETRAIN]:
     for downstream in [FROZEN, FINETUNE]:
         frame = results_df.loc[(results_df['Init Type'] == init_type) & (results_df['Downstream'] == downstream)]
-        x = frame['Labeled Percentage'].values
-        y = frame['Test F1 Score'].values
+        
+        x = list()
+        y = list()
+        e = list()
+        
+        for labeled_percentage in labeleds_percentage :
+            subset = frame[frame['Labeled Percentage'] == labeled_percentage]
+            mean_f1 = subset['Test F1 Score'].mean()
+            std_f1 = subset['Test F1 Score'].std()
+
+            x.append(labeled_percentage)
+            y.append(mean_f1)
+            e.append(std_f1)
 
         if init_type == SCRATCH :
             color = 'blue'
@@ -407,6 +430,7 @@ for init_type in [SCRATCH, PRETRAIN]:
             linestyle = '--'
 
         plt.plot(x, y, marker='o', color= color, linestyle=linestyle, label=f'{init_type} + {downstream}')
+        plt.errorbar(x, y, yerr=e, fmt='o', color=color, linestyle=linestyle, capsize=5)
 
 plt.xlabel('Labeled Percentage')
 plt.ylabel('Test F1 Score')

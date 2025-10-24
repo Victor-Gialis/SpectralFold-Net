@@ -6,25 +6,26 @@
     "transform_type":"psd",
     "window_size": 2048,
     "stride": 256,
-    "flip" : false,
+    "pretext_task" : "flip",
     "downsample_factor": 2
   },
   "dataloader": {
-    "batch_size": 256,
+    "batch_size": 64,
     "shuffle": true
   },
   "model": {
-    "encoder_dim": 128,
-    "decoder_dim": 256,
-    "patch_size": 32,
-    "n_layers": 4,
+    "encoder_dim": 512,
+    "decoder_dim": 512,
+    "patch_size": 16,
+    "n_layers": 3,
     "heads": 8,
-    "dropout": 0.4
+    "dropout": 0.2565
   },
   "training": {
     "epochs": 100,
-    "normalization":"z",
-    "learning_rate": 1e-5,
-    "model_name": "model_v0.3"
+    "normalization":"log",
+    "learning_rate": 0.0003695,
+    "weight_decay": 1.1133e-5,
+    "model_name": "model_v5.1"
   }
 }

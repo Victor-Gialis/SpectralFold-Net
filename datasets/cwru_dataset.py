@@ -4,7 +4,7 @@ import numpy as np
 from datasets.base_dataset import BaseDataset, Sample
 
 class CWRUDataset(BaseDataset):    
-    def __init__(self, flip:bool, root_dir=None, downsample_factor = 1, source='FE', fault_filter=None, speed_filter=None, transform_type=None, window_size=None, stride=None):
+    def __init__(self, pretext_task = None, root_dir=None, downsample_factor = 1, source='FE', fault_filter=None, speed_filter=None, transform_type=None, window_size=None, stride=None):
         """
         Args:
             source (str): Source des données, peut être 'DE', 'FE' ou 'BA'.
@@ -16,9 +16,10 @@ class CWRUDataset(BaseDataset):
         assert source in ['DE', 'FE', 'BA'], "source must be 'DE', 'FE' or 'BA'"
         assert fault_filter is None or isinstance(fault_filter, list), "fault_filter doit être une liste ou None"
         assert speed_filter is None or isinstance(speed_filter, list), "speed_filter doit être une liste ou None"
+        assert pretext_task in ['flip','mask']
         self.source = source
         super().__init__(root_dir=root_dir or os.path.dirname(os.path.abspath(__file__)), 
-                         flip = flip,
+                         pretext_task=pretext_task,
                          downsample_factor=downsample_factor,
                          fault_filter=fault_filter,
                          speed_filter=speed_filter,

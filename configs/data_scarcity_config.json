@@ -6,7 +6,7 @@
       "transform_type":"psd",
       "window_size": 2048,
       "stride": 256,
-      "flip" : true,
+      "pretext_task" : "flip",
       "downsample_factor": 2
     },
     "dataloader": {
@@ -14,11 +14,11 @@
       "shuffle": true
     },
     "pretrained_model": {
-      "model_name": "model_v3.2"
+      "model_name": "model_v5.1"
     },
     "training": {
-      "epochs": 200,
+      "epochs": 100,
       "learning_rate": 1e-5,
-      "labeled_percentage":0.2
+      "seeds":5
     }
 }

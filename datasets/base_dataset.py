@@ -158,7 +158,7 @@ class BaseDataset(Dataset):
         
         if self.pretext_task == 'flip':
             # tentative de pretext_task
-            X_tilde = torch.cat((X_tilde,torch.pretext_task(X_tilde, [0])))
+            X_tilde = torch.cat((X_tilde,torch.flip(X_tilde, [0])))
             # X_tilde = 2*X_tilde
 
         return {'X_tilde':X_tilde, 'X_true':X_true, 'label':label, 'metadata':metadata}
