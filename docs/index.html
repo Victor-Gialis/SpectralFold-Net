@@ -250,6 +250,116 @@
       margin-bottom: 5px;
     }
     
+    .table-card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+    
+    .table-container {
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+    
+    .performance-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9em;
+      background: white;
+    }
+    
+    .performance-table thead {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    .performance-table th {
+      padding: 15px 10px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .performance-table td {
+      padding: 12px 10px;
+      text-align: center;
+      border-bottom: 1px solid #e2e8f0;
+      transition: background-color 0.2s ease;
+    }
+    
+    .performance-table tbody tr:hover {
+      background-color: #f7fafc;
+    }
+    
+    .row-label {
+      font-weight: 600;
+      text-align: left !important;
+      color: #2d3748;
+      padding-left: 20px !important;
+    }
+    
+    .row-summary {
+      background-color: #f7fafc;
+      border-top: 2px solid #667eea;
+    }
+    
+    .value-excellent {
+      background-color: #c6f6d5;
+      color: #22543d;
+      font-weight: 500;
+    }
+    
+    .value-good {
+      background-color: #bee3f8;
+      color: #2c5282;
+      font-weight: 500;
+    }
+    
+    .value-warning {
+      background-color: #fed7d7;
+      color: #742a2a;
+      font-weight: 500;
+    }
+    
+    .value-avg {
+      background-color: #fef3c7;
+      color: #78350f;
+      font-weight: 500;
+    }
+    
+    .legend-container {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f7fafc;
+      border-radius: 8px;
+    }
+    
+    .legend-items {
+      display: flex;
+      gap: 25px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      font-size: 0.9em;
+      color: #4a5568;
+    }
+    
+    .legend-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      margin-right: 8px;
+      display: inline-block;
+    }
+    
     footer {
       background: #2d3748;
       color: white;
@@ -372,12 +482,131 @@
       <!-- Section analyse -->
       <div class="section">
         <h2>📊 Analyse de Performance</h2>
-        <div class="card-grid">
+        
+        <div class="performance-section">
+          <h3 style="color: #4a5568; font-size: 1.3em; margin: 0 0 15px 0;">Qualité de Reconstruction — Pré-entraînement</h3>
+          <div class="table-card">
+            <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.6;">
+              <strong>Ratio MSE/Variance des signaux</strong> — Ce tableau présente la qualité de reconstruction du modèle en normalisant l'erreur quadratique moyenne (MSE) par la variance des signaux d'origine. Plus la valeur est faible, meilleure est la reconstruction.
+            </p>
+            
+            <div class="table-container">
+              <table class="performance-table">
+                <thead>
+                  <tr>
+                    <th>Vitesse</th>
+                    <th>Normal</th>
+                    <th>Inner 7</th>
+                    <th>Inner 14</th>
+                    <th>Inner 21</th>
+                    <th>Outer 7</th>
+                    <th>Outer 14</th>
+                    <th>Outer 21</th>
+                    <th>Ball 7</th>
+                    <th>Ball 14</th>
+                    <th>Ball 21</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="row-label">1730 rpm</td>
+                    <td class="value-excellent">1,61%</td>
+                    <td class="value-good">5,73%</td>
+                    <td class="value-warning">15,43%</td>
+                    <td class="value-good">6,61%</td>
+                    <td class="value-excellent">3,63%</td>
+                    <td class="value-excellent">1,44%</td>
+                    <td class="value-good">8,87%</td>
+                    <td class="value-good">7,56%</td>
+                    <td class="value-warning">17,47%</td>
+                    <td class="value-good">6,57%</td>
+                  </tr>
+                  <tr>
+                    <td class="row-label">1750 rpm</td>
+                    <td class="value-excellent">1,70%</td>
+                    <td class="value-good">6,11%</td>
+                    <td class="value-warning">15,71%</td>
+                    <td class="value-good">5,41%</td>
+                    <td class="value-excellent">3,59%</td>
+                    <td class="value-excellent">2,51%</td>
+                    <td class="value-warning">12,01%</td>
+                    <td class="value-good">9,90%</td>
+                    <td class="value-warning">14,33%</td>
+                    <td class="value-good">5,62%</td>
+                  </tr>
+                  <tr>
+                    <td class="row-label">1772 rpm</td>
+                    <td class="value-excellent">1,63%</td>
+                    <td class="value-good">5,91%</td>
+                    <td class="value-warning">15,89%</td>
+                    <td class="value-good">5,32%</td>
+                    <td class="value-excellent">3,64%</td>
+                    <td class="value-good">6,32%</td>
+                    <td class="value-warning">11,78%</td>
+                    <td class="value-warning">18,17%</td>
+                    <td class="value-warning">16,14%</td>
+                    <td class="value-good">7,03%</td>
+                  </tr>
+                  <tr>
+                    <td class="row-label">1797 rpm</td>
+                    <td class="value-excellent">1,57%</td>
+                    <td class="value-good">4,96%</td>
+                    <td class="value-good">8,72%</td>
+                    <td class="value-good">5,14%</td>
+                    <td class="value-good">5,17%</td>
+                    <td class="value-excellent">3,19%</td>
+                    <td class="value-good">4,92%</td>
+                    <td class="value-good">9,98%</td>
+                    <td class="value-warning">13,85%</td>
+                    <td class="value-good">7,38%</td>
+                  </tr>
+                  <tr class="row-summary">
+                    <td class="row-label"><strong>Moyenne</strong></td>
+                    <td class="value-excellent"><strong>1,63%</strong></td>
+                    <td class="value-good"><strong>5,68%</strong></td>
+                    <td class="value-warning"><strong>13,94%</strong></td>
+                    <td class="value-good"><strong>5,62%</strong></td>
+                    <td class="value-excellent"><strong>4,01%</strong></td>
+                    <td class="value-excellent"><strong>3,37%</strong></td>
+                    <td class="value-good"><strong>9,40%</strong></td>
+                    <td class="value-warning"><strong>10,15%</strong></td>
+                    <td class="value-warning"><strong>15,45%</strong></td>
+                    <td class="value-good"><strong>6,65%</strong></td>
+                  </tr>
+                  <tr class="row-summary">
+                    <td class="row-label"><strong>Écart-type</strong></td>
+                    <td class="value-excellent"><strong>0,06%</strong></td>
+                    <td class="value-excellent"><strong>0,50%</strong></td>
+                    <td class="value-excellent"><strong>3,48%</strong></td>
+                    <td class="value-excellent"><strong>0,67%</strong></td>
+                    <td class="value-excellent"><strong>0,78%</strong></td>
+                    <td class="value-excellent"><strong>2,09%</strong></td>
+                    <td class="value-excellent"><strong>3,31%</strong></td>
+                    <td class="value-excellent"><strong>2,31%</strong></td>
+                    <td class="value-excellent"><strong>1,67%</strong></td>
+                    <td class="value-excellent"><strong>0,76%</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <div class="legend-container">
+              <p style="font-size: 0.9em; color: #4a5568; margin-top: 15px;"><strong>Légende :</strong></p>
+              <div class="legend-items">
+                <span class="legend-item"><span class="legend-dot value-excellent"></span> Excellent (&lt; 4%)</span>
+                <span class="legend-item"><span class="legend-dot value-good"></span> Bon (4-10%)</span>
+                <span class="legend-item"><span class="legend-dot value-warning"></span> À améliorer (&gt; 10%)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-grid" style="margin-top: 30px;">
           <div class="card">
             <a href="loss_by_label_speed.html">
-              <div class="card-label">Analyse MSE — Pré-entraînement</div>
-              <div class="card-description">Erreur de reconstruction (MSE) par type de défaut et vitesse de rotation (RPM)</div>
-              <span class="status-badge status-analysis">Phase de pré-entraînement</span>
+              <div class="card-label">Analyse MSE détaillée</div>
+              <div class="card-description">Visualisation interactive de l'erreur de reconstruction par type de défaut et vitesse de rotation (RPM)</div>
+              <span class="status-badge status-analysis">Graphique interactif</span>
             </a>
           </div>
         </div>
@@ -390,10 +619,10 @@
               <p><strong>Score F1 vs. Pourcentage de données étiquetées</strong></p>
               <p>Comparaison des performances de classification selon 4 configurations :</p>
               <ul style="margin-top: 10px; line-height: 1.8;">
-                <li>🔴 Backbone pré-entraîné (pretrain) + Fine-tuning complet (finetune) </li>
-                <li>🟢 Backbone pré-entraîné (pretrain) + Backbone figé (frozen) </li>
-                <li>🔵Backbone non pré-entraîné (scratch) + Fine-tuning complet (finetune) </li>
-                <li>🟠 Backbone non pré-entraîné (scratch) + Backbone figé (frozen) </li>
+                <li>🔴 Backbone pré-entraîné + Fine-tuning complet</li>
+                <li>🔵 Backbone non pré-entraîné (from scratch) + Fine-tuning complet</li>
+                <li>🟢 Backbone pré-entraîné + Backbone figé</li>
+                <li>🟠 Backbone non pré-entraîné + Backbone figé</li>
               </ul>
               <p style="margin-top: 15px; font-style: italic; color: #718096;">
                 Cette analyse démontre l'efficacité du pré-entraînement, particulièrement dans les régimes de données limitées.
