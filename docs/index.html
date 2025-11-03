@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SpectralFolded-Net — Résultats interactifs</title>
+  <title>SpectralFold-Net — Résultats interactifs</title>
   <style>
     * {
       margin: 0;
@@ -325,6 +325,12 @@
       font-weight: 500;
     }
     
+    .value-critical {
+      background-color: #fc8181;
+      color: #742a2a;
+      font-weight: 600;
+    }
+    
     .value-avg {
       background-color: #fef3c7;
       color: #78350f;
@@ -487,7 +493,7 @@
           <h3 style="color: #4a5568; font-size: 1.3em; margin: 0 0 15px 0;">Qualité de Reconstruction — Pré-entraînement</h3>
           <div class="table-card">
             <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.6;">
-              <strong>Ratio MSE/Variance des signaux</strong> — Ce tableau présente la qualité de reconstruction du modèle en normalisant l'erreur quadratique moyenne (MSE) par la variance des signaux d'origine. Plus la valeur est faible, meilleure est la reconstruction.
+              <strong>Pourcentage MSE par rapport à la variance totale</strong> — Ce tableau présente l'erreur quadratique moyenne (MSE) normalisée par la variance globale de la base de données (3,11×10⁻⁵). Plus la valeur est faible, meilleure est la reconstruction.
             </p>
             
             <div class="table-container">
@@ -510,81 +516,68 @@
                 <tbody>
                   <tr>
                     <td class="row-label">1730 rpm</td>
-                    <td class="value-excellent">1,61%</td>
-                    <td class="value-good">5,73%</td>
-                    <td class="value-warning">15,43%</td>
-                    <td class="value-good">6,61%</td>
-                    <td class="value-excellent">3,63%</td>
-                    <td class="value-excellent">1,44%</td>
-                    <td class="value-good">8,87%</td>
-                    <td class="value-good">7,56%</td>
-                    <td class="value-warning">17,47%</td>
-                    <td class="value-good">6,57%</td>
+                    <td class="value-excellent">0,12%</td>
+                    <td class="value-excellent">3,60%</td>
+                    <td class="value-excellent">2,51%</td>
+                    <td class="value-good">6,18%</td>
+                    <td class="value-excellent">2,74%</td>
+                    <td class="value-warning">10,39%</td>
+                    <td class="value-excellent">2,00%</td>
+                    <td class="value-excellent">1,05%</td>
+                    <td class="value-good">7,37%</td>
+                    <td class="value-excellent">2,21%</td>
                   </tr>
                   <tr>
                     <td class="row-label">1750 rpm</td>
-                    <td class="value-excellent">1,70%</td>
-                    <td class="value-good">6,11%</td>
-                    <td class="value-warning">15,71%</td>
-                    <td class="value-good">5,41%</td>
-                    <td class="value-excellent">3,59%</td>
+                    <td class="value-excellent">0,10%</td>
+                    <td class="value-excellent">3,45%</td>
+                    <td class="value-excellent">2,41%</td>
+                    <td class="value-good">5,54%</td>
                     <td class="value-excellent">2,51%</td>
-                    <td class="value-warning">12,01%</td>
-                    <td class="value-good">9,90%</td>
-                    <td class="value-warning">14,33%</td>
-                    <td class="value-good">5,62%</td>
+                    <td class="value-good">5,96%</td>
+                    <td class="value-excellent">1,90%</td>
+                    <td class="value-excellent">1,61%</td>
+                    <td class="value-warning">12,56%</td>
+                    <td class="value-excellent">1,88%</td>
                   </tr>
                   <tr>
                     <td class="row-label">1772 rpm</td>
-                    <td class="value-excellent">1,63%</td>
-                    <td class="value-good">5,91%</td>
-                    <td class="value-warning">15,89%</td>
-                    <td class="value-good">5,32%</td>
-                    <td class="value-excellent">3,64%</td>
-                    <td class="value-good">6,32%</td>
-                    <td class="value-warning">11,78%</td>
-                    <td class="value-warning">18,17%</td>
-                    <td class="value-warning">16,14%</td>
-                    <td class="value-good">7,03%</td>
+                    <td class="value-excellent">0,10%</td>
+                    <td class="value-excellent">3,62%</td>
+                    <td class="value-excellent">2,72%</td>
+                    <td class="value-good">5,52%</td>
+                    <td class="value-excellent">2,52%</td>
+                    <td class="value-good">6,20%</td>
+                    <td class="value-excellent">3,03%</td>
+                    <td class="value-excellent">1,83%</td>
+                    <td class="value-good">6,09%</td>
+                    <td class="value-excellent">2,27%</td>
                   </tr>
                   <tr>
                     <td class="row-label">1797 rpm</td>
-                    <td class="value-excellent">1,57%</td>
-                    <td class="value-good">4,96%</td>
-                    <td class="value-good">8,72%</td>
-                    <td class="value-good">5,14%</td>
-                    <td class="value-good">5,17%</td>
-                    <td class="value-excellent">3,19%</td>
-                    <td class="value-good">4,92%</td>
-                    <td class="value-good">9,98%</td>
-                    <td class="value-warning">13,85%</td>
-                    <td class="value-good">7,38%</td>
+                    <td class="value-excellent">0,14%</td>
+                    <td class="value-excellent">4,34%</td>
+                    <td class="value-excellent">2,74%</td>
+                    <td class="value-good">6,32%</td>
+                    <td class="value-good">4,63%</td>
+                    <td class="value-warning">21,19%</td>
+                    <td class="value-critical">37,56%</td>
+                    <td class="value-excellent">2,25%</td>
+                    <td class="value-good">7,11%</td>
+                    <td class="value-excellent">1,85%</td>
                   </tr>
                   <tr class="row-summary">
                     <td class="row-label"><strong>Moyenne</strong></td>
-                    <td class="value-excellent"><strong>1,63%</strong></td>
-                    <td class="value-good"><strong>5,68%</strong></td>
-                    <td class="value-warning"><strong>13,94%</strong></td>
-                    <td class="value-good"><strong>5,62%</strong></td>
-                    <td class="value-excellent"><strong>4,01%</strong></td>
-                    <td class="value-excellent"><strong>3,37%</strong></td>
-                    <td class="value-good"><strong>9,40%</strong></td>
-                    <td class="value-warning"><strong>10,15%</strong></td>
-                    <td class="value-warning"><strong>15,45%</strong></td>
-                    <td class="value-good"><strong>6,65%</strong></td>
-                  </tr>
-                  <tr class="row-summary">
-                    <td class="row-label"><strong>Écart-type</strong></td>
-                    <td class="value-excellent"><strong>0,06%</strong></td>
-                    <td class="value-excellent"><strong>0,50%</strong></td>
-                    <td class="value-excellent"><strong>3,48%</strong></td>
-                    <td class="value-excellent"><strong>0,67%</strong></td>
-                    <td class="value-excellent"><strong>0,78%</strong></td>
-                    <td class="value-excellent"><strong>2,09%</strong></td>
-                    <td class="value-excellent"><strong>3,31%</strong></td>
-                    <td class="value-excellent"><strong>2,31%</strong></td>
-                    <td class="value-excellent"><strong>1,67%</strong></td>
-                    <td class="value-excellent"><strong>0,76%</strong></td>
+                    <td class="value-excellent"><strong>0,11%</strong></td>
+                    <td class="value-excellent"><strong>3,75%</strong></td>
+                    <td class="value-excellent"><strong>2,59%</strong></td>
+                    <td class="value-good"><strong>5,89%</strong></td>
+                    <td class="value-excellent"><strong>3,10%</strong></td>
+                    <td class="value-warning"><strong>10,94%</strong></td>
+                    <td class="value-warning"><strong>11,12%</strong></td>
+                    <td class="value-excellent"><strong>1,68%</strong></td>
+                    <td class="value-good"><strong>8,28%</strong></td>
+                    <td class="value-excellent"><strong>2,05%</strong></td>
                   </tr>
                 </tbody>
               </table>
@@ -595,7 +588,8 @@
               <div class="legend-items">
                 <span class="legend-item"><span class="legend-dot value-excellent"></span> Excellent (&lt; 4%)</span>
                 <span class="legend-item"><span class="legend-dot value-good"></span> Bon (4-10%)</span>
-                <span class="legend-item"><span class="legend-dot value-warning"></span> À améliorer (&gt; 10%)</span>
+                <span class="legend-item"><span class="legend-dot value-warning"></span> À améliorer (10-20%)</span>
+                <span class="legend-item"><span class="legend-dot value-critical"></span> Critique (&gt; 20%)</span>
               </div>
             </div>
           </div>
