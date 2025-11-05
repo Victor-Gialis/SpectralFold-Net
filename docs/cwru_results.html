@@ -60,6 +60,24 @@
       background-size: 50px 50px;
       animation: moveGrid 20s linear infinite;
     }
+
+    .back-button {
+      display: inline-block;
+      margin: 20px 40px;
+      padding: 12px 25px;
+      background: white;
+      color: #2f855a;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .back-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
     
     @keyframes moveGrid {
       0% {
