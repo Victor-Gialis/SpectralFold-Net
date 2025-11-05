@@ -5,6 +5,115 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SpectralFold-Net — Résultats LASPI</title>
   <style>
+    .performance-section {
+      margin-top: 30px;
+    }
+    
+    .table-card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+    
+    .table-container {
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+    
+    .performance-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9em;
+      background: white;
+    }
+    
+    .performance-table thead {
+      background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+      color: white;
+    }
+    
+    .performance-table th {
+      padding: 15px 10px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .performance-table td {
+      padding: 12px 10px;
+      text-align: center;
+      border-bottom: 1px solid #e2e8f0;
+      transition: background-color 0.2s ease;
+    }
+    
+    .performance-table tbody tr:hover {
+      background-color: #f7fafc;
+    }
+    
+    .row-label {
+      font-weight: 600;
+      text-align: left !important;
+      color: #2d3748;
+      padding-left: 20px !important;
+    }
+    
+    .value-excellent {
+      background-color: #c6f6d5;
+      color: #22543d;
+      font-weight: 500;
+    }
+    
+    .value-good {
+      background-color: #bee3f8;
+      color: #2c5282;
+      font-weight: 500;
+    }
+    
+    .value-warning {
+      background-color: #fef3c7;
+      color: #78350f;
+      font-weight: 500;
+    }
+    
+    .value-critical {
+      background-color: #fed7d7;
+      color: #742a2a;
+      font-weight: 600;
+    }
+    
+    .legend-container {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f7fafc;
+      border-radius: 8px;
+    }
+    
+    .legend-items {
+      display: flex;
+      gap: 25px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      font-size: 0.9em;
+      color: #4a5568;
+    }
+    
+    .legend-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      margin-right: 8px;
+      display: inline-block;
+    }
+
     * {
       margin: 0;
       padding: 0;
