@@ -5,115 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SpectralFold-Net — Résultats LASPI</title>
   <style>
-    .performance-section {
-      margin-top: 30px;
-    }
-    
-    .table-card {
-      background: white;
-      border-radius: 12px;
-      padding: 30px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      margin-top: 20px;
-    }
-    
-    .table-container {
-      overflow-x: auto;
-      margin-top: 20px;
-    }
-    
-    .performance-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9em;
-      background: white;
-    }
-    
-    .performance-table thead {
-      background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-      color: white;
-    }
-    
-    .performance-table th {
-      padding: 15px 10px;
-      text-align: center;
-      font-weight: 600;
-      font-size: 0.85em;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    
-    .performance-table td {
-      padding: 12px 10px;
-      text-align: center;
-      border-bottom: 1px solid #e2e8f0;
-      transition: background-color 0.2s ease;
-    }
-    
-    .performance-table tbody tr:hover {
-      background-color: #f7fafc;
-    }
-    
-    .row-label {
-      font-weight: 600;
-      text-align: left !important;
-      color: #2d3748;
-      padding-left: 20px !important;
-    }
-    
-    .value-excellent {
-      background-color: #c6f6d5;
-      color: #22543d;
-      font-weight: 500;
-    }
-    
-    .value-good {
-      background-color: #bee3f8;
-      color: #2c5282;
-      font-weight: 500;
-    }
-    
-    .value-warning {
-      background-color: #fef3c7;
-      color: #78350f;
-      font-weight: 500;
-    }
-    
-    .value-critical {
-      background-color: #fed7d7;
-      color: #742a2a;
-      font-weight: 600;
-    }
-    
-    .legend-container {
-      margin-top: 20px;
-      padding: 15px;
-      background: #f7fafc;
-      border-radius: 8px;
-    }
-    
-    .legend-items {
-      display: flex;
-      gap: 25px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-    
-    .legend-item {
-      display: flex;
-      align-items: center;
-      font-size: 0.9em;
-      color: #4a5568;
-    }
-    
-    .legend-dot {
-      width: 20px;
-      height: 20px;
-      border-radius: 4px;
-      margin-right: 8px;
-      display: inline-block;
-    }
-
     * {
       margin: 0;
       padding: 0;
@@ -349,6 +240,120 @@
       color: #78350f;
     }
     
+    .performance-section {
+      margin-top: 30px;
+    }
+    
+    .table-card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+    
+    .table-container {
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+    
+    .performance-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9em;
+      background: white;
+    }
+    
+    .performance-table thead {
+      background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+      color: white;
+    }
+    
+    .performance-table th {
+      padding: 15px 10px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .performance-table td {
+      padding: 12px 10px;
+      text-align: center;
+      border-bottom: 1px solid #e2e8f0;
+      transition: background-color 0.2s ease;
+    }
+    
+    .performance-table tbody tr:hover {
+      background-color: #f7fafc;
+    }
+    
+    .row-label {
+      font-weight: 600;
+      text-align: left !important;
+      color: #2d3748;
+      padding-left: 20px !important;
+    }
+    
+    .row-summary {
+      background-color: #f7fafc;
+      border-top: 2px solid #48bb78;
+    }
+    
+    .value-excellent {
+      background-color: #c6f6d5;
+      color: #22543d;
+      font-weight: 500;
+    }
+    
+    .value-good {
+      background-color: #bee3f8;
+      color: #2c5282;
+      font-weight: 500;
+    }
+    
+    .value-warning {
+      background-color: #fef3c7;
+      color: #78350f;
+      font-weight: 500;
+    }
+    
+    .value-critical {
+      background-color: #fed7d7;
+      color: #742a2a;
+      font-weight: 600;
+    }
+    
+    .legend-container {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f7fafc;
+      border-radius: 8px;
+    }
+    
+    .legend-items {
+      display: flex;
+      gap: 25px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      font-size: 0.9em;
+      color: #4a5568;
+    }
+    
+    .legend-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      margin-right: 8px;
+      display: inline-block;
+    }
+    
     footer {
       background: #2f855a;
       color: white;
@@ -467,186 +472,200 @@
           </div>
         </div>
       </div>
-    </div>
-    
-    <!-- Section analyse -->
-    <div class="section">
-      <h2>📊 Analyse de Performance — LASPI</h2>
       
-      <div class="performance-section">
-        <h3 style="color: #2f855a; font-size: 1.3em; margin: 0 0 15px 0;">Qualité de Reconstruction — Transfert CWRU → LASPI</h3>
-        <div class="table-card">
-          <p style="margin-bottom: 20px; color: #22543d; line-height: 1.6;">
-            <strong>Pourcentage MSE par rapport à la variance totale</strong> — Ce tableau présente l'erreur quadratique moyenne (MSE) normalisée par la variance globale de la base LASPI (3,1219×10⁻⁵). Plus la valeur est faible, meilleure est la reconstruction.
-          </p>
-
-          <!-- Tableau 1 : Vitesse en fonction du type de défaut -->
-          <h4 style="margin-top: 30px; color: #2d3748;">1️⃣ Vitesse en fonction du type de défaut</h4>
-          <div class="table-container">
-            <table class="performance-table">
-              <thead>
-                <tr>
-                  <th>Vitesse</th>
-                  <th>Normal</th>
-                  <th>Inner</th>
-                  <th>Outer</th>
-                  <th>Gear Half</th>
-                  <th>Gear Surface</th>
-                  <th>Gear Surface + Inner</th>
-                  <th>Gear Surface + Outer</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="row-label">1500 rpm</td>
-                  <td class="value-excellent">2,07%</td>
-                  <td class="value-excellent">3,91%</td>
-                  <td class="value-excellent">4,13%</td>
-                  <td class="value-good">4,32%</td>
-                  <td class="value-good">4,48%</td>
-                  <td class="value-good">6,18%</td>
-                  <td class="value-excellent">0,00%</td>
-                </tr>
-                <tr>
-                  <td class="row-label">2100 rpm</td>
-                  <td class="value-warning">13,13%</td>
-                  <td class="value-warning">19,32%</td>
-                  <td class="value-warning">18,93%</td>
-                  <td class="value-warning">33,63%</td>
-                  <td class="value-warning">29,79%</td>
-                  <td class="value-warning">28,32%</td>
-                  <td class="value-excellent">0,00%</td>
-                </tr>
-                <tr>
-                  <td class="row-label">2700 rpm</td>
-                  <td class="value-warning">21,59%</td>
-                  <td class="value-warning">30,94%</td>
-                  <td class="value-critical">172,33%</td>
-                  <td class="value-warning">37,16%</td>
-                  <td class="value-warning">35,23%</td>
-                  <td class="value-warning">32,99%</td>
-                  <td class="value-excellent">0,00%</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Tableau 2 : Charge en fonction du type de défaut -->
-          <h4 style="margin-top: 40px; color: #2d3748;">2️⃣ Charge en fonction du type de défaut</h4>
-          <div class="table-container">
-            <table class="performance-table">
-              <thead>
-                <tr>
-                  <th>Charge</th>
-                  <th>Normal</th>
-                  <th>Inner</th>
-                  <th>Outer</th>
-                  <th>Gear Half</th>
-                  <th>Gear Surface</th>
-                  <th>Gear Surface + Inner</th>
-                  <th>Gear Surface + Outer</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="row-label">0%</td>
-                  <td class="value-good">6,18%</td>
-                  <td class="value-good">7,40%</td>
-                  <td class="value-good">10,70%</td>
-                  <td class="value-good">10,28%</td>
-                  <td class="value-good">10,31%</td>
-                  <td class="value-good">10,79%</td>
-                  <td class="value-excellent">0,00%</td>
-                </tr>
-                <tr>
-                  <td class="row-label">25%</td>
-                  <td class="value-warning">9,93%</td>
-                  <td class="value-warning">12,78%</td>
-                  <td class="value-warning">14,61%</td>
-                  <td class="value-warning">20,18%</td>
-                  <td class="value-warning">20,82%</td>
-                  <td class="value-warning">20,31%</td>
-                  <td class="value-excellent">0,00%</td>
-                </tr>
-                <tr>
-                  <td class="row-label">50%</td>
-                  <td class="value-warning">12,81%</td>
-                  <td class="value-warning">23,00%</td>
-                  <td class="value-warning">18,83%</td>
-                  <td class="value-warning">31,42%</td>
-                  <td class="value-warning">29,79%</td>
-                  <td class="value-warning">30,59%</td>
-                  <td class="value-excellent">0,00%</td>
-                </tr>
-                <tr>
-                  <td class="row-label">75%</td>
-                  <td class="value-warning">20,12%</td>
-                  <td class="value-warning">29,02%</td>
-                  <td class="value-critical">216,21%</td>
-                  <td class="value-warning">38,12%</td>
-                  <td class="value-warning">31,74%</td>
-                  <td class="value-warning">28,32%</td>
-                  <td class="value-excellent">0,00%</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Tableau 3 : Charge en fonction de la vitesse -->
-          <h4 style="margin-top: 40px; color: #2d3748;">3️⃣ Charge en fonction de la vitesse</h4>
-          <div class="table-container">
-            <table class="performance-table">
-              <thead>
-                <tr>
-                  <th>Charge</th>
-                  <th>1500 rpm</th>
-                  <th>2100 rpm</th>
-                  <th>2700 rpm</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="row-label">0%</td>
-                  <td class="value-excellent">2,14%</td>
-                  <td class="value-good">8,15%</td>
-                  <td class="value-warning">17,54%</td>
-                </tr>
-                <tr>
-                  <td class="row-label">25%</td>
-                  <td class="value-good">3,62%</td>
-                  <td class="value-warning">18,59%</td>
-                  <td class="value-warning">27,09%</td>
-                </tr>
-                <tr>
-                  <td class="row-label">50%</td>
-                  <td class="value-good">5,60%</td>
-                  <td class="value-warning">33,74%</td>
-                  <td class="value-warning">50,70%</td>
-                </tr>
-                <tr>
-                  <td class="row-label">75%</td>
-                  <td class="value-good">5,37%</td>
-                  <td class="value-warning">34,87%</td>
-                  <td class="value-critical">141,49%</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="legend-container">
-            <p style="font-size: 0.9em; color: #22543d; margin-top: 15px;"><strong>Légende :</strong></p>
-            <div class="legend-items">
-              <span class="legend-item"><span class="legend-dot value-excellent"></span> Excellent (&lt; 5%)</span>
-              <span class="legend-item"><span class="legend-dot value-good"></span> Bon (5–15%)</span>
-              <span class="legend-item"><span class="legend-dot value-warning"></span> À améliorer (15–40%)</span>
-              <span class="legend-item"><span class="legend-dot value-critical"></span> Critique (&gt; 40%)</span>
+      <!-- Section analyse -->
+      <div class="section">
+        <h2>📊 Analyse de Performance</h2>
+        
+        <div class="performance-section">
+          <h3 style="color: #4a5568; font-size: 1.3em; margin: 0 0 15px 0;">Qualité de Reconstruction — Transfert CWRU → LASPI</h3>
+          <div class="table-card">
+            <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.6;">
+              <strong>Pourcentage MSE par rapport à la variance totale</strong> — Ce tableau présente l'erreur quadratique moyenne (MSE) normalisée par la variance globale de la base LASPI (3,12×10⁻⁵). Plus la valeur est faible, meilleure est la reconstruction.
+            </p>
+            
+            <!-- Tableau 1 : Vitesse en fonction du type de défaut -->
+            <h4 style="margin-top: 25px; margin-bottom: 15px; color: #2d3748; font-size: 1.1em;">1️⃣ MSE par Vitesse et Type de Défaut</h4>
+            <div class="table-container">
+              <table class="performance-table">
+                <thead>
+                  <tr>
+                    <th>Vitesse</th>
+                    <th>Normal</th>
+                    <th>Inner</th>
+                    <th>Outer</th>
+                    <th>Gear Half</th>
+                    <th>Gear Surface</th>
+                    <th>Gear Surf. + Inner</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="row-label">1500 rpm</td>
+                    <td class="value-excellent">2,07%</td>
+                    <td class="value-excellent">3,91%</td>
+                    <td class="value-excellent">4,13%</td>
+                    <td class="value-good">4,32%</td>
+                    <td class="value-good">4,48%</td>
+                    <td class="value-good">6,18%</td>
+                  </tr>
+                  <tr>
+                    <td class="row-label">2100 rpm</td>
+                    <td class="value-warning">13,13%</td>
+                    <td class="value-warning">19,32%</td>
+                    <td class="value-warning">18,93%</td>
+                    <td class="value-critical">33,63%</td>
+                    <td class="value-warning">29,79%</td>
+                    <td class="value-warning">28,32%</td>
+                  </tr>
+                  <tr>
+                    <td class="row-label">2700 rpm</td>
+                    <td class="value-warning">21,59%</td>
+                    <td class="value-warning">30,94%</td>
+                    <td class="value-critical">172,33%</td>
+                    <td class="value-critical">37,16%</td>
+                    <td class="value-critical">35,23%</td>
+                    <td class="value-critical">32,99%</td>
+                  </tr>
+                  <tr class="row-summary">
+                    <td class="row-label"><strong>Moyenne</strong></td>
+                    <td class="value-warning"><strong>12,26%</strong></td>
+                    <td class="value-warning"><strong>18,06%</strong></td>
+                    <td class="value-critical"><strong>65,13%</strong></td>
+                    <td class="value-warning"><strong>25,04%</strong></td>
+                    <td class="value-warning"><strong>23,17%</strong></td>
+                    <td class="value-warning"><strong>22,50%</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Tableau 2 : Charge en fonction du type de défaut -->
+            <h4 style="margin-top: 40px; margin-bottom: 15px; color: #2d3748; font-size: 1.1em;">2️⃣ MSE par Charge et Type de Défaut</h4>
+            <div class="table-container">
+              <table class="performance-table">
+                <thead>
+                  <tr>
+                    <th>Charge</th>
+                    <th>Normal</th>
+                    <th>Inner</th>
+                    <th>Outer</th>
+                    <th>Gear Half</th>
+                    <th>Gear Surface</th>
+                    <th>Gear Surf. + Inner</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="row-label">0%</td>
+                    <td class="value-good">6,18%</td>
+                    <td class="value-good">7,40%</td>
+                    <td class="value-warning">10,70%</td>
+                    <td class="value-warning">10,28%</td>
+                    <td class="value-warning">10,31%</td>
+                    <td class="value-warning">10,79%</td>
+                  </tr>
+                  <tr>
+                    <td class="row-label">25%</td>
+                    <td class="value-good">9,93%</td>
+                    <td class="value-warning">12,78%</td>
+                    <td class="value-warning">14,61%</td>
+                    <td class="value-warning">20,18%</td>
+                    <td class="value-warning">20,82%</td>
+                    <td class="value-warning">20,31%</td>
+                  </tr>
+                  <tr>
+                    <td class="row-label">50%</td>
+                    <td class="value-warning">12,81%</td>
+                    <td class="value-warning">23,00%</td>
+                    <td class="value-warning">18,83%</td>
+                    <td class="value-critical">31,42%</td>
+                    <td class="value-warning">29,79%</td>
+                    <td class="value-critical">30,59%</td>
+                  </tr>
+                  <tr>
+                    <td class="row-label">75%</td>
+                    <td class="value-warning">20,12%</td>
+                    <td class="value-warning">29,02%</td>
+                    <td class="value-critical">216,21%</td>
+                    <td class="value-critical">38,12%</td>
+                    <td class="value-critical">31,74%</td>
+                    <td class="value-warning">28,32%</td>
+                  </tr>
+                  <tr class="row-summary">
+                    <td class="row-label"><strong>Moyenne</strong></td>
+                    <td class="value-warning"><strong>12,26%</strong></td>
+                    <td class="value-warning"><strong>18,05%</strong></td>
+                    <td class="value-critical"><strong>65,09%</strong></td>
+                    <td class="value-warning"><strong>25,00%</strong></td>
+                    <td class="value-warning"><strong>23,17%</strong></td>
+                    <td class="value-warning"><strong>22,50%</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Tableau 3 : Charge en fonction de la vitesse -->
+            <h4 style="margin-top: 40px; margin-bottom: 15px; color: #2d3748; font-size: 1.1em;">3️⃣ MSE par Charge et Vitesse</h4>
+            <div class="table-container">
+              <table class="performance-table">
+                <thead>
+                  <tr>
+                    <th>Charge</th>
+                    <th>1500 rpm</th>
+                    <th>2100 rpm</th>
+                    <th>2700 rpm</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="row-label">0%</td>
+                    <td class="value-excellent">2,14%</td>
+                    <td class="value-good">8,15%</td>
+                    <td class="value-warning">17,54%</td>
+                  </tr>
+                  <tr>
+                    <td class="row-label">25%</td>
+                    <td class="value-excellent">3,62%</td>
+                    <td class="value-warning">18,59%</td>
+                    <td class="value-warning">27,09%</td>
+                  </tr>
+                  <tr>
+                    <td class="row-label">50%</td>
+                    <td class="value-good">5,60%</td>
+                    <td class="value-critical">33,74%</td>
+                    <td class="value-critical">50,70%</td>
+                  </tr>
+                  <tr>
+                    <td class="row-label">75%</td>
+                    <td class="value-good">5,37%</td>
+                    <td class="value-critical">34,87%</td>
+                    <td class="value-critical">141,49%</td>
+                  </tr>
+                  <tr class="row-summary">
+                    <td class="row-label"><strong>Moyenne</strong></td>
+                    <td class="value-excellent"><strong>4,18%</strong></td>
+                    <td class="value-warning"><strong>23,84%</strong></td>
+                    <td class="value-critical"><strong>59,21%</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <div class="legend-container">
+              <p style="font-size: 0.9em; color: #4a5568; margin-top: 15px;"><strong>Légende :</strong></p>
+              <div class="legend-items">
+                <span class="legend-item"><span class="legend-dot value-excellent"></span> Excellent (&lt; 5%)</span>
+                <span class="legend-item"><span class="legend-dot value-good"></span> Bon (5-15%)</span>
+                <span class="legend-item"><span class="legend-dot value-warning"></span> À améliorer (15-40%)</span>
+                <span class="legend-item"><span class="legend-dot value-critical"></span> Critique (&gt; 40%)</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-
+    
     <footer>
       <p><em>Maintenu par Victor — SpectralFold-Net © 2025</em></p>
       <p style="margin-top: 10px; opacity: 0.7; font-size: 0.9em;">Analyse vibratoire avancée pour la détection de défauts dans les roulements</p>
