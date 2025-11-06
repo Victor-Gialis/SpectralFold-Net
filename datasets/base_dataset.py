@@ -16,6 +16,7 @@ class Sample:
 class SampleWindow:
     filepath: str
     label: str = None
+    data : torch.tensor = None
     start_idx: int = 0
     metadata: dict = None
 
@@ -80,10 +81,10 @@ class BaseDataset(Dataset):
             signal_length = data.shape[-1] # Longueur du signal, supposé être le dernier axe
 
             if self.window_size is None or self.stride is None:
-                self.windows.append(SampleWindow(filepath=sample.filepath, label=sample.label, start_idx=0, metadata=sample.metadata))
+                self.windows.append(SampleWindow(filepath=sample.filepath, label=sample.label, data=data, start_idx=0, metadata=sample.metadata))
             else:
                 for start in range(0, signal_length - self.window_size + 1, self.stride):
-                    self.windows.append(SampleWindow(filepath=sample.filepath, label=sample.label, start_idx=start, metadata=sample.metadata))
+                    self.windows.append(SampleWindow(filepath=sample.filepath, label=sample.label, data=data[..., start:start + self.window_size],start_idx=start, metadata=sample.metadata))
 
     def _collate_fn(self, batch):
         batch_out = {}
@@ -133,21 +134,12 @@ class BaseDataset(Dataset):
         Returns:
             dict: Un dictionnaire contenant les données de l'échantillon.
         """
-        filepath = self.windows[idx].filepath
         label = self.windows[idx].label
         metadata = self.windows[idx].metadata
+        X_true = self.windows[idx].data
 
-        X_true = self._read_sample(filepath) # Lecture du sample
         if X_true is None:
             raise ValueError(f"Le sample à l'index {idx} n'a pas pu être lu ou est vide.")
-
-        # Si window_size est défini, on extrait la fenêtre correspondante
-        if self.window_size is not None:
-            start_idx = self.windows[idx].start_idx
-            X_true= X_true[..., start_idx:start_idx + self.window_size]
-
-        else:
-            X_tilde = X_true
 
         # Alétation des données
         X_tilde = self._data_tilde_transform(X_true) # Altération des données
@@ -159,7 +151,6 @@ class BaseDataset(Dataset):
         if self.pretext_task == 'flip':
             # tentative de pretext_task
             X_tilde = torch.cat((X_tilde,torch.flip(X_tilde, [0])))
-            # X_tilde = 2*X_tilde
 
         return {'X_tilde':X_tilde, 'X_true':X_true, 'label':label, 'metadata':metadata}
 
