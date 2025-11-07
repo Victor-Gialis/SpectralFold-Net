@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SpectralFold-Net — Résultats interactifs</title>
+  <title>SpectralFold-Net — Résultats CWRU</title>
   <style>
     * {
       margin: 0;
@@ -60,24 +60,6 @@
       background-size: 50px 50px;
       animation: moveGrid 20s linear infinite;
     }
-
-    .back-button {
-      display: inline-block;
-      margin: 20px 40px;
-      padding: 12px 25px;
-      background: white;
-      color: #2f855a;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-    
-    .back-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
     
     @keyframes moveGrid {
       0% {
@@ -104,6 +86,24 @@
       z-index: 1;
       max-width: 800px;
       margin: 0 auto;
+    }
+    
+    .back-button {
+      display: inline-block;
+      margin: 20px 40px;
+      padding: 12px 25px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .back-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
     
     .content {
@@ -195,14 +195,6 @@
       line-height: 1.5;
     }
     
-    .icon {
-      display: inline-block;
-      width: 24px;
-      height: 24px;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
-    
     .status-badge {
       display: inline-block;
       padding: 4px 12px;
@@ -229,43 +221,6 @@
     
     .performance-section {
       margin-top: 30px;
-    }
-    
-    .image-card {
-      background: white;
-      border-radius: 12px;
-      padding: 30px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      margin-top: 20px;
-    }
-    
-    .image-card img {
-      display: block;
-      margin: 0 auto;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-    
-    .image-description {
-      margin-top: 25px;
-      padding: 20px;
-      background: #f7fafc;
-      border-radius: 8px;
-      border-left: 4px solid #667eea;
-    }
-    
-    .image-description p {
-      margin-bottom: 10px;
-      color: #2d3748;
-      line-height: 1.6;
-    }
-    
-    .image-description ul {
-      margin-left: 20px;
-      color: #4a5568;
-    }
-    
-    .image-description li {
-      margin-bottom: 5px;
     }
     
     .table-card {
@@ -349,12 +304,6 @@
       font-weight: 600;
     }
     
-    .value-avg {
-      background-color: #fef3c7;
-      color: #78350f;
-      font-weight: 500;
-    }
-    
     .legend-container {
       margin-top: 20px;
       padding: 15px;
@@ -384,6 +333,99 @@
       display: inline-block;
     }
     
+    .image-card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+    
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+      gap: 25px;
+      margin-top: 20px;
+    }
+    
+    .image-header {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    
+    .image-badge {
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .badge-before {
+      background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
+      color: white;
+      box-shadow: 0 2px 8px rgba(245, 101, 101, 0.3);
+    }
+    
+    .badge-after {
+      background: linear-gradient(135deg, #68d391 0%, #48bb78 100%);
+      color: white;
+      box-shadow: 0 2px 8px rgba(72, 187, 120, 0.3);
+    }
+    
+    .analysis-box {
+      background: #f7fafc;
+      border-left: 4px solid #667eea;
+      padding: 25px;
+      margin-top: 30px;
+      border-radius: 8px;
+      line-height: 1.6;
+    }
+    
+    .analysis-box p {
+      color: #2d3748;
+      margin-bottom: 5px;
+    }
+    
+    .analysis-box ul {
+      color: #4a5568;
+    }
+    
+    .analysis-box li {
+      margin-bottom: 5px;
+    }
+    
+    .image-card img {
+      display: block;
+      margin: 0 auto;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .image-description {
+      margin-top: 25px;
+      padding: 20px;
+      background: #f7fafc;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+    }
+    
+    .image-description p {
+      margin-bottom: 10px;
+      color: #2d3748;
+      line-height: 1.6;
+    }
+    
+    .image-description ul {
+      margin-left: 20px;
+      color: #4a5568;
+    }
+    
+    .image-description li {
+      margin-bottom: 5px;
+    }
+    
     footer {
       background: #2d3748;
       color: white;
@@ -408,14 +450,18 @@
       .card-grid {
         grid-template-columns: 1fr;
       }
+      
+      .comparison-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>🔵 Base CWRU - SpectralFold-Net</h1>
-      <p class="subtitle">Visualisations interactives du dépliement spectral de signaux vibratoires issus de la base de données CWRU</p>
+      <h1>🔵 Base CWRU — SpectralFold-Net</h1>
+      <p class="subtitle">Visualisations interactives du dépliement spectral après optimisation des hyperparamètres via Optuna</p>
     </header>
     
     <a href="index.html" class="back-button">← Retour à l'accueil</a>
@@ -447,15 +493,8 @@
             </a>
           </div>
           <div class="card">
-            <a href="cwru/comparison_label_ball_14.html">
-              <div class="card-label">Expérience A2</div>
-              <div class="card-description">Taille de défaut : 14 mils (0.014 inch)</div>
-              <span class="status-badge status-defect">Défaut moyen</span>
-            </a>
-          </div>
-          <div class="card">
             <a href="cwru/comparison_label_ball_21.html">
-              <div class="card-label">Expérience A3</div>
+              <div class="card-label">Expérience A2</div>
               <div class="card-description">Taille de défaut : 21 mils (0.021 inch)</div>
               <span class="status-badge status-defect">Défaut sévère</span>
             </a>
@@ -468,22 +507,15 @@
         <h2>🟠 Défauts de Bague Interne</h2>
         <div class="card-grid">
           <div class="card">
-            <a href="cwru/comparison_label_inner_7.html">
-              <div class="card-label">Expérience B1</div>
-              <div class="card-description">Taille de défaut : 7 mils (0.007 inch)</div>
-              <span class="status-badge status-defect">Défaut léger</span>
-            </a>
-          </div>
-          <div class="card">
             <a href="cwru/comparison_label_inner_14.html">
-              <div class="card-label">Expérience B2</div>
+              <div class="card-label">Expérience B1</div>
               <div class="card-description">Taille de défaut : 14 mils (0.014 inch)</div>
               <span class="status-badge status-defect">Défaut moyen</span>
             </a>
           </div>
           <div class="card">
             <a href="cwru/comparison_label_inner_21.html">
-              <div class="card-label">Expérience B3</div>
+              <div class="card-label">Expérience B2</div>
               <div class="card-description">Taille de défaut : 21 mils (0.021 inch)</div>
               <span class="status-badge status-defect">Défaut sévère</span>
             </a>
@@ -641,21 +673,48 @@
         
         <div class="performance-section">
           <h3 style="color: #4a5568; font-size: 1.3em; margin: 30px 0 15px 0;">Performance en Classification (Fine-tuning)</h3>
-          <div class="image-card">
-            <img src="cwru/downstream_performance.png" alt="Performance de classification en fonction du pourcentage de données d'entraînement" style="width: 100%; height: auto; border-radius: 8px;">
-            <div class="image-description">
-              <p><strong>Score F1 vs. Pourcentage de données étiquetées</strong></p>
-              <p>Comparaison des performances de classification selon 4 configurations :</p>
-              <ul style="margin-top: 10px; line-height: 1.8;">
-                <li>🔴 Backbone pré-entraîné + Fine-tuning complet</li>
-                <li>🔵 Backbone non pré-entraîné (from scratch) + Fine-tuning complet</li>
-                <li>🟢 Backbone pré-entraîné + Backbone figé</li>
-                <li>🟠 Backbone non pré-entraîné + Backbone figé</li>
-              </ul>
-              <p style="margin-top: 15px; font-style: italic; color: #718096;">
-                Cette analyse démontre l'efficacité du pré-entraînement, particulièrement dans les régimes de données limitées.
-              </p>
+          <p style="color: #4a5568; line-height: 1.6; margin-bottom: 20px;">
+            Comparaison de l'impact de l'optimisation des hyperparamètres sur les performances en classification. Le graphique de gauche montre les résultats avec l'architecture initiale, tandis que le graphique de droite présente les performances après optimisation via Optuna.
+          </p>
+          
+          <div class="comparison-grid">
+            <div class="image-card">
+              <div class="image-header">
+                <span class="image-badge badge-before">Avant optimisation</span>
+              </div>
+              <img src="cwru/downstream_performance_unoptimised.png" alt="Performance avant optimisation des hyperparamètres" style="width: 100%; height: auto; border-radius: 8px;">
+              <div class="image-description">
+                <p><strong>Architecture initiale</strong></p>
+                <p style="margin-top: 8px; font-size: 0.9em;">Performances du modèle avec les hyperparamètres par défaut, servant de référence pour évaluer l'amélioration apportée par l'optimisation.</p>
+              </div>
             </div>
+            
+            <div class="image-card">
+              <div class="image-header">
+                <span class="image-badge badge-after">Après optimisation</span>
+              </div>
+              <img src="cwru/downstream_performance_optimised.png" alt="Performance après optimisation des hyperparamètres" style="width: 100%; height: auto; border-radius: 8px;">
+              <div class="image-description">
+                <p><strong>Architecture optimisée (Optuna)</strong></p>
+                <p style="margin-top: 8px; font-size: 0.9em;">Performances améliorées après optimisation des hyperparamètres, démontrant l'efficacité du tuning de l'architecture.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="analysis-box">
+            <p><strong>📈 Analyse comparative</strong></p>
+            <p style="margin-top: 10px; line-height: 1.8;">
+              <strong>Score F1 vs. Pourcentage de données étiquetées</strong> — Les deux graphiques comparent 4 configurations :
+            </p>
+            <ul style="margin-top: 10px; margin-left: 20px; line-height: 1.8;">
+              <li>🔵 Backbone pré-entraîné + Fine-tuning complet</li>
+              <li>🔴 Backbone non pré-entraîné (from scratch) + Fine-tuning complet</li>
+              <li>🟢 Backbone pré-entraîné + Backbone figé</li>
+              <li>🟠 Backbone non pré-entraîné + Backbone figé</li>
+            </ul>
+            <p style="margin-top: 15px; font-style: italic; color: #718096;">
+              L'optimisation des hyperparamètres permet d'améliorer significativement les performances, particulièrement en régime de données limitées, démontrant l'importance du tuning d'architecture pour le transfert d'apprentissage.
+            </p>
           </div>
         </div>
       </div>
