@@ -4,13 +4,13 @@ import numpy as np
 from datasets.base_dataset import BaseDataset, Sample
 
 class LASPIDataset(BaseDataset):
-    def __init__(self, flip:bool, root_dir=None, downsample_factor = 1, fault_filter=None, speed_filter=None, transform_type=None, window_size=None, stride=None):
+    def __init__(self, pretext_task = None, root_dir=None, downsample_factor = 1, fault_filter=None, speed_filter=None, transform_type=None, window_size=None, stride=None):
         """
         Args:
             transform (callable, optional): Transformation à appliquer aux données.
         """
         super().__init__(root_dir=root_dir, 
-                         flip = flip,
+                         pretext_task=pretext_task,
                          downsample_factor=downsample_factor,
                          fault_filter=fault_filter, 
                          speed_filter=speed_filter,

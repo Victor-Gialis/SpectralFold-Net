@@ -1,6 +1,6 @@
 {
   "dataset": {
-    "name":"CWRU",
+    "name":"LASPI",
     "fault_filter": null,
     "speed_filter": null,
     "transform_type":"psd",
@@ -26,6 +26,6 @@
     "normalization":"log",
     "learning_rate": 0.0003695,
     "weight_decay": 1.1133e-5,
-    "model_name": "model_v5.1"
+    "model_name": "model_v6.1"
   }
 }

@@ -1,3 +1,4 @@
+import math
 import torch
 import torch.nn as nn
 from torch import Tensor
@@ -5,11 +6,10 @@ from einops.layers.torch import Rearrange
 
 # Patch Embedding
 # This class is used to convert the input image into patches and then flatten them.  
-class PatchEmbedding(nn.Module):
+class Tokeniser(nn.Module):
     def __init__(self, patch_size = 8, emb_size = 128):
         """
         Args:
-            in_channels (int): Number of input channels (e.g., 3 for RGB images).
             patch_size (int): Size of the patches to be extracted from the input image.
             emb_size (int): Size of the embedding vector for each patch.
         """
@@ -48,6 +48,8 @@ class Attention(nn.Module):
         self.key = nn.Linear(dim, dim, bias=False)  
         self.value = nn.Linear(dim, dim, bias=False)
 
+        self.last_attn = None
+
     def forward(self, x):
         # x : (batch, seq_len, dim)
         q = self.query(x)
@@ -57,7 +59,9 @@ class Attention(nn.Module):
         
         attn = (q @ k.transpose(-2, -1)) * self.scale
         attn = attn.softmax(dim=-1)
-        
+
+        self.last_attn = attn.detach()
+
         return attn_output
 
 # Normalization
@@ -89,12 +93,28 @@ class Residual(nn.Module):
 
     def forward(self, x, *args, **kwargs):
         return x + self.fn(x, *args, **kwargs)
-    
 
-def _sincos_pos_enc(num_patch, encoder_dim):
-    position_embedding = nn.Parameter(torch.zeros(1, num_patch + 1, encoder_dim), requires_grad=False) 
-    position = torch.arange(0, position_embedding.shape[1], dtype=torch.float).unsqueeze(1)
-    div_term = torch.exp(torch.arange(0, position_embedding.shape[2], 2).float() * -(torch.log(torch.tensor(10000.0)) / position_embedding.shape[2]))
-    position_embedding[:, :, 0::2] = torch.sin(position * div_term)
-    position_embedding[:, :, 1::2] = torch.cos(position * div_term)
-    return position_embedding
+class PositionalEncoding(nn.Module):
+    def __init__(self, hidden_dim: int, max_seq_len: int = 512):
+        super().__init__()
+        self.hidden_dim = hidden_dim
+
+        # Pré-calcul du buffer
+        pe = torch.zeros(1, max_seq_len, hidden_dim, dtype=torch.float32)
+        position = torch.arange(0, max_seq_len, dtype=torch.float32).unsqueeze(1)
+        div_term = torch.exp(torch.arange(0, hidden_dim, 2, dtype=torch.float32)* -(math.log(10000.0) / hidden_dim))
+        
+        pe[:, :, 0::2] = torch.sin(position * div_term)
+        pe[:, :, 1::2] = torch.cos(position * div_term)
+
+        self.register_buffer("pos_encoding", pe, persistent=False)
+        self.max_seq_len = max_seq_len
+
+    def forward(self, x):
+        """
+        Renvoie un positional encoding pour une séquence de longueur n.
+        """
+        _,n,_ = x.shape
+        if n > self.max_seq_len:
+            raise ValueError(f"n ({n}) dépasse max_seq_len ({self.max_seq_len})")
+        return x + self.pos_encoding[:, :n, :]

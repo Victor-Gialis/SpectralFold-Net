@@ -12,7 +12,7 @@ import plotly.express as px
 
 from tqdm import tqdm
 from torch.utils.data import DataLoader
-from models.model import PretrainedModel
+from models.model import PretrainModel
 from datasets.dataloader import get_dataset
 from utils.statistics import _z_norm, _log_norm, _log_denorm, global_stats, mse_loss
 
@@ -268,6 +268,3 @@ with open(os.path.join(results_dir, 'used_config.json'), 'w') as f:
 # Exemple pour sauvegarder une courbe de loss dans results
 plt.savefig(os.path.join(results_dir, 'loss_curve.png'))
 plt.close()
-
-# Fin de l'expérience W&B
-wandb.finish()

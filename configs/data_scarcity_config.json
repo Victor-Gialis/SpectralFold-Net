@@ -1,6 +1,6 @@
 {
     "dataset": {
-      "name":"CWRU",
+      "name":"LASPI",
       "fault_filter": null,
       "speed_filter": null,
       "transform_type":"psd",
