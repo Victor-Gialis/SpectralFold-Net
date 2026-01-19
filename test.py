@@ -1,107 +1,129 @@
-import torch
-import json
-import wandb
-import os
-import logging
-import datetime
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import plotly.graph_objects as go
-import plotly.express as px
 
-from tqdm import tqdm
-from torch.utils.data import DataLoader
-from models.model import PretrainingModel
-from datasets.dataloader import get_dataset
-from utils.statistics import _z_norm, _log_norm, _log_denorm, global_stats, mse_loss
+# =========================
+# 1. Load results
+# =========================
+csv_path = "results/downstream/results_summary.csv"   # adapte le chemin si besoin
+df = pd.read_csv(csv_path)
 
-# Config device
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model_name = 'model_v7.2'
-result_dir = f'results/pretrain/{model_name}'
+# Sécurité sur les types
+df["finetune"] = df["finetune"].astype(bool)
+df["data_ratio"] = df["data_ratio"].astype(float)
 
-# Get dataset
-dataset = get_dataset(name='CWRU',
-                      fault_filter = None,
-                      speed_filter = None,
-                      transform_type = 'psd',
-                      window_size = 2048,
-                      stride = 256,
-                      pretext_task = 'flip',
-                      downsample_factor = 2)
+# =========================
+# 2. Aggregate statistics
+# =========================
+grouped = (
+    df
+    .groupby(["ssl_method", "finetune", "data_ratio"])
+    .agg(
+        accuracy_mean=("accuracy", "mean"),
+        accuracy_std=("accuracy", "std"),
+        f1_mean=("f1", "mean"),
+        f1_std=("f1", "std"),
+    )
+    .reset_index()
+)
 
-# Split train/valid/test
-train_size = int(0.6 * len(dataset))
-valid_size = int(0.2 * len(dataset))
-test_size = len(dataset) - train_size - valid_size
+# =========================
+# 3. Accuracy vs data_ratio
+#    (1 figure per SSL method)
+# =========================
+ssl_methods = grouped["ssl_method"].unique()
 
-# Generate split data
-generator =torch.Generator().manual_seed(42)
-train_dataset, valid_dataset, test_dataset = torch.utils.data.random_split(dataset, 
-                                                                           [train_size, valid_size, test_size], 
-                                                                           generator=generator)
+for ssl in ssl_methods:
+    plt.figure(figsize=(6, 4))
 
-# Split DataLoaders
-batch_size = 64
-collate_fn = getattr(dataset, '_collate_fn', None)
-if collate_fn is None:
-    # fallback: use a default collate_fn if not present
-    from torch.utils.data.dataloader import default_collate
-    collate_fn = default_collate
+    for finetune in [False, True]:
+        sub = grouped[
+            (grouped["ssl_method"] == ssl) &
+            (grouped["finetune"] == finetune)
+        ]
 
-train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
-valid_loader = DataLoader(valid_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
-test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
+        label = "Fine-tuning" if finetune else "Linear probing"
 
-print(f"DataLoaders created: train ({len(train_loader)} batches), valid ({len(valid_loader)} batches), test ({len(test_loader)} batches)")
+        plt.errorbar(
+            sub["data_ratio"],
+            sub["accuracy_mean"],
+            yerr=sub["accuracy_std"],
+            marker="o",
+            capsize=4,
+            label=label
+        )
 
-# Instantiate the model in self-supervised learning
-# Instantiate the model in self-supervised learning
-model = PretrainingModel(pretext_task='MAE',
-                         patch_size=16,
-                         hidden_dim=512,
-                         n_layers=3,
-                         heads=8,
-                         dropout=0.2565).to(device)
+    plt.xscale("log")
+    plt.xlabel("Data ratio")
+    plt.ylabel("Accuracy")
+    plt.title(f"{ssl.upper()} – Downstream accuracy (CWRU)")
+    plt.legend()
+    plt.grid(True, which="both", linestyle="--", alpha=0.5)
+    plt.tight_layout()
+    plt.savefig(f"accuracy_{finetune}.png")
 
-model.load_state_dict(torch.load(f'results/pretrain/{model_name}/pretrained_model.pth'))
+# =========================
+# 4. F1-score vs data_ratio
+# =========================
+for ssl in ssl_methods:
+    plt.figure(figsize=(6, 4))
 
-patch_size = model.patch_size
+    for finetune in [False, True]:
+        sub = grouped[
+            (grouped["ssl_method"] == ssl) &
+            (grouped["finetune"] == finetune)
+        ]
 
-for batch in tqdm(test_loader) : 
-    X_true = batch['X_true'].unsqueeze(1).to(device, non_blocking=True)
-    X_true_norm = _log_norm(x=X_true)
+        label = "Fine-tuning" if finetune else "Linear probing"
 
-    # Récupération de la taille du batch
-    b,c,l = X_true.shape
+        plt.errorbar(
+            sub["data_ratio"],
+            sub["f1_mean"],
+            yerr=sub["f1_std"],
+            marker="o",
+            capsize=4,
+            label=label
+        )
 
-    X_pred_norm, mask  = model(X_true_norm)
-    X_pred_norm  = X_pred_norm.unsqueeze(1) #Ajouter la dimension du canal
+    plt.xscale("log")
+    plt.xlabel("Data ratio")
+    plt.ylabel("F1-score")
+    plt.title(f"{ssl.upper()} – Downstream F1-score (CWRU)")
+    plt.legend()
+    plt.grid(True, which="both", linestyle="--", alpha=0.5)
+    plt.tight_layout()
+    plt.savefig(f"f1_score_{finetune}.png")
 
-    # Dénormalisation des signaux
-    X_pred = _log_denorm(x=X_true, x_norm=X_pred_norm)
+# =========================
+# 5. Bar plot at fixed data ratio
+# =========================
+fixed_ratio = 0.01   # change si besoin
 
-    # Signal masqué
-    mask_expanded = mask.unsqueeze(1).unsqueeze(-1).repeat(1, 1, 1, 16)
+sub = grouped[grouped["data_ratio"] == fixed_ratio]
 
-    X_mask = X_true.reshape(b, c, l // patch_size, patch_size)
-    X_mask = X_mask * mask_expanded
-    X_mask = X_mask.reshape(b, c, l)
-    
-    print('Shapes : ', X_true.shape, X_mask.shape, X_pred.shape)
+plt.figure(figsize=(7, 4))
 
-    x_true = X_true[0,0,:].cpu().numpy()
-    x_mask = X_mask[0,0,:].cpu().numpy()
-    x_pred = X_pred[0,0,:].detach().cpu().numpy()
+x_labels = []
+y_means = []
+y_stds = []
 
-    freq_axis = np.linspace(0,6000,len(x_true))
+for ssl in ssl_methods:
+    for finetune in [False, True]:
+        row = sub[
+            (sub["ssl_method"] == ssl) &
+            (sub["finetune"] == finetune)
+        ]
 
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=freq_axis, y=x_true, mode='lines', name='True Signal'))
-    fig.add_trace(go.Scatter(x=freq_axis, y=x_mask, mode='lines', name='Masked Signal'))
-    fig.add_trace(go.Scatter(x=freq_axis, y=x_pred, mode='lines', name='Predicted Signal'))
-    fig.update_layout(title=f'Validation batch - Signal Comparison',xaxis_title='Frequency [Hz]',yaxis_title='Amplitude')
-    fig.write_html(os.path.join(result_dir, f'reconstruction_MAE_results.html'))
+        if len(row) == 0:
+            continue
 
-    break
+        mode = "FT" if finetune else "LP"
+        x_labels.append(f"{ssl.upper()}-{mode}")
+        y_means.append(row["accuracy_mean"].values[0])
+        y_stds.append(row["accuracy_std"].values[0])
+
+plt.bar(x_labels, y_means, yerr=y_stds, capsize=4)
+plt.ylabel("Accuracy")
+plt.title(f"Downstream accuracy @ data ratio = {fixed_ratio}")
+plt.grid(axis="y", linestyle="--", alpha=0.5)
+plt.tight_layout()
+plt.savefig("bar plot")

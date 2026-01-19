@@ -7,22 +7,24 @@ from einops.layers.torch import Rearrange
 # Patch Embedding
 # This class is used to convert the input image into patches and then flatten them.  
 class Tokeniser(nn.Module):
-    def __init__(self, patch_size = 8, emb_size = 128):
+    def __init__(self, patch_size = 8, embed_dim = 128):
         """
         Args:
             patch_size (int): Size of the patches to be extracted from the input image.
             emb_size (int): Size of the embedding vector for each patch.
         """
-        self.patch_size = patch_size
         super().__init__()
+
+        self.embed_dim = embed_dim
+        self.patch_size = patch_size
+
         self.projection = nn.Sequential(
             # Reshape the input tensor to create patches
-            Rearrange('b c (n p) -> b n (p c)', p = patch_size), # Rearrange the input tensor to create patches
-            nn.Linear(patch_size, emb_size) # Linear projection of the patch to the embedding size
+            Rearrange('b (n p) -> b n p', p = patch_size), # Rearrange the input tensor to create patches
+            nn.Linear(patch_size, embed_dim) # Linear projection of the patch to the embedding size
         )
 
     def forward(self, x: Tensor) -> Tensor:
-        x = x[:,:,:self.patch_size * (x.shape[-1] // self.patch_size)]
         x = self.projection(x)
         return x
 
