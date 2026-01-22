@@ -47,18 +47,23 @@ def main(args):
         weight_decay=args.weight_decay,
         epochs=args.epochs,
     )
+
     # Set device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    # Prepare data loaders
+    train_loader, valid_loader, test_loader = dataloader.get_heterogeneous_split_dataloaders(args_dataloader)
 
     # Initialize backbone
     backbone = get_backbone(args_backbone).to(device)
     args_ssl.args = vars(backbone._get_arguments())
+
+    # Compute min-max from X_raw train dataloader
+    stats = dataloader.compute_min_max_from_dataloader(train_loader)
+    backbone._loads_stats(stats)
     
     # Initialize ssl method
     model = SAPModel(backbone, args_ssl)
-
-    # Prepare data loaders
-    train_loader, valid_loader, test_loader = dataloader.get_heterogeneous_split_dataloaders(args_dataloader)
 
     # Define optimizer and scheduler    
     optimizer = torch.optim.AdamW(model.parameters(), lr= args_training .learning_rate, weight_decay=args_training.weight_decay)
@@ -92,7 +97,7 @@ if __name__ == "__main__":
     # Training
     parser.add_argument('--learning_rate', type=float, default=0.0003695, help='Learning rate for optimizer')
     parser.add_argument('--weight_decay', type=float, default=1.1133e-5, help='Weight decay for optimizer')
-    parser.add_argument('--epochs', type=int, default=100, help='Number of training epochs')
+    parser.add_argument('--epochs', type=int, default=10, help='Number of training epochs')
 
     # SAP specific
     parser.add_argument('--downsampling_factor', type=float, default=2, help='Dropout rate')

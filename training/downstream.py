@@ -12,6 +12,14 @@ from datetime import datetime
 from sklearn.metrics import accuracy_score, f1_score, mean_squared_error, r2_score
 
 def evaluate(model, test_loader, device, task="classification"):
+    """
+    Docstring for evaluate
+    
+    :param model: Description
+    :param test_loader: Description
+    :param device: Description
+    :param task: Description
+    """
     model.eval()
     all_preds = []
     all_labels = []
@@ -102,7 +110,8 @@ def train(
             
             train_loss += loss.item()
 
-        train_loss /= len(train_loader.dataset)
+        train_loss /= len(train_loader)
+        # train_loss /= len(train_loader.dataset)
 
         # Validation phase
         model.eval()
@@ -116,7 +125,8 @@ def train(
                 loss = model.compute_loss(outputs, inputs)
                 valid_loss += loss.item()
 
-        valid_loss /= len(valid_loader.dataset)
+        valid_loss /= len(valid_loader)
+        # valid_loss /= len(valid_loader.dataset)
 
         if scheduler:
             scheduler.step()

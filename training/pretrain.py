@@ -225,7 +225,8 @@ def train(
             
             train_loss += loss.item()
 
-        train_loss /= len(train_loader.dataset)
+        train_loss /= len(train_loader)
+        # train_loss /= len(train_loader.dataset)
 
         # Validation phase
         model.eval()
@@ -239,7 +240,8 @@ def train(
                 loss = model.compute_loss(outputs, inputs)
                 valid_loss += loss.item()
 
-        valid_loss /= len(valid_loader.dataset)
+        valid_loss /= len(valid_loader)
+        # valid_loss /= len(valid_loader.dataset)
 
         if scheduler:
             scheduler.step()

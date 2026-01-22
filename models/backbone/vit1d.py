@@ -13,6 +13,9 @@ class ViT1DEncoder(nn.Module):
         self.heads = heads
         self.dropout = dropout
 
+        # Pretrain dataset Stats
+        self.stats = None
+
         # Tokeniser
         self.tokeniser = Tokeniser(patch_size=patch_size, embed_dim=hidden_dim)
 
@@ -75,6 +78,9 @@ class ViT1DEncoder(nn.Module):
         embeded_tokens = self.forward_encoder(tokens)
         return embeded_tokens
     
+    def _loads_stats(self, stats):
+        self.stats = stats
+
     def _get_arguments(self):
         """
         Return the arguments of the model.

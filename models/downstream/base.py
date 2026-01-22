@@ -24,12 +24,14 @@ class DownstreamModel(nn.Module):
         batch: dict (standardisé par ton dataloader)
         """
         x_raw = batch['X_raw']
+        
         # Normalization
-        x_norm = normalization.min_max_log_normalization(x=x_raw, stats_from=x_raw)
+        x_norm = normalization.instance_min_max_log_normalization(x=x_raw, stats_from=x_raw)
 
         features = self.backbone(x_norm)
         cls_token = features[:,0]
         outputs = self.head(cls_token)
+        
         return outputs
 
     def compute_loss(self, outputs, batch):

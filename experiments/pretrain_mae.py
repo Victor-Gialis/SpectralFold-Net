@@ -35,20 +35,24 @@ def main(args):
     # Set device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+    # Prepare data loaders
+    train_loader, valid_loader, test_loader = dataloader.get_heterogeneous_split_dataloaders(args_dataloader)
+
     # Initialize backbone
     backbone = get_backbone(args_backbone).to(device)
     args_ssl.args = vars(backbone._get_arguments())
 
+    # Compute min-max from X_raw train dataloader
+    stats = dataloader.compute_min_max_from_dataloader(train_loader)
+    backbone._loads_stats(stats)
+
     # Initialize ssl method
     model = MAEModel(backbone, args_ssl)
-
-    # Prepare data loaders
-    train_loader, valid_loader, test_loader = dataloader.get_heterogeneous_split_dataloaders(args_dataloader)
 
     # Define optimizer and scheduler    
     optimizer = torch.optim.AdamW(model.parameters(), lr= args_training .learning_rate, weight_decay=args_training.weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args_training .epochs, eta_min=1e-6)
-    
+        
     # Start training
     train(
         model=model,
@@ -80,7 +84,7 @@ if __name__ == "__main__":
     parser.add_argument('--epochs', type=int, default=100, help='Number of training epochs')
 
     # MAE specific
-    parser.add_argument('--mask_ratio', type=float, default=0.4, help='Masking ratio for MAE')
+    parser.add_argument('--mask_ratio', type=float, default=0.5, help='Masking ratio for MAE')
     
     args = parser.parse_args()
 

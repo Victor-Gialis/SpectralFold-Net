@@ -12,9 +12,10 @@ class LinearClassificationHead(nn.Module):
         super().__init__()
         self.fc = nn.Linear(input_dim, n_classes)
 
-        self.loss_function = torch.nn.CrossEntropyLoss()
         self.lb = LabelBinarizer()
         self.device = device
+
+        self.loss_function = torch.nn.CrossEntropyLoss()
 
     def fit_labelizer(self,labels):
         self.lb.fit(labels)
@@ -31,12 +32,10 @@ class LinearClassificationHead(nn.Module):
     def compute_loss(self, outputs, inputs):
         y_label = inputs['y_label']
 
-        targets = self.transform_labels(y_label)
+        targets = torch.argmax(self.transform_labels(y_label), dim=-1)
         predictions = outputs
-
+        
         return self.loss_function(predictions, targets)
-
-    
 class MLPClassificationHead(nn.Module):
     def __init__(self, 
                  in_dim=512, 
@@ -52,9 +51,10 @@ class MLPClassificationHead(nn.Module):
             nn.Dropout(dropout)
         )
 
-        self.loss_function = torch.nn.CrossEntropyLoss()
         self.lb = LabelBinarizer()
         self.device = device
+
+        self.loss_function = torch.nn.CrossEntropyLoss()
 
     def fit_labelizer(self,labels):
         self.lb.fit(labels)
@@ -71,7 +71,48 @@ class MLPClassificationHead(nn.Module):
     def compute_loss(self, outputs, inputs):
         y_label = inputs['y_label']
 
-        targets = self.transform_labels(y_label)
+        targets = torch.argmax(self.transform_labels(y_label), dim=-1)
         predictions = outputs
+        
+        return self.loss_function(predictions, targets)
+    
+class OldClassificationHead(nn.Module):
+    def __init__(self, 
+                 in_dim=512, 
+                 n_classes=4, 
+                 dropout:float=0.5,
+                 device:torch.device="cpu"):
+        
+        super().__init__()
+        self.fc = nn.Sequential(
+            nn.LayerNorm(in_dim),
+            nn.Linear(in_dim, in_dim//2),
+            nn.GELU(),
+            nn.Dropout(0.1),
+            nn.Linear(in_dim//2, n_classes)
+        )
 
+        self.lb = LabelBinarizer()
+        self.device = device
+
+        self.loss_function = torch.nn.CrossEntropyLoss()
+
+    def fit_labelizer(self,labels):
+        self.lb.fit(labels)
+    
+    def transform_labels(self, labels):
+        targets = torch.tensor(self.lb.transform(labels))
+        targets = targets.float()
+        targets = targets.to(self.device)
+        return targets
+
+    def forward(self, x):
+        return self.fc(x)
+    
+    def compute_loss(self, outputs, inputs):
+        y_label = inputs['y_label']
+
+        targets = torch.argmax(self.transform_labels(y_label), dim=-1)
+        predictions = outputs
+        
         return self.loss_function(predictions, targets)

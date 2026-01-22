@@ -1,6 +1,6 @@
 import torch
 
-def min_max_log_normalization(x:torch.Tensor, stats_from:torch.Tensor, eps=1e-8):
+def instance_min_max_log_normalization(x:torch.Tensor, stats_from:torch.Tensor, eps=1e-8):
     """
     Log + min-max normalization using stats_from for consistent scaling.
     Normalization is done per sample.
@@ -15,7 +15,7 @@ def min_max_log_normalization(x:torch.Tensor, stats_from:torch.Tensor, eps=1e-8)
 
     return x_norm
 
-def min_max_log_unnormalization(x_norm:torch.Tensor, stats_from:torch.Tensor, eps=1e-8):
+def instance_min_max_log_unnormalization(x_norm:torch.Tensor, stats_from:torch.Tensor, eps=1e-8):
     stats_log = torch.log1p(stats_from)
 
     x_min = stats_log.amin(dim=-1, keepdim=True)
@@ -24,4 +24,53 @@ def min_max_log_unnormalization(x_norm:torch.Tensor, stats_from:torch.Tensor, ep
     x_log = x_norm * (x_max - x_min + eps) + x_min
     x_unnorm = torch.expm1(x_log)
     
+    return x_unnorm
+
+def batch_min_max_log_normalization(x:torch.Tensor, stats_from:torch.Tensor, eps=1e-8):
+    """
+    Log + min-max normalization using stats_from for consistent scaling.
+    Normalization is done per batch.
+    """
+    x_log = torch.log1p(x)
+    stats_log = torch.log1p(stats_from)
+
+    x_min = stats_log.amin()
+    x_max = stats_log.amax()
+
+    x_norm = (x_log - x_min) / (x_max - x_min + eps)
+
+    return x_norm
+
+def batch_min_max_log_unnormalization(x_norm:torch.Tensor, stats_from:torch.Tensor, eps=1e-8):
+    stats_log = torch.log1p(stats_from)
+
+    x_min = stats_log.amin()
+    x_max = stats_log.amax()
+
+    x_log = x_norm * (x_max - x_min + eps) + x_min
+    x_unnorm = torch.expm1(x_log)
+    
+    return x_unnorm
+
+def global_min_max_log_normalization(x: torch.Tensor, stats: dict, eps: float = 1e-8):
+    """
+    Log + min-max normalization using stats_from for consistent scaling.
+    Normalization is done per by the global min-max train dataset 
+    """
+    x_log = torch.log1p(x)
+
+    x_min = stats["min"]
+    x_max = stats["max"]
+
+    x_norm = (x_log - x_min) / (x_max - x_min + eps)
+
+    return x_norm
+
+def global_min_max_log_unnormalization(x_norm: torch.Tensor, stats: dict, eps: float = 1e-8):
+    x_min = stats["min"]
+    x_max = stats["max"]
+
+    x_log = x_norm * (x_max - x_min + eps) + x_min
+    x_unnorm = torch.expm1(x_log)
+
     return x_unnorm

@@ -2,6 +2,7 @@ import os
 import torch
 import numpy as np
 
+from tqdm import tqdm
 from dataclasses import dataclass
 from scipy.signal import hilbert
 from torch.utils.data import Dataset
@@ -101,7 +102,7 @@ class BaseDataset(Dataset):
             else:
                 batch_out[key] = values
         return batch_out
-
+    
     def __len__(self):
         return len(self.windows)
     

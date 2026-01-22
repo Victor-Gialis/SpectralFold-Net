@@ -47,7 +47,7 @@ class MAEModel(BaseSSLModel):
         x_raw = batch['X_raw']
 
         # Normalization
-        x_norm = normalization.min_max_log_normalization(x=x_raw, stats_from=x_raw)
+        x_norm = normalization.instance_min_max_log_normalization(x=x_raw, stats_from=x_raw)
 
         # Tokenisation
         input_tokens = self.backbone.forward_tokeniser(x_norm)
@@ -71,8 +71,9 @@ class MAEModel(BaseSSLModel):
         x_pred_norm = self.decoder(embedded_tokens_)
 
         # Unnormalize
-        x_pred = normalization.min_max_log_unnormalization(x_norm=x_pred_norm, stats_from=x_raw)
+        x_pred = normalization.instance_min_max_log_unnormalization(x_norm=x_pred_norm, stats_from=x_raw)
 
+        # Ensure non-negative outputs
         x_pred = super().non_negative_output(x_pred)
 
         return {"prediction":x_pred, "mask":mask}
@@ -81,13 +82,16 @@ class MAEModel(BaseSSLModel):
         targets = inputs['X_raw']
         predictions = outputs['prediction']
         mask = outputs['mask']
+        
         # Rearrange targets to match prediction shape
         b, l = targets.shape
         predictions = predictions.reshape(b, l // self.backbone.patch_size, self.backbone.patch_size)
         targets = targets.reshape(b, l // self.backbone.patch_size, self.backbone.patch_size)
+        
         # Compute loss only on masked tokens
         loss = ((predictions - targets) ** 2)
         loss = (loss * mask.unsqueeze(-1)).sum() / mask.sum()
+        
         return loss
     
     def random_masking(self, x, mask_ratio):

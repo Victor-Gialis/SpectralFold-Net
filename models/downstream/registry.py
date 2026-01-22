@@ -2,7 +2,7 @@ import torch
 import numpy as np
 
 from models.downstream.base import DownstreamModel
-from models.downstream.classification import LinearClassificationHead, MLPClassificationHead
+from models.downstream.classification import LinearClassificationHead, MLPClassificationHead, OldClassificationHead
 from models.downstream.regression import LinearRegressionHead,MLPRegressionHead
 
 def get_downstream_model(
@@ -16,7 +16,7 @@ def get_downstream_model(
     """
     Assemble backbone + downstream head.
     """
-    assert head_type in ["linear", "non-linear"]
+    assert head_type in ["linear", "non-linear", "old"]
     assert task in ["classification", "regression"]
 
     if not hasattr(backbone, "hidden_dim"):
@@ -41,6 +41,14 @@ def get_downstream_model(
                 dropout=head_dropout,
                 device=device
             )
+        elif head_type == "old":
+            head = OldClassificationHead(
+                in_dim=in_dim,
+                n_classes=n_classes,
+                dropout=head_dropout,
+                device=device
+            )
+
         else:
             raise ValueError(f"Unknown head_type: {head_type}")
 

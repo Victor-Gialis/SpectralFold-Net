@@ -74,9 +74,13 @@ def make_strata(dataset):
     strata =np.array(strata)
     return strata
 
-def get_homogenous_split_dataloaders(name, data_ratio:float=1.0, batch_size=64, **kwargs):
+def get_homogenous_split_dataloaders(args:object):
+    name = args.name
+    batch_size = args.batch_size
+    data_ratio = args.data_ratio
+    
     # Get dataset
-    dataset = get_dataset(name, **kwargs)
+    dataset = get_dataset(args)
 
     collate_fn = getattr(dataset, '_collate_fn', None)
     if collate_fn is None:
@@ -101,7 +105,7 @@ def get_homogenous_split_dataloaders(name, data_ratio:float=1.0, batch_size=64, 
         stratify=strata[test_val_idx],
         random_state=42
     )
-    
+
     # Boucle sur les pourcentages de données étiquetées
     # Pas de random state pour avoir une variabilité entre les seeds
     if data_ratio < 1.0:
@@ -110,7 +114,7 @@ def get_homogenous_split_dataloaders(name, data_ratio:float=1.0, batch_size=64, 
         test_size = data_ratio,
         stratify=strata[train_idx],
         shuffle=True,
-    )
+        )
         
     else :
         scarcity_train_idx = train_idx
@@ -138,7 +142,45 @@ def get_homogenous_split_dataloaders(name, data_ratio:float=1.0, batch_size=64, 
     )
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, sampler=sampler, collate_fn=collate_fn)
-    valid_loader = DataLoader(valid_dataset, batch_size=batch_size, shuffle=sampler, collate_fn=collate_fn)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=sampler, collate_fn=collate_fn)
+    valid_loader = DataLoader(valid_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
     
     return train_loader, valid_loader, test_loader, np.unique(labels)
+
+import torch
+from tqdm import tqdm
+
+@torch.no_grad()
+def compute_min_max_from_dataloader(dataloader, device=None, verbose=True):
+    """
+    Calcule min et max de X_raw à partir d'un DataLoader.
+
+    Args:
+        dataloader: torch.utils.data.DataLoader
+        device: torch.device ou None
+        verbose: affiche une barre de progression
+
+    Returns:
+        dict {"min": float, "max": float}
+    """
+    min_val = float("inf")
+    max_val = float("-inf")
+
+    iterator = dataloader
+    if verbose:
+        iterator = tqdm(iterator, desc="Computing min/max from DataLoader")
+
+    for batch in iterator:
+        # X_raw = batch["X_raw"]
+        X_raw = torch.log1p(batch["X_raw"])
+
+        if device is not None:
+            X_raw = X_raw.to(device, non_blocking=True)
+
+        batch_min = X_raw.min().item()
+        batch_max = X_raw.max().item()
+
+        min_val = min(min_val, batch_min)
+        max_val = max(max_val, batch_max)
+
+    return {"min": min_val, "max": max_val}

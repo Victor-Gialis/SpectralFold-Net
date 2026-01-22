@@ -40,18 +40,18 @@ class SAPModel(BaseSSLModel):
             batc (torch.Tensor): Input batch of shape (batch_size, seq_length).
         Returns:
         """
-        x_raw = batch['X_raw']
+        x_raw = batch['X_raw'] # get raw spectre without fold
         x_fold = batch['X_folded'] # get folded spectrum in input
         
         # Normalization
-        x_norm = normalization.min_max_log_normalization(x=x_fold, stats_from=x_raw)
+        x_norm = normalization.instance_min_max_log_normalization(x=x_fold, stats_from=x_raw)
 
         # Forward pass
         embedded_tokens = self.backbone(x_norm)
         x_pred_norm = self.decoder(embedded_tokens)
         
         # Unnormalize
-        x_pred = normalization.min_max_log_unnormalization(x_norm=x_pred_norm, stats_from=x_raw)
+        x_pred = normalization.instance_min_max_log_unnormalization(x_norm=x_pred_norm, stats_from=x_raw)
 
         # Ensure non-negative outputs
         x_pred = super().non_negative_output(x_pred)
