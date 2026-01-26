@@ -96,14 +96,14 @@ def get_homogenous_split_dataloaders(args:object):
         indice,
         test_size = 0.4,
         stratify=strata,
-        random_state=42
+        random_state=12
     )
     
     valid_idx, test_idx = train_test_split(
         test_val_idx,
         test_size = 0.5,
         stratify=strata[test_val_idx],
-        random_state=42
+        random_state=12
     )
 
     # Boucle sur les pourcentages de données étiquetées
@@ -151,7 +151,7 @@ import torch
 from tqdm import tqdm
 
 @torch.no_grad()
-def compute_min_max_from_dataloader(dataloader, device=None, verbose=True):
+def compute_stats_from_dataloader(dataloader, device=None, verbose=True):
     """
     Calcule min et max de X_raw à partir d'un DataLoader.
 
@@ -165,6 +165,8 @@ def compute_min_max_from_dataloader(dataloader, device=None, verbose=True):
     """
     min_val = float("inf")
     max_val = float("-inf")
+    mean_val = 0.0
+    std_val = 0.0
 
     iterator = dataloader
     if verbose:
@@ -183,4 +185,10 @@ def compute_min_max_from_dataloader(dataloader, device=None, verbose=True):
         min_val = min(min_val, batch_min)
         max_val = max(max_val, batch_max)
 
-    return {"min": min_val, "max": max_val}
+        mean_val += X_raw.mean().item() * X_raw.size(0)
+        std_val += X_raw.std().item() * X_raw.size(0)
+
+    mean_val /= len(dataloader.dataset)
+    std_val /= len(dataloader.dataset)
+
+    return {"min": min_val, "max": max_val, "mean": mean_val, "std": std_val}

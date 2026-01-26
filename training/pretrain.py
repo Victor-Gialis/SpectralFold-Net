@@ -99,7 +99,40 @@ def save_model_checkpoint(run_dir:Path, model:nn.Module, name:str="model.pt"):
     """
     checkpoint_path = run_dir / "checkpoints"
     checkpoint_path.mkdir(parents=True, exist_ok=True)
-    torch.save(model.state_dict(), checkpoint_path / name)
+    
+    # Create checkpoint dictionary with model state and backbone stats
+    checkpoint = {
+        'model_state': model.state_dict(),
+    }
+    
+    # Save stats from backbone if it exists
+    if hasattr(model, 'backbone') and hasattr(model.backbone, 'stats'):
+        checkpoint['backbone_stats'] = model.backbone.stats
+    
+    torch.save(checkpoint, checkpoint_path / name)
+
+def load_model_checkpoint(model:nn.Module, checkpoint_path:Path)->nn.Module:
+    """
+    Load model checkpoint and restore backbone stats.
+    Args:
+        model (nn.Module): The model to load weights into.
+        checkpoint_path (Path): Path to the checkpoint file.
+    Returns:
+        nn.Module: The model with loaded weights and stats.
+    """
+    checkpoint = torch.load(checkpoint_path, weights_only=False)
+    
+    # Load model state
+    if isinstance(checkpoint, dict) and 'model_state' in checkpoint:
+        model.load_state_dict(checkpoint['model_state'])
+        # Restore backbone stats if available
+        if 'backbone_stats' in checkpoint and hasattr(model, 'backbone'):
+            model.backbone._loads_stats(checkpoint['backbone_stats'])
+    else:
+        # Backward compatibility: if checkpoint is just state_dict
+        model.load_state_dict(checkpoint)
+    
+    return model
 
 def move_batch_to_device(batch, device:torch.device):
     """

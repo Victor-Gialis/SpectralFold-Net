@@ -1,7 +1,7 @@
-import torch
+import torch, random
+import numpy as np
 import argparse
 
-from utils import ArgsPretrain
 from models.ssl.sap import SAPModel
 from dataset import dataloader
 from training.pretrain import train, evaluate
@@ -48,6 +48,11 @@ def main(args):
         epochs=args.epochs,
     )
 
+    # Set seed for reproducibility
+    torch.manual_seed(0)
+    np.random.seed(0)
+    random.seed(0)
+
     # Set device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -59,7 +64,7 @@ def main(args):
     args_ssl.args = vars(backbone._get_arguments())
 
     # Compute min-max from X_raw train dataloader
-    stats = dataloader.compute_min_max_from_dataloader(train_loader)
+    stats = dataloader.compute_stats_from_dataloader(train_loader)
     backbone._loads_stats(stats)
     
     # Initialize ssl method
@@ -97,7 +102,7 @@ if __name__ == "__main__":
     # Training
     parser.add_argument('--learning_rate', type=float, default=0.0003695, help='Learning rate for optimizer')
     parser.add_argument('--weight_decay', type=float, default=1.1133e-5, help='Weight decay for optimizer')
-    parser.add_argument('--epochs', type=int, default=10, help='Number of training epochs')
+    parser.add_argument('--epochs', type=int, required=True, help='Number of training epochs')
 
     # SAP specific
     parser.add_argument('--downsampling_factor', type=float, default=2, help='Dropout rate')

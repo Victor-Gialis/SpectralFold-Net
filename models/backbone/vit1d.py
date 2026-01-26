@@ -14,7 +14,7 @@ class ViT1DEncoder(nn.Module):
         self.dropout = dropout
 
         # Pretrain dataset Stats
-        self.stats = None
+        self.stats = dict()
 
         # Tokeniser
         self.tokeniser = Tokeniser(patch_size=patch_size, embed_dim=hidden_dim)

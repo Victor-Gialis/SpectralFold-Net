@@ -2,6 +2,7 @@
 import json
 import torch
 from pathlib import Path
+from training.pretrain import load_model_checkpoint
 from types import SimpleNamespace
 
 
@@ -79,13 +80,9 @@ def get_pretrained_backbone(
     # -------------------------------------------------
     ssl_model = ssl_class(backbone, args_ssl)
 
-    ckpt = torch.load(
-        run_dir / "checkpoints" / "best.pt",
-        map_location=device,
-    )
-
-    ssl_model.load_state_dict(ckpt)
-    backbone = ssl_model.backbone
-    backbone.eval()
+    #   ----------------------------------------------
+    # Load weights
+    #   ----------------------------------------------
+    ssl_model = load_model_checkpoint(ssl_model, run_dir / "checkpoints" / "best.pt")
 
     return backbone

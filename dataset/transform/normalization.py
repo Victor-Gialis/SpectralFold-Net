@@ -74,3 +74,26 @@ def global_min_max_log_unnormalization(x_norm: torch.Tensor, stats: dict, eps: f
     x_unnorm = torch.expm1(x_log)
 
     return x_unnorm
+
+def global_z_log_normalization(x: torch.Tensor, stats: dict, eps: float = 1e-8):
+    """
+    Log + mean_std normalization using stats_from for consistent scaling.
+    Normalization is done per by the global min-max train dataset 
+    """
+    x_log = torch.log1p(x)
+    
+    x_mean= stats["mean"]
+    x_std = stats["std"]
+
+    x_norm = (x_log - x_mean) / (x_std + eps)
+
+    return x_norm
+
+def global_z_log_unnormalization(x_norm: torch.Tensor, stats: dict, eps: float = 1e-8):
+    x_mean = stats["mean"]
+    x_std = stats["std"]
+
+    x_log = x_norm * (x_std + eps) + x_mean
+    x_unnorm = torch.expm1(x_log)
+
+    return x_unnorm

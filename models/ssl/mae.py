@@ -47,7 +47,7 @@ class MAEModel(BaseSSLModel):
         x_raw = batch['X_raw']
 
         # Normalization
-        x_norm = normalization.instance_min_max_log_normalization(x=x_raw, stats_from=x_raw)
+        x_norm = normalization.global_z_log_normalization(x=x_raw, stats=self.backbone.stats)
 
         # Tokenisation
         input_tokens = self.backbone.forward_tokeniser(x_norm)
@@ -71,7 +71,7 @@ class MAEModel(BaseSSLModel):
         x_pred_norm = self.decoder(embedded_tokens_)
 
         # Unnormalize
-        x_pred = normalization.instance_min_max_log_unnormalization(x_norm=x_pred_norm, stats_from=x_raw)
+        x_pred = normalization.global_z_log_unnormalization(x_norm=x_pred_norm, stats=self.backbone.stats)
 
         # Ensure non-negative outputs
         x_pred = super().non_negative_output(x_pred)

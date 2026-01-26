@@ -1,60 +1,41 @@
-# from idr_pytools import gpu_jobs_submitter
-
-# ssl_methods = ["random", "mae", "sap"]
-# ratios = [0.01, 0.05, 0.1, 0.5, 1.0]
-# seeds = [0, 1, 2]
-
-# jobs = []
-
-# for ssl in ssl_methods:
-#     for ratio in ratios:
-#         for seed in seeds:
-#             cmd = (
-#                 f"python experiments/data_scarcity.py "
-#                 f"--ssl_method {ssl} "
-#                 f"--data_ratio {ratio} "
-#                 f"--seed {seed}"
-#             )
-#             jobs.append(cmd)
-
-# gpu_jobs_submitter(
-#     jobs,
-#     job_name="data_scarcity_ssl",
-#     gpus=1,
-#     cpus=10,
-#     mem="40G",
-#     time="02:00:00",
-# )
-
 import os
 from itertools import product
 
+# Set PYTHONPATH to include current directory
+pythonpath = os.getenv("PYTHONPATH", "")
+if pythonpath:
+    pythonpath = pythonpath + ":" + os.path.abspath(".")
+else:
+    pythonpath = os.path.abspath(".")
+os.environ["PYTHONPATH"] = pythonpath
+
 # =========================
-# Experimental space
+# Data scarcity experiments
 # =========================
-ssl_methods = ["random", "mae", "sap"]
+backbone_inits = ["random", "mae", "sap"]
+pretrain_datasets = ["CWRU"]
 downstream_datasets = ["CWRU", "LASPI"]
 downstream_tasks = ["classification"]
-downstream_head_types = ["linear", "non-linear"]
+downstream_head_types = ["linear"]
 
-ratios = [0.01]          # debug
-seeds = [0]              # debug
-finetunes = [True, False]
-epochs = 1
+ratios = [0.01] # train set ratios
+seeds = [0] # random seeds  
+finetunes = [True, False] 
 
-# =========================
-# Cartesian product
-# =========================
+epochs = 100
+
 for (
-    ssl,
-    dataset,
+    backbone_init,
+    pretrain_dataset,
+    downstream_dataset,
     task,
     head_type,
     ratio,
     seed,
     finetune,
 ) in product(
-    ssl_methods,
+    backbone_inits,
+    pretrain_datasets,
     downstream_datasets,
     downstream_tasks,
     downstream_head_types,
@@ -65,8 +46,9 @@ for (
 
     cmd = (
         f"python experiments/data_scarcity.py "
-        f"--ssl_method {ssl} "
-        f"--dataset {dataset} "
+        f"--backbone_init {backbone_init} "
+        f"--pretrain_dataset {pretrain_dataset} "
+        f"--downstream_dataset {downstream_dataset} "
         f"--task {task} "
         f"--head_type {head_type} "
         f"--seed {seed} "
