@@ -62,7 +62,6 @@ for (
     seeds,
     finetunes,
 ):
-
     cmd = (
         f"python experiments/data_scarcity.py "
         f"--backbone_init {backbone_init} "
@@ -76,7 +75,7 @@ for (
     )
 
     # Flag finetune (IMPORTANT)
-    if finetune:
+    if finetune and backbone_init != "random":
         cmd += "--finetune "
 
     print(f"Running: {cmd}")

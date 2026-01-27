@@ -1,0 +1,27 @@
+{
+    "dataset": {
+        "name": "CWRU",
+        "window_size": 2048,
+        "window_stride": 256,
+        "batch_size": 64
+    },
+    "backbone": {
+        "model": "vit1d"
+    },
+    "ssl": {
+        "method": "mae",
+        "mask_ratio": 0.75,
+        "args": {
+            "patch_size": 16,
+            "hidden_dim": 512,
+            "n_layers": 3,
+            "heads": 8,
+            "dropout": 0.2565
+        }
+    },
+    "training": {
+        "learning_rate": 0.0003695,
+        "weight_decay": 1.1133e-05,
+        "epochs": 100
+    }
+}

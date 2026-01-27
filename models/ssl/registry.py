@@ -85,4 +85,4 @@ def get_pretrained_backbone(
     #   ----------------------------------------------
     ssl_model = load_model_checkpoint(ssl_model, run_dir / "checkpoints" / "best.pt")
 
-    return backbone
+    return ssl_model.backbone

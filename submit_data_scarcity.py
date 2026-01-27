@@ -12,17 +12,17 @@ os.environ["PYTHONPATH"] = pythonpath
 # =========================
 # Data scarcity experiments
 # =========================
-backbone_inits = ["random", "mae", "sap"]
+backbone_inits = ["random","sap", "mae"]
 pretrain_datasets = ["CWRU"]
-downstream_datasets = ["CWRU", "LASPI"]
+downstream_datasets = ["CWRU"]
 downstream_tasks = ["classification"]
-downstream_head_types = ["linear"]
+downstream_head_types = ["linear","non-linear"]
 
 ratios = [0.01] # train set ratios
 seeds = [0] # random seeds  
 finetunes = [True, False] 
 
-epochs = 100
+epochs = 2
 
 for (
     backbone_init,
