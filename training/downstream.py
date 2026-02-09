@@ -9,6 +9,7 @@ import seaborn as sns
 from pathlib import Path
 from tqdm import tqdm
 from datetime import datetime
+from models.ssl.mae import MAEModel
 
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.metrics import accuracy_score, f1_score, mean_squared_error, r2_score
@@ -62,6 +63,25 @@ def save_model_checkpoint(model, run_dir, name="model_checkpoint.pth"):
     checkpoint_path = os.path.join(run_dir, name)
     torch.save(model.state_dict(), checkpoint_path)
 
+def plot_metrics(train_losses, valid_losses, run_dir):
+    """
+    Docstring for plot_metrics
+    
+    :param train_losses: Description
+    :param valid_losses: Description
+    :param run_dir: Description
+    """
+    plt.figure(figsize=(10, 6))
+    plt.plot(train_losses, label="Train Loss")
+    plt.plot(valid_losses, label="Validation Loss")
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
+    plt.title("Training and Validation Loss over Epochs")
+    plt.legend()
+    plt.grid()
+    plt.savefig(os.path.join(run_dir, "loss_curve.png"))
+    plt.close()
+
 def evaluate(run_dir, model, test_loader, device, task="classification"):
     """
     Docstring for evaluate
@@ -99,8 +119,8 @@ def evaluate(run_dir, model, test_loader, device, task="classification"):
         metrics["f1"] = f1_score(all_labels, all_preds, average="weighted")
 
         # Confusion matrix
-        cm = confusion_matrix(all_labels, all_preds)
-        disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+        cm = confusion_matrix(all_labels, all_preds, normalize='true')
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=model.head.lb.classes_)
         disp.plot()
         plt.savefig(os.path.join(run_dir, 'confusion_matrix.png'))
         plt.close()
@@ -195,20 +215,15 @@ def train(
         if scheduler:
             scheduler.step()
 
-        # # Save best model
-        # if run_dir and (epoch == 1 or valid_loss < best_valid_loss):
-        #     best_valid_loss = valid_loss
-        #     save_model_checkpoint(model, run_dir, name="best.pt")
-
         print(f"Epoch {epoch}/{epochs} - Train Loss: {train_loss:.4f}, Valid Loss: {valid_loss:.4f}")
 
-    # # Save final model
-    # if run_dir:
-    #     save_model_checkpoint(model, run_dir, name="final.pt")
+    # Plot training curves
+    if run_dir:
+        plot_metrics(all_train_losses, all_valid_losses, run_dir)
     
     # Testing phase
     metrics = evaluate(run_dir, model, test_loader, device, task=args.task)
-    
+
     # Préparer le dictionnaire pour le CSV
     results_dict = {
         "pretrain_dataset":args.pretrain_dataset,
@@ -220,6 +235,11 @@ def train(
         "seed": args.seed,
         "data_ratio": args.data_ratio,
     }
+
+    # Add mask ratio if the backbone is MAE
+    if args.backbone_init == "mae":
+        results_dict["mask_ratio"] = args.mask_ratio
+
     results_dict.update(metrics)
 
     # Sauvegarde de la configuration du modèle

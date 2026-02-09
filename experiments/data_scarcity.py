@@ -58,8 +58,6 @@ def main(args):
             device=device,
         )
 
-    backbone.to(device)
-
     # Downstream model
     model = get_downstream_model(
         backbone=backbone,
@@ -68,7 +66,7 @@ def main(args):
         classes=labels,
         freeze_backbone= not args.finetune,
         device=device
-    ).to(device)
+    )
 
     # Optimisation
     optimizer = torch.optim.AdamW(
@@ -96,33 +94,52 @@ def main(args):
     )
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser("Downstream data scarcity experiment")
+    # parser = argparse.ArgumentParser("Downstream data scarcity experiment")
 
-    # SSL
-    parser.add_argument("--backbone_init", type=str, choices=["random","sap", "mae"], required=True) # Require: sap | mae
-    parser.add_argument("--pretrain_dataset", type=str, default="CWRU")
+    # # SSL
+    # parser.add_argument("--backbone_init", type=str, choices=["random","sap", "mae"], required=True) # Require: sap | mae
+    # parser.add_argument("--pretrain_dataset", type=str, default="CWRU")
 
-    # Downstream dataset
-    parser.add_argument("--downstream_dataset", type=str, choices=["CWRU", "LASPI"], required=True) 
-    parser.add_argument("--data_ratio", type=float, default=1.0)
+    # # Downstream dataset
+    # parser.add_argument("--downstream_dataset", type=str, choices=["CWRU", "LASPI"], required=True) 
+    # parser.add_argument("--data_ratio", type=float, default=1.0)
 
-    # Probing
-    parser.add_argument("--head_type", type=str, choices=["linear", "non-linear"], required=True)
-    parser.add_argument("--finetune", action="store_true")
+    # # Probing
+    # parser.add_argument("--head_type", type=str, choices=["linear", "non-linear"], required=True)
+    # parser.add_argument("--finetune", action="store_true")
 
-    # Task
-    parser.add_argument("--task", type=str, choices=["classification", "regression"], default="classification")
+    # # Task
+    # parser.add_argument("--task", type=str, choices=["classification", "regression"], default="classification")
 
-    # Training
-    parser.add_argument("--seed", type=int, required=True)
-    parser.add_argument("--epochs", type=int, required=True)
-    parser.add_argument("--batch_size", type=int, default=64)
-    parser.add_argument("--learning_rate", type=float, default=0.0003695)
-    parser.add_argument("--weight_decay", type=float, default=1.1133e-5)
+    # # Training
+    # parser.add_argument("--seed", type=int, required=True)
+    # parser.add_argument("--epochs", type=int, required=True)
+    # parser.add_argument("--batch_size", type=int, default=64)
+    # parser.add_argument("--learning_rate", type=float, default=0.0003695)
+    # parser.add_argument("--weight_decay", type=float, default=1.1133e-5)
 
-    # Signal
-    parser.add_argument("--window_size", type=int, default=2048)
-    parser.add_argument("--window_stride", type=int, default=256)
+    # # Signal
+    # parser.add_argument("--window_size", type=int, default=2048)
+    # parser.add_argument("--window_stride", type=int, default=256)
 
-    args = parser.parse_args()
+    # args = parser.parse_args()
+    # main(args)
+
+    # Debug example
+    args = SimpleNamespace(
+        backbone_init="random",  # "random" | "sap" | "mae"
+        pretrain_dataset="CWRU",
+        downstream_dataset="CWRU",
+        data_ratio=0.01,
+        head_type="linear",
+        finetune=True,
+        task="classification",
+        seed=2,
+        epochs=20,
+        batch_size=64,
+        learning_rate=0.0003695,
+        weight_decay=1.1133e-5,
+        window_size=2048,
+        window_stride=256,
+    )
     main(args)

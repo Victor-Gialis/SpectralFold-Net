@@ -1,7 +1,15 @@
 import os
 from itertools import product
 
-for (ssl, epochs) in product(["sap","mae"],[2]):
+# Set PYTHONPATH to include current directory
+pythonpath = os.getenv("PYTHONPATH", "")
+if pythonpath:
+    pythonpath = pythonpath + ":" + os.path.abspath(".")
+else:
+    pythonpath = os.path.abspath(".")
+os.environ["PYTHONPATH"] = pythonpath
+
+for (ssl, epochs) in product(["sap"],[50]):
 
     cmd = (
         f"python experiments/pretrain_{ssl}.py "

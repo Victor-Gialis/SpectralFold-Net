@@ -44,16 +44,14 @@ class SAPModel(BaseSSLModel):
         x_fold = batch['X_folded'] # get folded spectrum in input
         
         # Normalization
-        # x_norm = normalization.global_z_log_normalization(x=x_fold, stats=self.backbone.stats)
-        x_norm = normalization.global_min_max_log_normalization(x=x_fold, stats=self.backbone.stats)
+        x_norm = normalization.global_z_log_normalization(x=x_fold, stats=self.backbone.stats)
         
         # Forward pass
         embedded_tokens = self.backbone(x_norm)
         x_pred_norm = self.decoder(embedded_tokens)
         
         # Unnormalize
-        # x_pred = normalization.global_z_log_unnormalization(x_norm=x_pred_norm, stats=self.backbone.stats)
-        x_pred = normalization.global_min_max_log_unnormalization(x_norm=x_pred_norm, stats=self.backbone.stats)
+        x_pred = normalization.global_z_log_unnormalization(x_norm=x_pred_norm, stats=self.backbone.stats)
 
         # Ensure non-negative outputs
         x_pred = super().non_negative_output(x_pred)

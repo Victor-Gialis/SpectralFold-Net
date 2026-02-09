@@ -114,6 +114,10 @@ def save_model_checkpoint(run_dir:Path, model:nn.Module, name:str="model.pt"):
         if hasattr(model.backbone, 'stats'):
             checkpoint['backbone_stats'] = model.backbone.stats
     
+    # Save SSL method metadata (e.g., mask_ratio for MAE)
+    if hasattr(model, 'mask_ratio'):
+        checkpoint['mask_ratio'] = model.mask_ratio
+    
     torch.save(checkpoint, checkpoint_path / name)
 
 def load_model_checkpoint(model:nn.Module, checkpoint_path:Path)->nn.Module:
@@ -125,6 +129,7 @@ def load_model_checkpoint(model:nn.Module, checkpoint_path:Path)->nn.Module:
     Returns:
         nn.Module: The model with loaded weights and stats.
     """
+    checkpoint_path = os.path.join(checkpoint_path,'checkpoints','best.pt') if isinstance(checkpoint_path, str) else checkpoint_path
     checkpoint = torch.load(checkpoint_path, weights_only=False)
     
     # Load model state
@@ -134,6 +139,8 @@ def load_model_checkpoint(model:nn.Module, checkpoint_path:Path)->nn.Module:
         if hasattr(model, 'backbone'):
             if 'backbone_stats' in checkpoint:
                 model.backbone._loads_stats(checkpoint['backbone_stats'])
+            if 'mask_ratio' in checkpoint:
+                model.mask_ratio = checkpoint['mask_ratio']
     else:
         # Backward compatibility: if checkpoint is just state_dict
         model.load_state_dict(checkpoint)

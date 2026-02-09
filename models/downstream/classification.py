@@ -10,12 +10,23 @@ class LinearClassificationHead(nn.Module):
                  device:torch.device="cpu"):
         
         super().__init__()
-        self.fc = nn.Linear(input_dim, n_classes)
-
-        self.lb = LabelBinarizer()
         self.device = device
 
+        self.fc = nn.Linear(input_dim, n_classes)
+
+        # One-hot labelizer
+        self.lb = LabelBinarizer()
+        # Loss function
         self.loss_function = torch.nn.CrossEntropyLoss()
+        # Initialize weights
+        self._initialize_weights()
+    
+    def _initialize_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Linear):
+                nn.init.xavier_uniform_(m.weight)
+                if m.bias is not None:
+                    nn.init.zeros_(m.bias)
 
     def fit_labelizer(self,labels):
         self.lb.fit(labels)
@@ -44,6 +55,8 @@ class MLPClassificationHead(nn.Module):
                  device:torch.device="cpu"):
         
         super().__init__()
+        self.device = device
+
         self.fc = nn.Sequential(
             nn.Linear(in_dim, in_dim//2),
             nn.ReLU(),
@@ -51,10 +64,19 @@ class MLPClassificationHead(nn.Module):
             nn.Dropout(dropout)
         )
 
+        # One-hot labelizer
         self.lb = LabelBinarizer()
-        self.device = device
-
+        # Loss function
         self.loss_function = torch.nn.CrossEntropyLoss()
+        # Initialize weights
+        self._initialize_weights()
+    
+    def _initialize_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Linear):
+                nn.init.xavier_uniform_(m.weight)
+                if m.bias is not None:
+                    nn.init.zeros_(m.bias)
 
     def fit_labelizer(self,labels):
         self.lb.fit(labels)

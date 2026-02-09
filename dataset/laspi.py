@@ -38,29 +38,47 @@ class LASPIDataset(BaseDataset):
         return data
 
     def _collect_samples(self):
+        """
+        Docstring for _collect_samples
+        
+        :param self: Description
+        """ 
+        # Parcours des répertoires pour collecter les échantillons
         for default in os.listdir(self.root_dir):
             default_path = os.path.join(self.root_dir, default)
             if not os.path.isdir(default_path) or default == '__pycache__':
                 continue
-            for conditions in os.listdir(default_path):
-                freq, load, speed = conditions.split('_')
-                freq = int(freq.replace('hz', ''))
-                load = int(load.replace('%', ''))
-                speed = int(speed.replace('rpm', ''))
 
+            # Parcours des conditions de fonctionnement
+            for conditions in os.listdir(default_path):
+                speed, load, speed_rpm = conditions.split('_')
+                
+                # Nettoyage des valeurs
+                speed = int(speed.replace('hz', ''))
+                load = int(load.replace('%', ''))
+                speed_rpm = int(speed_rpm.replace('rpm', ''))
+
+                # Chemin vers le répertoire des conditions
                 cond_path = os.path.join(default_path, conditions)
                 if not os.path.isdir(cond_path):
                     continue
+
+                # Parcours des fichiers CSV dans le répertoire des conditions
                 for file in os.listdir(cond_path):
                     if file.endswith('.csv'):
                         csv_path = os.path.join(cond_path, file)
                         label = self._extract_label_from_filename(default) # Convertit le nom du défaut en étiquette
+                        
+                        # Filtrage des échantillons selon les filtres spécifiés
                         if self.fault_filter is  None or label in self.fault_filter:
                             if self.speed_filter is None or speed in self.speed_filter:
+
+                                # Ajout de l'échantillon à la liste des échantillons
                                 self.samples.append(Sample(filepath=csv_path,
                                                             label=label,
-                                                            metadata={'freq': freq, 'load': load, 'speed': speed}))
-
+                                                            metadata={'speed': speed, 
+                                                                      'load': load, 
+                                                                      'speed_rpm': speed_rpm}))
     def _extract_label_from_filename(self, default):
 
         mapping = {'Bearing_inner_race_fault': 'inner', 

@@ -119,6 +119,7 @@ class BaseDataset(Dataset):
                 - 'metadata': Metadata associated with the sample.
         """
         # Reading the sample
+        filepath = self.windows[idx].filepath
         y_label = self.windows[idx].label
         metadata = self.windows[idx].metadata
         
@@ -143,7 +144,8 @@ class BaseDataset(Dataset):
         return {'X_raw':X_raw, 
                 'X_folded':X_fold, 
                 'y_label':y_label, 
-                'metadata':metadata}
+                'metadata':metadata,
+                'filepath': filepath}
 
 # import matplotlib.pyplot as plt
 # plt.plot(X_raw.numpy())
