@@ -9,60 +9,49 @@ else:
     pythonpath = os.path.abspath(".")
 os.environ["PYTHONPATH"] = pythonpath
 
+# Variables for downstream experiment
+backbone_inits = ["sap","mae"] # ["random", "mae", "sap"]
+pretrain_dataset = "CWRU"  # ["CWRU", "LASPI"]
+downstream_dataset = "LASPI"  # ["CWRU", "LASPI"]
+data_ratios = [0.01, 0.05, 0.1, 0.2] # [0.01, 0.05, 0.1, 0.2]
+split_type = "speed_load_stratified"  # ["independent", "speed_stratified", "speed_load_stratified", "sample_stratified"]
+finetune_options = [True, False]
+head_type = "linear"  # ["linear", "nonlinear"]
+seeds = [0, 1, 2, 3, 4]  
+epoch = 10
+
 # =========================
-# Data scarcity experiments
+# Downstream experiments
 # =========================
-backbone_inits = ["random","sap", "mae"]
-pretrain_datasets = ["CWRU"]
-downstream_datasets = ["CWRU"]
-downstream_tasks = ["classification"]
-downstream_head_types = ["linear","non-linear"]
+for backbone, data_ratio, finetune, seed in product(backbone_inits, data_ratios, finetune_options, seeds):
 
-ratios = [0.01] # train set ratios
-seeds = [0] # random seeds  
-finetunes = [True, False] 
+    if not finetune and backbone == "random":
+        print(f"Skipping random backbone without finetuning (not meaningful)")
+        continue
 
-epochs = 2
-
-for (
-    backbone_init,
-    pretrain_dataset,
-    downstream_dataset,
-    task,
-    head_type,
-    ratio,
-    seed,
-    finetune,
-) in product(
-    backbone_inits,
-    pretrain_datasets,
-    downstream_datasets,
-    downstream_tasks,
-    downstream_head_types,
-    ratios,
-    seeds,
-    finetunes,
-):
-
-    cmd = (
-        f"python experiments/data_scarcity.py "
-        f"--backbone_init {backbone_init} "
+    print(f"Starting downstream evaluation with {backbone.upper()} backbone...")
+    downstream_cmd = (
+        f"python experiments/downstream_{backbone}.py "
         f"--pretrain_dataset {pretrain_dataset} "
         f"--downstream_dataset {downstream_dataset} "
-        f"--task {task} "
+        f"--batch_size 256 "
+        f"--window_size 2048 "
+        f"--window_stride 256 "
+        f"--data_ratio {data_ratio} "
+        f"--split_type {split_type} "
+        f"--learning_rate 0.0003695 "
+        f"--weight_decay 1.1133e-5 "
+        f"--epochs {epoch} "
         f"--head_type {head_type} "
-        f"--seed {seed} "
-        f"--data_ratio {ratio} "
-        f"--epochs {epochs} "
+        f"--task classification "
+        f"--seed {seed}"
     )
 
-    # Flag finetune (IMPORTANT)
-    if finetune:
-        cmd += "--finetune "
+    if finetune :
+        downstream_cmd += " --finetune"
 
-    print(f"Running: {cmd}")
-    exit_code = os.system(cmd)
+    print(f"Running: {downstream_cmd}")
+    exit_code = os.system(downstream_cmd)
 
     if exit_code != 0:
-        print(f"❌ Command failed: {cmd}")
-
+        print(f"❌ Command failed: {downstream_cmd}")

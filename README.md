@@ -1,5 +1,6 @@
-Self-Supervised Learning for Industrial Condition Monitoring
-Overview
+# Self-Supervised Learning for Industrial Condition Monitoring
+
+## Overview
 
 This repository investigates the contribution of self-supervised representation learning to vibration-based fault diagnosis under data scarcity constraints.
 
@@ -7,7 +8,58 @@ The work focuses on learning transferable representations from unlabeled vibrati
 
 This project serves as the experimental framework for a PhD thesis in industrial maintenance and applied machine learning.
 
-Scientific Motivation
+## Installation
+
+### Prerequisites
+- Python 3.10+
+- CUDA 11.8+ (for GPU support)
+
+### Quick Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/CWRU_MAE.git
+cd CWRU_MAE
+
+# Create virtual environment
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Or install as editable package
+pip install -e .
+```
+
+### Dataset Setup
+
+Download the datasets and place them in `data/raw/`:
+
+- **CWRU**: [Case Western Reserve University Bearing Dataset](https://engineering.case.edu/bearingdatacenter)
+- **LASPI**: [Gearbox Fault Dataset](https://www.kaggle.com/)
+
+## Quick Start
+
+### Pretraining with MAE
+
+```bash
+python experiments/pretrain_mae.py --config configs/mae_pretrain.yaml
+```
+
+### Data Scarcity Evaluation
+
+```bash
+python experiments/data_scarcity.py --backbone_init mae --data_ratio 0.1
+```
+
+### Downstream Task
+
+```bash
+python experiments/downstream_mae.py --config configs/downstream.yaml
+```
+
+## Scientific Motivation
 
 In industrial condition monitoring, labeled fault data are often:
 
@@ -113,15 +165,60 @@ Fine-tuning or frozen backbone
 
 This design enables fair and reproducible comparisons across SSL methods.
 
-Datasets
+## Reproducibility
 
-Experiments are conducted on benchmark datasets for rotating machinery diagnostics:
+All experiments include:
+- Full configuration files (saved automatically)
+- Model checkpoints and weights
+- Training logs with Weights & Biases integration
+- Deterministic seeding for reproducible results
 
-CWRU – Case Western Reserve University bearing dataset
+Key random seeds are controlled via:
+```bash
+python experiments/data_scarcity.py --seed 42 --num_runs 5
+```
 
-LASPI – Gearbox fault dataset
+## Citation
 
-The framework supports heterogeneous and homogeneous train/validation/test splits depending on the experimental stage.
+If you use this code in your research, please cite it as:
+
+**BibTeX:**
+```bibtex
+@software{Grotus2026,
+  author = {Grotus, Victor},
+  title = {Self-Supervised Learning for Industrial Condition Monitoring},
+  year = {2026},
+  url = {https://github.com/yourusername/CWRU_MAE},
+  note = {GitHub repository}
+}
+```
+
+**APA:**
+```
+Grotus, V. (2026). Self-Supervised Learning for Industrial Condition Monitoring. 
+Retrieved from https://github.com/yourusername/CWRU_MAE
+```
+
+For journal citations with DOI, see [CITATION.cff](CITATION.cff).
+
+## Status
+
+This repository is under active development and continuously extended as part of ongoing doctoral research.
+
+## Author
+
+**Victor Grotus**  
+PhD candidate in Industrial Maintenance  
+Self-supervised learning for condition monitoring
+
+## License
+
+This project is licensed under the MIT License - see [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Case Western Reserve University for the bearing dataset
+- Jean Zay (IDRIS) for HPC supportous train/validation/test splits depending on the experimental stage.
 
 Project Structure
 .

@@ -1,3 +1,70 @@
-/checkpoint
-/data
-/results
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+.venv/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Datasets (too large)
+/data/raw/
+/data/processed/
+!data/.gitkeep
+
+# Results and logs
+/results/
+/logs/
+*.log
+
+# Weights and checkpoints (if too large)
+/checkpoint/
+*.pth
+*.pt
+
+# Weights & Biases
+/wandb/
+*.wandb
+
+# System
+.DS_Store
+.AppleDouble
+.LSOverride
+*.sublime-project
+*.sublime-workspace
+
+# Local development
+.tmp/
+temp/
+*.bak

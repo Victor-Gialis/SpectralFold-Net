@@ -13,6 +13,8 @@ from models.ssl.mae import MAEModel
 
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.metrics import accuracy_score, f1_score, mean_squared_error, r2_score
+from matplotlib.patches import Rectangle
+from dataset.transform import normalization
 
 def create_run_dir(base_dir="results/downstream", args:object=None):
     """
@@ -27,12 +29,13 @@ def create_run_dir(base_dir="results/downstream", args:object=None):
     backbone_init = args.backbone_init
     head_type = args.head_type
     finetune = args.finetune
+    seed = args.seed
 
-    if pretrain_dataset is None:
-        pretrain_dataset = "scratch"
+    if backbone_init == "random":
+        pretrain_dataset = "None"
 
     # create directory structure
-    dir = f"{pretrain_dataset}_{downstream_dataset}_backbone_{backbone_init}_head_{head_type}_finetune_{finetune}"
+    dir = f"{pretrain_dataset}_to_{downstream_dataset}_backbone_{backbone_init}_head_{head_type}_finetune_{finetune}"
     run = os.path.join(base_dir, dir)
     os.makedirs(run, exist_ok=True)
 
@@ -40,7 +43,7 @@ def create_run_dir(base_dir="results/downstream", args:object=None):
     epochs = args.epochs
 
     # create sub-directory for data ratio and epochs
-    dir_name = f"data_ratio_{data_ratio}_epochs_{epochs}"
+    dir_name = f"data_ratio_{data_ratio}_epochs_{epochs}_seed_{seed}"
     run_dir = os.path.join(run, dir_name)
     os.makedirs(run_dir, exist_ok=True)
 
@@ -82,6 +85,112 @@ def plot_metrics(train_losses, valid_losses, run_dir):
     plt.savefig(os.path.join(run_dir, "loss_curve.png"))
     plt.close()
 
+def plot_attention_spectra(run_dir, model, test_loader, device, task="classification"):
+    """
+    Plot average spectrum for each class with patches colored by attention scores.
+    
+    :param run_dir: Directory to save the plots
+    :param model: Model with backbone that has get_attention_scores()
+    :param test_loader: Test data loader
+    :param device: Device to run on
+    :param task: Task type (classification or regression)
+    """
+    if task != "classification":
+        return
+    
+    model.eval()
+    class_spectra = {}
+    class_attention_scores = {}
+    
+    with torch.no_grad():
+        for batch in tqdm(test_loader, desc="Extracting Attention Scores", leave=False):
+            inputs = move_batch_to_device(batch, device)
+            
+            # Get input spectra
+            X_raw = inputs['X_raw']  # (batch, n_time_steps)
+            
+            # Normalize (same as in downstream model)
+            x_norm = normalization.global_z_log_normalization(x=X_raw, stats=model.backbone.stats)
+            
+            # Get attention scores from backbone for each sample
+            batch_attention_scores = []
+            for i in range(x_norm.shape[0]):
+                single_sample = x_norm[i:i+1]  # (1, n_time_steps)
+                attn_score = model.backbone.get_attention_scores(single_sample)  # (n_patches,)
+                batch_attention_scores.append(attn_score.cpu().numpy())
+            
+            batch_attention_scores = np.array(batch_attention_scores)  # (batch, n_patches)
+            
+            # Get forward pass for class labels
+            outputs = model(inputs)
+            targets = model.head.transform_labels(inputs['y_label'])
+            class_labels = torch.argmax(targets, dim=1).cpu().numpy()
+            
+            # Get input spectra
+            X = X_raw.cpu().numpy()  # (batch, n_time_steps)
+            
+            # Aggregate by class
+            for i, class_idx in enumerate(class_labels):
+                class_idx = int(class_idx)
+                if class_idx not in class_spectra:
+                    class_spectra[class_idx] = []
+                    class_attention_scores[class_idx] = []
+                
+                class_spectra[class_idx].append(X[i])
+                class_attention_scores[class_idx].append(batch_attention_scores[i])
+    
+    # Compute mean spectra and attention scores per class
+    for class_idx in sorted(class_spectra.keys()):
+        spectra = np.array(class_spectra[class_idx])  # (n_samples, n_time_steps)
+        attention_scores = np.array(class_attention_scores[class_idx])  # (n_samples, n_patches)
+        
+        mean_spectrum = spectra.mean(axis=0)  # (n_time_steps,)
+        mean_attention = attention_scores.mean(axis=0)  # (n_patches,) - mean attention per patch
+        
+        # Plot single spectrum with patches colored by attention
+        n_patches = len(mean_attention)
+        
+        fig, ax = plt.subplots(figsize=(14, 4))
+        
+        class_name = model.head.lb.classes_[class_idx]
+        
+        # Normalize attention scores to [0, 1] for coloring
+        norm_attention = (mean_attention - mean_attention.min()) / (mean_attention.max() - mean_attention.min() + 1e-6)
+        
+        # Plot spectrum with patches colored by attention scores
+        n_time_steps = len(mean_spectrum)
+        patch_width = n_time_steps / n_patches
+        
+        cmap = plt.cm.Reds
+        
+        for patch_idx, att_score in enumerate(norm_attention):
+            start = int(patch_idx * patch_width)
+            end = int((patch_idx + 1) * patch_width)
+            
+            if start < n_time_steps and end <= n_time_steps:
+                ax.fill_between(range(start, end), mean_spectrum[start:end], alpha=0.7, 
+                               color=cmap(att_score))
+        
+        ax.plot(mean_spectrum, 'k-', linewidth=0.5, alpha=0.3)
+        ax.set_xlabel('Time Steps', fontweight='bold')
+        ax.set_ylabel('Amplitude', fontweight='bold')
+        ax.grid(True, alpha=0.3)
+        
+        fig.suptitle(f'Mean Spectrum - Class: {class_name}\n(Patches colored by mean attention scores)', 
+                     fontsize=14, fontweight='bold', y=0.995)
+        
+        # Add colorbar
+        sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=mean_attention.min(), vmax=mean_attention.max()))
+        sm.set_array([])
+        cbar = plt.colorbar(sm, ax=ax, pad=0.02)
+        cbar.set_label('Attention Score', fontweight='bold')
+        
+        plt.tight_layout()
+        
+        plt.savefig(os.path.join(run_dir, f'attention_spectrum_class_{class_name}.png'), 
+                   dpi=300, bbox_inches='tight')
+        plt.close()
+
 def evaluate(run_dir, model, test_loader, device, task="classification"):
     """
     Docstring for evaluate
@@ -95,18 +204,22 @@ def evaluate(run_dir, model, test_loader, device, task="classification"):
     all_preds = []
     all_labels = []
 
+    # Iterate over test data and collect predictions and labels
     with torch.no_grad():
         for batch in tqdm(test_loader, desc="Evaluating", leave=False):
             inputs = move_batch_to_device(batch, device)
             outputs = model(inputs)
 
+            # For classification, we assume the model's head outputs logits for each class.
+            # For regression, we assume the model's head outputs a single value.
             if task == "classification":
                 targets = model.head.transform_labels(inputs['y_label'])
                 targets = torch.argmax(targets, dim=1)
                 preds = torch.argmax(outputs, dim=1)
             else:  # regression
                 preds = outputs.squeeze()
-            
+                targets = inputs['y_label'].squeeze()
+                
             all_preds.append(preds.detach().cpu())
             all_labels.append(targets.detach().cpu())
     
@@ -121,8 +234,24 @@ def evaluate(run_dir, model, test_loader, device, task="classification"):
         # Confusion matrix
         cm = confusion_matrix(all_labels, all_preds, normalize='true')
         disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=model.head.lb.classes_)
-        disp.plot()
-        plt.savefig(os.path.join(run_dir, 'confusion_matrix.png'))
+        
+        fig, ax = plt.subplots(figsize=(12, 10))
+        disp.plot(ax=ax, cmap='Reds', values_format='.1%')
+        
+        # Améliorer la lisibilité
+        ax.set_xlabel('Prédiction', fontsize=12, fontweight='bold')
+        ax.set_ylabel('Vérité', fontsize=12, fontweight='bold')
+        ax.set_title('Matrice de Confusion', fontsize=14, fontweight='bold', pad=20)
+        
+        # Augmenter la taille des labels
+        ax.xaxis.set_tick_params(labelsize=11)
+        ax.yaxis.set_tick_params(labelsize=11)
+        
+        # Rotation des labels pour éviter le chevauchement
+        plt.xticks(rotation=45, ha='right')
+        plt.tight_layout()
+        
+        plt.savefig(os.path.join(run_dir, 'confusion_matrix.png'), dpi=300, bbox_inches='tight')
         plt.close()
 
     else:
@@ -212,6 +341,11 @@ def train(
         valid_loss /= len(valid_loader)
         all_valid_losses.append(valid_loss)
 
+        # Save best model
+        if valid_loss < best_valid_loss:
+            best_valid_loss = valid_loss
+            save_model_checkpoint(model, run_dir, name="best_model.pth")
+
         if scheduler:
             scheduler.step()
 
@@ -220,6 +354,12 @@ def train(
     # Plot training curves
     if run_dir:
         plot_metrics(all_train_losses, all_valid_losses, run_dir)
+    
+    # Save last model
+    save_model_checkpoint(model, run_dir, name="last_model.pth")
+    
+    # Plot attention spectra for each class
+    plot_attention_spectra(run_dir, model, test_loader, device, task=args.task)
     
     # Testing phase
     metrics = evaluate(run_dir, model, test_loader, device, task=args.task)
@@ -237,8 +377,8 @@ def train(
     }
 
     # Add mask ratio if the backbone is MAE
-    if args.backbone_init == "mae":
-        results_dict["mask_ratio"] = args.mask_ratio
+    # if args.backbone_init == "mae":
+    #     results_dict["mask_ratio"] = args.mask_ratio
 
     results_dict.update(metrics)
 

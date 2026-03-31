@@ -69,6 +69,8 @@ class LASPIDataset(BaseDataset):
                         csv_path = os.path.join(cond_path, file)
                         label = self._extract_label_from_filename(default) # Convertit le nom du défaut en étiquette
                         
+                        # self.fault_filter = ['inner','outer','normal']
+
                         # Filtrage des échantillons selon les filtres spécifiés
                         if self.fault_filter is  None or label in self.fault_filter:
                             if self.speed_filter is None or speed in self.speed_filter:

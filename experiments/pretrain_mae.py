@@ -79,7 +79,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Pretrain MAE Model")
     
     # Dataloader
-    parser.add_argument('--pretrain_dataset', type=str, default="CWRU", help='Name of the dataset to use')
+    parser.add_argument('--pretrain_dataset', type=str, required=True, choices=['CWRU','LASPI'], help='Name of the dataset to use for pretraining')
+    
     parser.add_argument('--batch_size', type=int, default=64, help='Batch size for training')
     parser.add_argument('--window_size', type=int, default=2048, help='Window size for data segments')
     parser.add_argument('--window_stride', type=int, default=256, help='Stride for windowing data segments')
@@ -90,8 +91,7 @@ if __name__ == "__main__":
     parser.add_argument('--epochs', type=int, required=True, help='Number of training epochs')
 
     # MAE specific
-    parser.add_argument('--mask_ratio', type=float, default=0.75, help='Masking ratio for MAE')
+    parser.add_argument('--mask_ratio', type=float, required=True, help='Masking ratio for MAE')
     
     args = parser.parse_args()
-
     main(args)

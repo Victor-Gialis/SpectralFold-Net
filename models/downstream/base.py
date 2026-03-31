@@ -19,11 +19,11 @@ class DownstreamModel(nn.Module):
             for p in self.backbone.parameters():
                 p.requires_grad = False
 
-    def forward(self, batch):
+    def forward(self, batch, get_attention=False):
         """
         batch: dict (standardisé par ton dataloader)
         """
-        x_raw = batch['X_raw']
+        x_raw = batch['X_raw']  
         
         # Normalization
         x_norm = normalization.global_z_log_normalization(x=x_raw, stats=self.backbone.stats)
@@ -31,8 +31,13 @@ class DownstreamModel(nn.Module):
         features = self.backbone(x_norm)
         cls_token = features[:,0]
         outputs = self.head(cls_token)
-        
-        return outputs
+
+        if get_attention:
+            attention_scores = self.backbone.get_attention_scores(x_norm)
+            return outputs, attention_scores
+
+        else:
+            return outputs
 
     def compute_loss(self, outputs, batch):
         return self.head.compute_loss(outputs, batch)

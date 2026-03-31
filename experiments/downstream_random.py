@@ -5,7 +5,7 @@ import numpy as np
 from tqdm import tqdm
 from types import SimpleNamespace
 
-from dataset import dataloader
+from dataset import dataloader, split_data_factory
 from training.downstream import train, evaluate, log_metrics
 from training.pretrain import load_model_checkpoint
 from models.downstream.registry import get_downstream_model
@@ -57,42 +57,13 @@ def main(args):
     stats = dataloader.compute_stats_from_dataloader(pretrain_loader)
     backbone_random._loads_stats(stats)
 
-    # # Split dataloaders - sampling spectrum independently
-    # train_loader, valid_loader, test_loader, labels = dataloader.get_homogenous_split_dataloaders(args_dataloader,seed=args.seed)
-
-    # Split dataloaders - speed stratified sampling
-    if args.downstream_dataset == "CWRU":
-        train_loader, valid_loader, test_loader, labels = dataloader.get_speed_stratified_dataloaders(
-            args=args_dataloader,
-            train_val_speeds=['1750', '1772', '1797'],
-            test_speeds=['1730'],
-            seed=args.seed,
-        )
-    
-    # elif args.downstream_dataset == "LASPI":
-        # # Original speed stratified
-        # train_loader, valid_loader, test_loader, labels = dataloader.get_speed_stratified_dataloaders(
-        #     args=args_dataloader,
-        #     train_val_speeds=[25, 45],
-        #     test_speeds=[35],
-        #     seed=args.seed,
-        # )
-
-        # # Mixed speed train/val, test on fixed speeds and load conditions
-        # train_loader, valid_loader, test_loader, labels = dataloader.get_speed_load_stratified_dataloaders(
-        #     args=args_dataloader, 
-        #     train_val_combinations=[(25, 0), (25, 25), (25, 75),
-        #                             (35, 0), (35, 25), (35, 50), (35, 75),
-        #                             (45, 0), (45, 25), (45, 50), (45, 75),],
-        #     test_combinations=[(25, 50)],
-        #     seed=args.seed,
-        # )
-
-        # # Mixed speed train/val, test on fixed speeds and load conditions, but only 1 load condition per speed to avoid overfitting to load conditions
-        # train_loader, valid_loader, test_loader, labels = dataloader.get_laspi_acquisition_split_dataloaders(
-        #     args=args_dataloader,
-        #     seed=args.seed,
-        # )
+    # Split dataloaders
+    train_loader, valid_loader, test_loader, labels = split_data_factory.split_dataloader(
+        split_type=args.split_type,
+        dataset=args.downstream_dataset,
+        args_dataloader=args_dataloader,
+        seed=args.seed,
+    )
 
     # Downstream model
     model = get_downstream_model(
@@ -131,23 +102,51 @@ def main(args):
     )
 
 if __name__ == "__main__":
-    # Debug example
-    for data_ratio in [1.0]:
-        for seed in range(1):
-            args = SimpleNamespace(
-                backbone_init="random",  # "random" | "sap" | "mae"
-                pretrain_dataset="CWRU",
-                downstream_dataset="CWRU",
-                data_ratio=data_ratio,
-                head_type="linear",
-                finetune=True,
-                task="classification",
-                seed=seed,
-                epochs=50,
-                batch_size=64,
-                learning_rate=0.0003695,
-                weight_decay=1.1133e-5,
-                window_size=2048,
-                window_stride=256,
-            )
-            main(args)
+    parser = argparse.ArgumentParser(description="Downstream Random Model")
+
+    # Dataloader
+    parser.add_argument('--pretrain_dataset', type=str, required=True, choices=['CWRU','LASPI'], help='Name of the dataset to use for pretraining')
+    parser.add_argument('--downstream_dataset', type=str, required=True, choices=['CWRU','LASPI'], help='Name of the dataset to use for downstream task')
+
+    parser.add_argument('--batch_size', type=int, default=64, help='Batch size for training')
+    parser.add_argument('--window_size', type=int, default=2048, help='Window size for data segments')
+    parser.add_argument('--window_stride', type=int, default=256, help='Stride for windowing data segments')
+
+    parser.add_argument('--data_ratio', type=float, required=True, help='Ratio of training data to use for the downstream task')
+    parser.add_argument('--split_type', type=str, required=True, choices=["independent", "speed_stratified", "speed_load_stratified", "sample_stratified"], help='Type of data split to use for the downstream task (independent, speed_stratified, speed_load_stratified, sample_stratified)')
+
+    # Training
+    parser.add_argument('--learning_rate', type=float, default=0.0003695, help='Learning rate for optimizer')
+    parser.add_argument('--weight_decay', type=float, default=1.1133e-5, help='Weight decay for optimizer')
+    parser.add_argument('--epochs', type=int, required=True, help='Number of training epochs')
+
+    # Backbone
+    parser.add_argument('--head_type', type=str, required=True, choices=["linear", "nonlinear"], help='Type of head to use for downstream model (linear or nonlinear)')
+    parser.add_argument('--finetune', action='store_true', help='Whether to finetune the backbone during downstream training')
+    parser.add_argument('--task', type=str, required=True, choices=["classification", "regression"], help='Type of downstream task (classification or regression)')
+    parser.add_argument('--seed', type=int, required=True, help='Random seed for reproducibility')
+
+    args = parser.parse_args()
+
+    # # Debug run
+    # args = parser.parse_args(args=[
+    #     "--pretrain_dataset", "CWRU",
+    #     "--downstream_dataset", "CWRU",
+    #     "--batch_size", "64",             
+    #     "--window_size", "2048",
+    #     "--window_stride", "256",
+    #     "--data_ratio", "0.01",
+    #     "--split_type", "speed_stratified",
+    #     "--learning_rate", "0.0003695",
+    #     "--weight_decay", "1.1133e-5",
+    #     "--epochs", "2",
+    #     "--head_type", "linear",
+    #     "--task", "classification",
+    #     "--seed", "0",
+    #     "--finetune"
+    # ])
+
+    args.backbone_init = "random"
+
+    # Run experiment
+    main(args)

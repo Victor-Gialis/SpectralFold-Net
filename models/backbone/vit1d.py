@@ -95,6 +95,39 @@ class ViT1DEncoder(nn.Module):
             dropout = self.dropout,
             )
     
+    def get_attention_scores(self, x):
+        """Returns the attention scores from the last encoder layer."""
+        # Tokeniser
+        x = self.tokeniser(x)
+        # Extract batch size and number of tokens
+        b, _, _ = x.shape
+        # Add cls token
+        cls_tokens = self.cls_token.expand(b, -1, -1)
+        x = torch.cat([cls_tokens, x], dim=1)
+        # Add positional embedding
+        x = self.positional_embedding(x)
+        
+        # Pass through encoder layers
+        last_attention_layer = None
+        for layer in self.encoder_layers:
+            # Extract the Attention module from the Residual(PreNorm(Attention))
+            residual_block = layer[0]  # First Residual block (attention)
+            prenorm = residual_block.fn  # Get PreNorm from Residual
+            attention_module = prenorm.fn  # Get Attention from PreNorm
+            last_attention_layer = attention_module
+            
+            # Forward pass through the layer
+            x = layer(x)
+        
+        # Get attention scores from cls token (first token) to all patches
+        if last_attention_layer is not None and hasattr(last_attention_layer, 'last_attn'):
+            # last_attn shape: (batch, seq_len, seq_len)
+            # We want attention from cls token (position 0) to patches (positions 1:)
+            attn_scores = last_attention_layer.last_attn[:, 0, 1:].mean(dim=0)  # Average across heads, take cls->patches
+            return attn_scores
+        
+        return None
+    
 class ViT1DDecoder(nn.Module):
     def __init__(self, patch_size=16, hidden_dim=512, n_layers=3, heads=8, dropout=0.2565):
         super().__init__() 
