@@ -14,7 +14,7 @@ pretrain_dataset = "CWRU"  # ["CWRU", "LASPI"]
 batch_size = 64
 window_size = 2048
 window_stride = 256
-downsampling_factor = 2
+downsampling_factor = 3
 epochs = 50
 
 # =========================

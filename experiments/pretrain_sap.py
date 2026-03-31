@@ -32,6 +32,7 @@ def main(args):
         batch_size=args.batch_size,
         downsampling_factor=args.downsampling_factor
         )
+    
     # Set backbone arguments
     args_backbone = SimpleNamespace(
         model="vit1d",
@@ -39,6 +40,7 @@ def main(args):
     # Set ssl arguments
     args_ssl = SimpleNamespace(
         method="sap",
+        downsampling_factor=args.downsampling_factor,
     )
 
     # Set training arguments
@@ -91,22 +93,36 @@ def main(args):
     )
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Pretrain SAP Model")
+    # parser = argparse.ArgumentParser(description="Pretrain SAP Model")
     
-    # Dataloader
-    parser.add_argument('--pretrain_dataset', type=str, required=True, choices=['CWRU','LASPI'], help='Name of the dataset to use for pretraining')
+    # # Dataloader
+    # parser.add_argument('--pretrain_dataset', type=str, required=True, choices=['CWRU','LASPI'], help='Name of the dataset to use for pretraining')
     
-    parser.add_argument('--batch_size', type=int, default=64, help='Batch size for training')
-    parser.add_argument('--window_size', type=int, default=2048, help='Window size for data segments')
-    parser.add_argument('--window_stride', type=int, default=256, help='Stride for windowing data segments')
+    # parser.add_argument('--batch_size', type=int, default=64, help='Batch size for training')
+    # parser.add_argument('--window_size', type=int, default=2048, help='Window size for data segments')
+    # parser.add_argument('--window_stride', type=int, default=256, help='Stride for windowing data segments')
 
-    # Training
-    parser.add_argument('--learning_rate', type=float, default=0.0003695, help='Learning rate for optimizer')
-    parser.add_argument('--weight_decay', type=float, default=1.1133e-5, help='Weight decay for optimizer')
-    parser.add_argument('--epochs', type=int, required=True, help='Number of training epochs')
+    # # Training
+    # parser.add_argument('--learning_rate', type=float, default=0.0003695, help='Learning rate for optimizer')
+    # parser.add_argument('--weight_decay', type=float, default=1.1133e-5, help='Weight decay for optimizer')
+    # parser.add_argument('--epochs', type=int, required=True, help='Number of training epochs')
 
-    # SAP specific
-    parser.add_argument('--downsampling_factor', type=float, required=True, help='Downsampling factor')
+    # # SAP specific
+    # parser.add_argument('--downsampling_factor', type=float, required=True, help='Downsampling factor')
     
-    args = parser.parse_args()
+    # args = parser.parse_args()
+
+    # Debugging arguments
+    args = SimpleNamespace(
+        pretrain_dataset="CWRU",
+        downstream_dataset="CWRU",
+        batch_size=64,
+        window_size=2048,
+        window_stride=256,
+        learning_rate=0.0003695,
+        weight_decay=1.1133e-5,
+        epochs=50,
+        downsampling_factor=6,
+    )
+
     main(args)

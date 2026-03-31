@@ -16,13 +16,127 @@ import numpy as np
 from types import SimpleNamespace
 from pathlib import Path
 
-from dataset import split_data_factory
+from dataset import split_data_factory, dataloader
 from models.backbone.vit1d import ViT1DEncoder
 from models.ssl.mae import MAEModel
 from models.downstream.registry import get_downstream_model
-from training.pretrain import load_model_checkpoint
+from training.pretrain import load_model_checkpoint as load_pretrain_checkpoint
+from training.downstream import load_model_checkpoint
 from dataset.transform import normalization
 
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+import numpy as np
+import torch
+
+def plot_decision_surface(model, labels, features, predictions, targets):
+    """
+    """
+    # Réduction de dimension avec PCA
+    pca = PCA(n_components=2)
+    features_2d = pca.fit_transform(features)
+    variance_explained = pca.explained_variance_ratio_.sum() * 100
+    print(f"Variance expliquée par les 2 composantes principales : {variance_explained:.2f}%")
+
+    # Créer une grille pour le tracé de la surface de décision
+    x_min, x_max = features_2d[:, 0].min() - 1, features_2d[:, 0].max() + 1
+    y_min, y_max = features_2d[:, 1].min() - 1, features_2d[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.linspace(x_min, x_max, 100), np.linspace(y_min, y_max, 100))
+
+    # PCA inverse transform pour obtenir les caractéristiques originales
+    grid_points = np.c_[xx.ravel(), yy.ravel()]
+    grid_points_original = pca.inverse_transform(grid_points)
+
+    # Faire prédictions sur la grille
+    model.head.eval()  # Assurez-vous que le modèle est en mode évaluation
+    with torch.no_grad():
+        grid_tensor = torch.tensor(grid_points_original, dtype=torch.float32).to(model.head.device)
+        outputs = model.head(grid_tensor)
+        _, predicted = torch.max(outputs, 1)
+        Z = predicted.cpu().numpy().reshape(xx.shape)
+
+    # # Métrics de classification
+    from sklearn.metrics import classification_report
+
+    y_pred = np.argmax(predictions, axis=1)
+    y_true = np.argmax(targets, axis=1)
+
+    report = classification_report(
+        y_true,
+        y_pred,
+        target_names=labels,
+        zero_division=0
+    )
+
+    # Tracer la surface de décision
+    plt.contourf(xx, yy, Z, alpha=0.8)
+    plt.scatter(
+        features_2d[:, 0],
+        features_2d[:, 1],
+        c=y_true,
+        edgecolors='k',
+        marker='o'
+    )
+    plt.title("Decision surface with PCA-reduced features")
+
+    ax = plt.gca()
+    fig = plt.gcf()
+    present_classes = np.unique(y_true).astype(int)
+
+    if ax.collections:
+        handles, _ = ax.collections[-1].legend_elements()
+        class_names = [labels[i] for i in present_classes]
+
+        fig.legend(
+            handles[:len(class_names)],
+            class_names,
+            title="Classes",
+            loc="upper left",
+            bbox_to_anchor=(0.74, 0.45),
+            frameon=True
+        )
+
+    # Afficher le classification report dans la figure
+    fig.text(
+        0.75, 0.92, report,
+        fontsize=9,
+        family="monospace",
+        va="top",
+        ha="left",
+        bbox=dict(boxstyle="round", facecolor="white", alpha=0.9)
+    )
+
+    plt.tight_layout(rect=[0, 0, 0.72, 1])
+    plt.show()
+
+def get_model_path(split_strategy, pretrain_dataset, downstream_dataset, backbone, finetune_option, head_type, data_ratio, epochs=50, seed=0):
+    """
+    Générer le chemin vers le modèle downstream entraîné selon les paramètres.
+    """
+    assert split_strategy in ["independent", "speed_stratified", "speed_load_stratified", "sample_stratified"], f"Invalid split strategy: {split_strategy}"
+    assert pretrain_dataset in ["CWRU", "LASPI", "None", "CVRTEST"], f"Invalid pretrain dataset: {pretrain_dataset}"
+    assert downstream_dataset in ["CWRU", "LASPI","CVRTEST"], f"Invalid downstream dataset: {downstream_dataset}"
+    assert backbone in ["random", "mae", "sap"], f"Invalid backbone type: {backbone}"
+    assert head_type in ["linear", "nonlinear"], f"Invalid head type: {head_type}"
+    assert 0 < data_ratio <= 1.0, f"Data ratio must be in (0, 1], got {data_ratio}"
+
+
+    finetune_str = "finetune_True" if finetune_option else "finetune_False"
+
+    if backbone == "random":
+        pretrain_dataset = "None"
+    
+    # Construire le chemin vers le modèle
+    model_path = f"results/downstream/{split_strategy}/{pretrain_dataset}_to_{downstream_dataset}_backbone_{backbone}_head_{head_type}_{finetune_str}/data_ratio_{data_ratio}_epochs_{epochs}_seed_{seed}/best_model.pth"
+    
+    # Vérifier que le chemin existe
+    if os.path.exists(model_path) :
+        print(f"✓ Model path found: {model_path}")
+        return model_path
+    else:
+        print(f"❌ Model path not found: {model_path}")
+        print("Vérifier que les paramètres sont corrects et que le modèle a été entraîné avec ces paramètres!")
+        return None
 
 def load_downstream_model(
     model_path: str,
@@ -47,6 +161,8 @@ def load_downstream_model(
         model: Modèle downstream chargé
         config: Configuration du modèle (depuis config.json)
     """
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"Model file not found: {model_path}")
     
     # Charger la configuration depuis le répertoire du modèle
     run_dir = os.path.dirname(model_path)
@@ -90,8 +206,19 @@ def load_downstream_model(
             checkpoints_dir = f"results/pretrain/MAEModel/{pretrain_dataset}Dataset"
             
             if os.path.exists(checkpoints_dir):
-                checkpoints = sorted(os.listdir(checkpoints_dir))
-                pretrain_checkpoint_path = os.path.join(checkpoints_dir, checkpoints[-1])
+                # Récupérer le dernier répertoire de run
+                run_dirs = sorted([d for d in os.listdir(checkpoints_dir) if os.path.isdir(os.path.join(checkpoints_dir, d))])
+                if run_dirs:
+                    latest_run = run_dirs[-1]
+                    checkpoint_file = os.path.join(checkpoints_dir, latest_run, "checkpoints", "best.pt")
+                    if os.path.exists(checkpoint_file):
+                        pretrain_checkpoint_path = checkpoint_file
+                    else:
+                        print(f"⚠️  Fichier checkpoint MAE non trouvé: {checkpoint_file}")
+                        pretrain_checkpoint_path = None
+                else:
+                    print(f"⚠️  Aucun répertoire de run trouvé: {checkpoints_dir}")
+                    pretrain_checkpoint_path = None
             else:
                 print(f"⚠️  Répertoire de checkpoints MAE non trouvé: {checkpoints_dir}")
                 print("   Utilisation d'un backbone random...")
@@ -99,7 +226,7 @@ def load_downstream_model(
                 pretrain_checkpoint_path = None
         
         if pretrain_checkpoint_path and os.path.exists(pretrain_checkpoint_path):
-            ssl_model = load_model_checkpoint(ssl_mode, pretrain_checkpoint_path)
+            ssl_model = load_model_checkpoint(ssl_mode, pretrain_checkpoint_path, device=device, strict=False)
             backbone = ssl_model.backbone
             print(f"✓ Backbone MAE chargé depuis: {pretrain_checkpoint_path}")
         else:
@@ -123,8 +250,19 @@ def load_downstream_model(
                 checkpoints_dir = f"results/pretrain/SAPModel/{pretrain_dataset}Dataset"
                 
                 if os.path.exists(checkpoints_dir):
-                    checkpoints = sorted(os.listdir(checkpoints_dir))
-                    pretrain_checkpoint_path = os.path.join(checkpoints_dir, checkpoints[-1])
+                    # Récupérer le dernier répertoire de run
+                    run_dirs = sorted([d for d in os.listdir(checkpoints_dir) if os.path.isdir(os.path.join(checkpoints_dir, d))])
+                    if run_dirs:
+                        latest_run = run_dirs[-1]
+                        checkpoint_file = os.path.join(checkpoints_dir, latest_run, "checkpoints", "best.pt")
+                        if os.path.exists(checkpoint_file):
+                            pretrain_checkpoint_path = checkpoint_file
+                        else:
+                            print(f"⚠️  Fichier checkpoint SAP non trouvé: {checkpoint_file}")
+                            pretrain_checkpoint_path = None
+                    else:
+                        print(f"⚠️  Aucun répertoire de run trouvé: {checkpoints_dir}")
+                        pretrain_checkpoint_path = None
                 else:
                     print(f"⚠️  Répertoire de checkpoints SAP non trouvé: {checkpoints_dir}")
                     print("   Utilisation d'un backbone random...")
@@ -132,7 +270,7 @@ def load_downstream_model(
                     pretrain_checkpoint_path = None
             
             if pretrain_checkpoint_path and os.path.exists(pretrain_checkpoint_path):
-                ssl_model = load_model_checkpoint(ssl_mode, pretrain_checkpoint_path)
+                ssl_model = load_model_checkpoint(ssl_mode, pretrain_checkpoint_path, device=device, strict=False)
                 backbone = ssl_model.backbone
                 print(f"✓ Backbone SAP chargé depuis: {pretrain_checkpoint_path}")
             else:
@@ -153,10 +291,9 @@ def load_downstream_model(
         device=device
     )
     
-    # Charger les poids du modèle downstream
+    # Charger les poids du modèle downstream avec les stats du backbone
     if os.path.exists(model_path):
-        model.load_state_dict(torch.load(model_path, map_location=device))
-        print(f"✓ Poids du modèle downstream chargés depuis: {model_path}")
+        model = load_model_checkpoint(model, model_path, device=device)
     else:
         raise FileNotFoundError(f"Model weights not found: {model_path}")
     
@@ -170,7 +307,8 @@ def predict(
     model,
     data_loader,
     device: torch.device = "cpu",
-    return_features: bool = False
+    return_features: bool = False,
+    return_attention: bool = False
 ):
     """
     Faire des prédictions sur un batch de données.
@@ -180,15 +318,18 @@ def predict(
         data_loader: DataLoader pour les données à prédire
         device: Device (cuda ou cpu)
         return_features: Si True, retourner aussi les features du backbone
+        return_attention: Si True, retourner aussi les scores d'attention
     
     Returns:
         predictions: Prédictions du modèle
         true_labels: Labels vrais (si disponibles)
         features: Features du backbone (si return_features=True)
+        attention_scores: Scores d'attention (si return_attention=True)
     """
     
     all_predictions = []
     all_features = []
+    all_attention_scores = []
     
     with torch.no_grad():
         for batch in tqdm.tqdm(data_loader, desc="Predicting"):
@@ -196,8 +337,12 @@ def predict(
             batch = {k: v.to(device) if isinstance(v, torch.Tensor) else v 
                     for k, v in batch.items()}
             
-            # Forward pass
-            outputs = model(batch)
+            # Forward pass avec attention si demandé
+            if return_attention:
+                outputs, attention_scores = model(batch, get_attention=True)
+                all_attention_scores.append(attention_scores.cpu().numpy())
+            else:
+                outputs = model(batch)
             
             # Récupérer les prédictions
             if model.head.__class__.__name__.endswith("ClassificationHead"):
@@ -238,8 +383,13 @@ def predict(
     }
     
     features = np.concatenate(all_features) if all_features else None
+    attention_scores = np.concatenate(all_attention_scores,axis=0) if all_attention_scores else None
+
+    print("Attention scores shape:", attention_scores.shape if attention_scores is not None else "N/A")
+    # Normalize attention score
+    attention_scores = attention_scores / (attention_scores.sum(axis=-1, keepdims=True) + 1e-8) if attention_scores is not None else None
     
-    return predictions, features
+    return predictions, features, attention_scores
 
 
 def infer_single_sample(model, sample_data: torch.Tensor, device: torch.device = "cpu"):
@@ -285,137 +435,52 @@ def infer_single_sample(model, sample_data: torch.Tensor, device: torch.device =
                 'prediction': outputs.cpu().numpy().flatten()
             }
 
-
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Inférence pour modèle downstream")
-    
-    parser.add_argument(
-        "--model_path",
-        type=str,
-        help="Chemin vers le fichier du modèle (best_model.pth ou last_model.pth)"
-    )
-    parser.add_argument(
-        "--dataset",
-        type=str,
-        default="LASPI",
-        help="Dataset pour l'inférence (CWRU ou LASPI)"
-    )
-    parser.add_argument(
-        "--window_size",
-        type=int,
-        default=2048,
-        help="Taille de la fenêtre d'entrée"
-    )
-    parser.add_argument(
-        "--window_stride",
-        type=int,
-        default=256,
-        help="Stride de la fenêtre"
-    )
-    parser.add_argument(
-        "--batch_size",
-        type=int,
-        default=64,
-        help="Taille du batch"
-    )
-    parser.add_argument(
-        "--device",
-        type=str,
-        default="cuda" if torch.cuda.is_available() else "cpu",
-        help="Device (cuda ou cpu)"
-    )
-    
-    args = parser.parse_args()
-    
-    device = torch.device(args.device)
-    
-    # ========================================
-    # 1. Charger le modèle
-    # ========================================
-    print("\n" + "="*60)
-    print("CHARGEMENT DU MODÈLE")
-    print("="*60)
-    
-    if args.model_path is None:
-        # Si aucun chemin spécifié, utiliser le dernier modèle entraîné
-        print("❌ --model_path est requis!")
-        print("\nExemple:")
-        print("  python inference_downstream.py --model_path results/downstream/.../best_model.pth --dataset LASPI")
-        exit(1)
-    
-    model, config = load_downstream_model(args.model_path, device=device)
-    
-    # ========================================
-    # 2. Charger les données de test
-    # ========================================
-    print("\n" + "="*60)
-    print("CHARGEMENT DES DONNÉES")
-    print("="*60)
-    
+    # debug
+
+    from types import SimpleNamespace
+    from dataset import split_data_factory
+
+    # Dataloader configuration
     args_dataloader = SimpleNamespace(
-        name=args.dataset,
-        window_size=args.window_size,
-        window_stride=args.window_stride,
-        batch_size=args.batch_size,
-        data_ratio=1.0,
-    )
-    
-    _, _, test_loader, _ = split_data_factory.split_dataloader(
-        split_type="independent",
-        dataset=args.dataset,
-        args_dataloader=args_dataloader,
+        name="LASPI", #downstream dataset name
+        window_size=2048,
+        window_stride=512,
+        batch_size=256,
+        data_ratio=0.01,
         seed=0,
     )
-    
-    print(f"✓ Test loader prêt avec {len(test_loader)} batches")
-    
-    # ========================================
-    # 3. Faire les prédictions
-    # ========================================
-    print("\n" + "="*60)
-    print("PRÉDICTIONS")
-    print("="*60)
-    
-    predictions, features = predict(
-        model,
+
+    # Split dataloaders
+    train_loader, valid_loader, test_loader, labels, dataset = split_data_factory.split_dataloader(
+        split_type="speed_load_stratified", #split type
+        args_dataloader=args_dataloader,
+    )   
+
+    # Get model path
+    model_path = get_model_path(
+        split_strategy="speed_load_stratified",
+        pretrain_dataset="CWRU",
+        downstream_dataset="LASPI",
+        backbone="sap",
+        finetune_option=False,
+        head_type="linear",
+        data_ratio=0.01,
+        epochs=100,
+    )
+
+    # Charger le modèle
+    model, config = load_downstream_model(
+        model_path=model_path,
+        classes=labels,
+        device="cuda"
+    )
+
+    # Prédictions
+    predictions, features, attention_scores = predict(
+        model, 
         test_loader,
-        device=device,
-        return_features=True
+        device="cuda",
+        return_features=True,
+        return_attention=True
     )
-    
-    print(f"✓ {len(predictions['predictions'])} prédictions effectuées")
-    
-    # ========================================
-    # 4. Afficher les résultats
-    # ========================================
-    print("\n" + "="*60)
-    print("RÉSULTATS")
-    print("="*60)
-    
-    if true_labels is not None:
-        # Classification
-        correct = (predictions['predictions'] == true_labels).sum()
-        accuracy = correct / len(true_labels) * 100
-        print(f"Accuracy: {accuracy:.2f}% ({correct}/{len(true_labels)})")
-        
-        # Afficher quelques exemples
-        print("\nPremiers exemples:")
-        for i in range(min(5, len(predictions['predictions']))):
-            pred_class = model.head.lb.classes_[predictions['predictions'][i]]
-            true_class = model.head.lb.classes_[true_labels[i]]
-            confidence = predictions['probabilities'][i].max()
-            match = "✓" if predictions['predictions'][i] == true_labels[i] else "✗"
-            print(f"  {match} Prédiction: {pred_class} ({confidence:.2%}) | Vraie: {true_class}")
-    
-    print("\n✓ Inférence terminée!")
-    
-    # Sauvegarder les résultats
-    results_save_path = os.path.join(os.path.dirname(args.model_path), "inference_results.npz")
-    np.savez(
-        results_save_path,
-        predictions=predictions['predictions'],
-        probabilities=predictions.get('probabilities', None),
-        true_labels=true_labels,
-        features=features
-    )
-    print(f"✓ Résultats sauvegardés: {results_save_path}")

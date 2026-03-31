@@ -111,10 +111,17 @@ class ViT1DEncoder(nn.Module):
         last_attention_layer = None
         for layer in self.encoder_layers:
             # Extract the Attention module from the Residual(PreNorm(Attention))
-            residual_block = layer[0]  # First Residual block (attention)
-            prenorm = residual_block.fn  # Get PreNorm from Residual
-            attention_module = prenorm.fn  # Get Attention from PreNorm
-            last_attention_layer = attention_module
+            # 
+            # Structure de chaque layer:
+            # layer = Sequential(
+            #     [0] Residual(PreNorm(Attention))      ← bloc attention
+            #     [1] Residual(PreNorm(FeedForward))    ← bloc feedforward
+            # )
+            
+            residual_block = layer[0]  # Récupère [0] = Residual(PreNorm(Attention))
+            prenorm = residual_block.fn  # Dépile Residual → récupère PreNorm(Attention)
+            attention_module = prenorm.fn  # Dépile PreNorm → récupère Attention
+            last_attention_layer = attention_module  # Sauvegarde l'Attention du dernier layer
             
             # Forward pass through the layer
             x = layer(x)
@@ -123,7 +130,8 @@ class ViT1DEncoder(nn.Module):
         if last_attention_layer is not None and hasattr(last_attention_layer, 'last_attn'):
             # last_attn shape: (batch, seq_len, seq_len)
             # We want attention from cls token (position 0) to patches (positions 1:)
-            attn_scores = last_attention_layer.last_attn[:, 0, 1:].mean(dim=0)  # Average across heads, take cls->patches
+            # Shape: (batch, seq_len)
+            attn_scores = last_attention_layer.last_attn[:, 0, 1:]  # cls token -> all patches, keep batch
             return attn_scores
         
         return None

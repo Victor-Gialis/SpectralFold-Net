@@ -36,14 +36,13 @@ def main(args):
         window_stride=args.window_stride,
         batch_size=args.batch_size,
         data_ratio=args.data_ratio,
+        seed=args.seed,
     )
     
     # Split dataloaders
-    train_loader, valid_loader, test_loader, labels = split_data_factory.split_dataloader(
+    train_loader, valid_loader, test_loader, labels, dataset = split_data_factory.split_dataloader(
         split_type=args.split_type,
-        dataset=args.downstream_dataset,
         args_dataloader=args_dataloader,
-        seed=args.seed,
     )
 
     # Backbone
@@ -61,7 +60,8 @@ def main(args):
 
     # checkpoint_path = "results/pretrain/SAPModel/CWRUDataset/20260123_165739"
     ssl_model = load_model_checkpoint(ssl_mode, checkpoint_path)
-    
+    args.downstream_ratio = ssl_model.downstream_ratio
+
     backbone = ssl_model.backbone
 
     # Downstream model
@@ -104,8 +104,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Downstream SAP Model")
 
     # Dataloader
-    parser.add_argument('--pretrain_dataset', type=str, required=True, choices=['CWRU','LASPI'], help='Name of the dataset to use for pretraining')
-    parser.add_argument('--downstream_dataset', type=str, required=True, choices=['CWRU','LASPI'], help='Name of the dataset to use for downstream task')
+    parser.add_argument('--pretrain_dataset', type=str, required=True, choices=['CWRU','LASPI','CVRTEST'], help='Name of the dataset to use for pretraining')
+    parser.add_argument('--downstream_dataset', type=str, required=True, choices=['CWRU','LASPI','CVRTEST'], help='Name of the dataset to use for downstream task')
 
     parser.add_argument('--batch_size', type=int, default=64, help='Batch size for training')
     parser.add_argument('--window_size', type=int, default=2048, help='Window size for data segments')

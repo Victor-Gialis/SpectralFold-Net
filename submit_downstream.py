@@ -10,15 +10,15 @@ else:
 os.environ["PYTHONPATH"] = pythonpath
 
 # Variables for downstream experiment
-backbone_inits = ["sap","mae"] # ["random", "mae", "sap"]
+backbone_inits = ["random","mae","sap"] # ["random", "mae", "sap"]
 pretrain_dataset = "CWRU"  # ["CWRU", "LASPI"]
-downstream_dataset = "LASPI"  # ["CWRU", "LASPI"]
-data_ratios = [0.01, 0.05, 0.1, 0.2] # [0.01, 0.05, 0.1, 0.2]
-split_type = "speed_load_stratified"  # ["independent", "speed_stratified", "speed_load_stratified", "sample_stratified"]
+downstream_dataset = "CVRTEST"  # ["CWRU", "LASPI", "CVRTEST"]
+data_ratios = [0.2] # [0.01, 0.05, 0.1, 0.2]
+split_type = "independent"  # ["independent", "speed_stratified", "speed_load_stratified", "sample_stratified"]
 finetune_options = [True, False]
 head_type = "linear"  # ["linear", "nonlinear"]
-seeds = [0, 1, 2, 3, 4]  
-epoch = 10
+seeds =   [0] # [0, 1, 2, 3, 4]  
+# epoch = 50
 
 # =========================
 # Downstream experiments
@@ -28,6 +28,17 @@ for backbone, data_ratio, finetune, seed in product(backbone_inits, data_ratios,
     if not finetune and backbone == "random":
         print(f"Skipping random backbone without finetuning (not meaningful)")
         continue
+    
+    # Determine epochs based on data ratio
+    if data_ratio == 0.01 :
+        # epoch = 10
+        epoch = 100 
+    
+    elif data_ratio == 0.05 :
+        epoch = 50
+
+    else :
+        epoch = 30
 
     print(f"Starting downstream evaluation with {backbone.upper()} backbone...")
     downstream_cmd = (

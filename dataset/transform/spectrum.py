@@ -21,25 +21,35 @@ def reduced_magnitude_spectrum(x):
 
     return reduced_spectrum[:-1] # Exclude the Nyquist frequency component
 
-def symetric_spectrum_preparation(spectrum, factor=1):
+def symetric_spectrum_preparation(spectrum, factor=1, target_size=None):
     """
-    Prepare a symmetric spectrum by concatenating the lipped version of the spectrum.
+    Prepare a symmetric spectrum by concatenating the original and flipped version of the spectrum.
     Args:
         spectrum (torch.Tensor): Input tensor representing the spectrum data.
-        factor (int): Number of times to concatenate the flipped spectrum.
+        factor (int): Downsampling factor used. Number of repetitions of spectrum pattern.
     Returns:
-        torch.Tensor: Tensor containing the symmetric spectrum.
+        torch.Tensor: Tensor containing the symmetric spectrum prepared for folding.
 
     """
-    n = len(spectrum)
-    complete_spectrum = list()
+    complete_spectrum = [spectrum]
 
-    for i in range(1,factor):
-        if i//2 == 0 and factor > 1:
+    for i in range(1, factor):
+        if i % 2 == 1:
+            # Odd iterations: add flipped spectrum
             complete_spectrum.append(torch.flip(spectrum, [-1]))
         else:
+            # Even iterations: add original spectrum
             complete_spectrum.append(spectrum)
     
-    complete_spectrum = torch.cat((complete_spectrum), dim=-1)
-    spectrum = torch.cat((spectrum, complete_spectrum), dim=-1)
-    return spectrum
+    complete_spectrum = torch.cat(complete_spectrum, dim=-1)
+    
+    if target_size is not None:
+        if complete_spectrum.shape[-1] < target_size:
+            # Padding with zeros if the complete spectrum is smaller than the target size
+            padding_size = target_size - complete_spectrum.shape[-1]
+            complete_spectrum = torch.nn.functional.pad(complete_spectrum, (0, padding_size))
+            
+        else:
+            complete_spectrum = complete_spectrum[..., :target_size]
+    
+    return complete_spectrum

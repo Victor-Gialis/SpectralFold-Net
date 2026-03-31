@@ -78,7 +78,7 @@ class BaseDataset(Dataset):
         Collecte les fenêtres de samples en fonction de window_size et window_stride.
         Si window_size et window_stride ne sont pas définis, chaque sample est considéré comme une fenêtre unique.
         """
-        for sample in self.samples:
+        for sample in tqdm(self.samples, desc="Collecting windows"):
             data = self._read_sample(sample.filepath)
             signal_length = data.shape[-1] # Longueur du signal, supposé être le dernier axe
 
@@ -125,6 +125,7 @@ class BaseDataset(Dataset):
         
         # Time series
         x_raw = self.windows[idx].data
+        x_raw = x_raw.to(torch.float32) # Convert to float32 for processing
         x_fold = None
 
         if x_raw is None:
@@ -136,7 +137,7 @@ class BaseDataset(Dataset):
         if self.downsampling_factor is not None :
             x_fold = undersampling.undersampling_time_serie(x_raw, factor=self.downsampling_factor)
             X_fold = spectrum.reduced_magnitude_spectrum(x_fold)
-            X_fold = spectrum.symetric_spectrum_preparation(X_fold, factor=self.downsampling_factor)
+            X_fold = spectrum.symetric_spectrum_preparation(X_fold, factor=self.downsampling_factor, target_size=X_raw.shape[-1])
 
         else :
             X_fold = None

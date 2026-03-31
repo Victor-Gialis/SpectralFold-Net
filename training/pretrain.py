@@ -118,6 +118,10 @@ def save_model_checkpoint(run_dir:Path, model:nn.Module, name:str="model.pt"):
     if hasattr(model, 'mask_ratio'):
         checkpoint['mask_ratio'] = model.mask_ratio
     
+    #  Save downsampling factor if it exists
+    if hasattr(model, 'downsample_factor'):
+        checkpoint['downsample_factor'] = model.downsample_factor
+    
     torch.save(checkpoint, checkpoint_path / name)
 
 def load_model_checkpoint(model:nn.Module, checkpoint_path:Path)->nn.Module:
@@ -141,6 +145,8 @@ def load_model_checkpoint(model:nn.Module, checkpoint_path:Path)->nn.Module:
                 model.backbone._loads_stats(checkpoint['backbone_stats'])
             if 'mask_ratio' in checkpoint:
                 model.mask_ratio = checkpoint['mask_ratio']
+            if 'downsample_factor' in checkpoint:
+                model.downsample_factor = checkpoint['downsample_factor']
     else:
         # Backward compatibility: if checkpoint is just state_dict
         model.load_state_dict(checkpoint)

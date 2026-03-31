@@ -20,6 +20,9 @@ class SAPModel(BaseSSLModel):
         self.backbone = backbone
         self.args_ssl = args_ssl
 
+        # Downsampling factor for SAP
+        self.downsample_factor = args_ssl.downsampling_factor if hasattr(args_ssl, 'downsampling_factor') else 1
+
         # Create decoder
         self.decoder = ViT1DDecoder()
         

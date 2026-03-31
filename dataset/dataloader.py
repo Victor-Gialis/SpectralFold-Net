@@ -10,9 +10,11 @@ from torch.utils.data import DataLoader
 from torch.utils.data import DataLoader, WeightedRandomSampler, Subset
 from sklearn.model_selection import train_test_split
 
+# Mapping dataset names to their root directories
 DATASET_PATHS = {
     "CWRU": "data/raw/CWRU",
     "LASPI": "data/raw/LASPI",
+    "CVRTEST": "data/raw/CVR_Test",
 }
 
 def get_dataset(args:object):
@@ -148,14 +150,14 @@ def get_homogenous_split_dataloaders(args:object,seed:int=42):
     test_dataset = Subset(dataset, test_idx)
     
     # Labels ponderation
-    labels = [sample['y_label'] for sample in train_dataset]
+    labels = [sample['y_label'] for sample in tqdm(train_dataset, desc="Collecting labels")]
     classes, class_counts = np.unique(labels, return_counts=True)
     
     class_weights = 1. / class_counts
     class_weights = class_weights / class_weights.sum()
-    class_weights = {cls: weight for cls, weight in zip(classes, class_weights)}
+    class_weights = {cls: weight for cls, weight in tqdm(zip(classes, class_weights), desc="Calculating class weights")}
     
-    sample_weights = [class_weights[label] for label in labels]
+    sample_weights = [class_weights[label] for label in tqdm(labels, desc="Calculating sample weights")]
     sample_weights = torch.DoubleTensor(sample_weights)
     
     sampler = WeightedRandomSampler(
@@ -168,7 +170,7 @@ def get_homogenous_split_dataloaders(args:object,seed:int=42):
     valid_loader = DataLoader(valid_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
     
-    return train_loader, valid_loader, test_loader, np.unique(labels)
+    return train_loader, valid_loader, test_loader, np.unique(labels), dataset
 
 def get_speed_stratified_dataloaders(args:object, train_val_speeds:list, test_speeds:list, seed:int=42):
     """
@@ -216,7 +218,7 @@ def get_speed_stratified_dataloaders(args:object, train_val_speeds:list, test_sp
     # Create strata for train/val split
     strata_train_val = np.array([
         f"{dataset[i]['y_label']}_{dataset[i]['metadata']['speed']}"
-        for i in train_val_indices
+        for i in tqdm(train_val_indices, desc="Creating strata for train/val split")
     ])
     
     # Split train/val with stratification
@@ -240,7 +242,7 @@ def get_speed_stratified_dataloaders(args:object, train_val_speeds:list, test_sp
     if data_ratio < 1.0:
         strata_train = np.array([
             f"{dataset[i]['y_label']}_{dataset[i]['metadata']['speed']}"
-            for i in train_idx
+            for i in tqdm(train_idx, desc="Creating strata for training set")
         ])
         scarcity_train_idx, _ = train_test_split(
             train_idx,
@@ -257,14 +259,14 @@ def get_speed_stratified_dataloaders(args:object, train_val_speeds:list, test_sp
     test_dataset = Subset(dataset, test_indices)
     
     # Balanced sampling for training
-    labels = [sample['y_label'] for sample in train_dataset]
+    labels = [sample['y_label'] for sample in tqdm(train_dataset, desc="Collecting labels for balanced sampling")]
     classes, class_counts = np.unique(labels, return_counts=True)
     
     class_weights = 1. / class_counts
     class_weights = class_weights / class_weights.sum()
     class_weights = {cls: weight for cls, weight in zip(classes, class_weights)}
     
-    sample_weights = [class_weights[label] for label in labels]
+    sample_weights = [class_weights[label] for label in tqdm(labels, desc="Calculating sample weights")]
     sample_weights = torch.DoubleTensor(sample_weights)
     
     sampler = WeightedRandomSampler(
@@ -277,7 +279,7 @@ def get_speed_stratified_dataloaders(args:object, train_val_speeds:list, test_sp
     valid_loader = DataLoader(valid_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn,num_workers=5, pin_memory=True)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn,num_workers=5, pin_memory=True)
     
-    return train_loader, valid_loader, test_loader, np.unique(labels)
+    return train_loader, valid_loader, test_loader, np.unique(labels), dataset
 
 def get_speed_load_stratified_dataloaders(args:object, train_val_combinations:list, test_combinations:list, seed:int=42):
     """
@@ -321,10 +323,10 @@ def get_speed_load_stratified_dataloaders(args:object, train_val_combinations:li
     train_val_mask = np.zeros(len(dataset), dtype=bool)
     test_mask = np.zeros(len(dataset), dtype=bool)
     
-    for speed, load in train_val_combinations:
+    for speed, load in tqdm(train_val_combinations, desc="Filtering train/val indices"):
         train_val_mask |= (speeds == speed) & (loads == load)
     
-    for speed, load in test_combinations:
+    for speed, load in tqdm(test_combinations, desc="Filtering test indices"):
         test_mask |= (speeds == speed) & (loads == load)
     
     train_val_indices = np.where(train_val_mask)[0]
@@ -333,7 +335,7 @@ def get_speed_load_stratified_dataloaders(args:object, train_val_combinations:li
     # Create strata for train/val split (include both speed and load)
     strata_train_val = np.array([
         f"{dataset[i]['y_label']}_{dataset[i]['metadata']['speed']}_{dataset[i]['metadata']['load']}"
-        for i in train_val_indices
+        for i in tqdm(train_val_indices, desc="Creating strata for train/val split")
     ])
     
     # Split train/val with stratification
@@ -394,7 +396,7 @@ def get_speed_load_stratified_dataloaders(args:object, train_val_combinations:li
     valid_loader = DataLoader(valid_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn,num_workers=5, pin_memory=True)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn,num_workers=5, pin_memory=True)
     
-    return train_loader, valid_loader, test_loader, np.unique(labels)
+    return train_loader, valid_loader, test_loader, np.unique(labels), dataset
 
 def get_laspi_acquisition_split_dataloaders(args:object, seed:int=42):
     """
@@ -517,7 +519,7 @@ def get_laspi_acquisition_split_dataloaders(args:object, seed:int=42):
     valid_loader = DataLoader(valid_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn, num_workers=5, pin_memory=True)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn, num_workers=5, pin_memory=True)
     
-    return train_loader, valid_loader, test_loader, np.unique(labels)
+    return train_loader, valid_loader, test_loader, np.unique(labels), dataset
 
 @torch.no_grad()
 def compute_stats_from_dataloader(dataloader, device=None, verbose=True):

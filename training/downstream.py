@@ -24,6 +24,7 @@ def create_run_dir(base_dir="results/downstream", args:object=None):
     :param args: Description
     :type args: object
     """ 
+    split_type = args.split_type
     pretrain_dataset = args.pretrain_dataset 
     downstream_dataset = args.downstream_dataset
     backbone_init = args.backbone_init
@@ -31,12 +32,16 @@ def create_run_dir(base_dir="results/downstream", args:object=None):
     finetune = args.finetune
     seed = args.seed
 
+    # create split directory
+    split_dir = os.path.join(base_dir, split_type)
+    os.makedirs(split_dir, exist_ok=True)
+
     if backbone_init == "random":
         pretrain_dataset = "None"
 
     # create directory structure
     dir = f"{pretrain_dataset}_to_{downstream_dataset}_backbone_{backbone_init}_head_{head_type}_finetune_{finetune}"
-    run = os.path.join(base_dir, dir)
+    run = os.path.join(split_dir, dir)
     os.makedirs(run, exist_ok=True)
 
     data_ratio = args.data_ratio
@@ -57,14 +62,57 @@ def save_model_config(run_dir, args):
     
 def save_model_checkpoint(model, run_dir, name="model_checkpoint.pth"):
     """
-    Docstring for save_model_checkpoint
+    Save model checkpoint with backbone stats if available.
     
-    :param model: Description
-    :param run_dir: Description
-    :param name: Description
+    :param model: The model to save
+    :param run_dir: Directory to save the checkpoint
+    :param name: Name of the checkpoint file
     """
     checkpoint_path = os.path.join(run_dir, name)
-    torch.save(model.state_dict(), checkpoint_path)
+    
+    # Create checkpoint dictionary with model weights
+    checkpoint = {
+        'model_state_dict': model.state_dict(),
+    }
+    
+    # Save backbone stats if available
+    if hasattr(model, 'backbone') and hasattr(model.backbone, 'stats'):
+        checkpoint['backbone_stats'] = model.backbone.stats
+    
+    torch.save(checkpoint, checkpoint_path)
+
+def load_model_checkpoint(model, checkpoint_path, device="cpu", strict=True):
+    """
+    Load model checkpoint and restore backbone stats if available.
+    
+    :param model: The model to load weights into
+    :param checkpoint_path: Path to the checkpoint file
+    :param device: Device to load the model on
+    :param strict: If False, ignores missing and unexpected keys
+    :return: The model with loaded weights and stats
+    """
+    checkpoint = torch.load(checkpoint_path, map_location=device)
+    
+    # Handle both old format (just state_dict) and new format (checkpoint dict)
+    if isinstance(checkpoint, dict) and 'model_state_dict' in checkpoint:
+        model.load_state_dict(checkpoint['model_state_dict'], strict=strict)
+        
+        # Restore backbone stats if available
+        if 'backbone_stats' in checkpoint and hasattr(model, 'backbone'):
+            model.backbone.stats = checkpoint['backbone_stats']
+    else:
+        # Legacy format: checkpoint is just state_dict
+        # Try with strict=True first, then with strict=False if it fails
+        try:
+            model.load_state_dict(checkpoint, strict=strict)
+        except RuntimeError as e:
+            if strict:
+                print(f"⚠️  Loading checkpoint with strict=False due to: {str(e)[:100]}...")
+                model.load_state_dict(checkpoint, strict=False)
+            else:
+                raise
+    
+    return model
 
 def plot_metrics(train_losses, valid_losses, run_dir):
     """
@@ -84,6 +132,67 @@ def plot_metrics(train_losses, valid_losses, run_dir):
     plt.grid()
     plt.savefig(os.path.join(run_dir, "loss_curve.png"))
     plt.close()
+
+def plot_test_metrics_over_epochs(all_test_metrics, run_dir, task="classification"):
+    """
+    Plot test metrics over epochs.
+    
+    :param all_test_metrics: List of metric dictionaries from each epoch
+    :param run_dir: Directory to save the plots
+    :param task: Task type (classification or regression)
+    """
+    if not all_test_metrics:
+        return
+    
+    epochs = range(1, len(all_test_metrics) + 1)
+    
+    if task == "classification":
+        accuracies = [m.get("accuracy", 0) for m in all_test_metrics]
+        f1_scores = [m.get("f1", 0) for m in all_test_metrics]
+        
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+        
+        ax1.plot(epochs, accuracies, marker='o', label="Accuracy")
+        ax1.set_xlabel("Epoch")
+        ax1.set_ylabel("Accuracy")
+        ax1.set_title("Test Accuracy over Epochs")
+        ax1.grid(True, alpha=0.3)
+        ax1.legend()
+        
+        ax2.plot(epochs, f1_scores, marker='s', label="F1-Score", color='orange')
+        ax2.set_xlabel("Epoch")
+        ax2.set_ylabel("F1-Score")
+        ax2.set_title("Test F1-Score over Epochs")
+        ax2.grid(True, alpha=0.3)
+        ax2.legend()
+        
+        plt.tight_layout()
+        plt.savefig(os.path.join(run_dir, "test_metrics_over_epochs.png"), dpi=300, bbox_inches='tight')
+        plt.close()
+    
+    else:  # regression
+        mses = [m.get("mse", 0) for m in all_test_metrics]
+        r2s = [m.get("r2", 0) for m in all_test_metrics]
+        
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+        
+        ax1.plot(epochs, mses, marker='o', label="MSE")
+        ax1.set_xlabel("Epoch")
+        ax1.set_ylabel("MSE")
+        ax1.set_title("Test MSE over Epochs")
+        ax1.grid(True, alpha=0.3)
+        ax1.legend()
+        
+        ax2.plot(epochs, r2s, marker='s', label="R²", color='orange')
+        ax2.set_xlabel("Epoch")
+        ax2.set_ylabel("R² Score")
+        ax2.set_title("Test R² Score over Epochs")
+        ax2.grid(True, alpha=0.3)
+        ax2.legend()
+        
+        plt.tight_layout()
+        plt.savefig(os.path.join(run_dir, "test_metrics_over_epochs.png"), dpi=300, bbox_inches='tight')
+        plt.close()
 
 def plot_attention_spectra(run_dir, model, test_loader, device, task="classification"):
     """
@@ -140,7 +249,7 @@ def plot_attention_spectra(run_dir, model, test_loader, device, task="classifica
                 class_attention_scores[class_idx].append(batch_attention_scores[i])
     
     # Compute mean spectra and attention scores per class
-    for class_idx in sorted(class_spectra.keys()):
+    for class_idx in tqdm(sorted(class_spectra.keys()), desc="Plotting Attention Spectra", leave=False):
         spectra = np.array(class_spectra[class_idx])  # (n_samples, n_time_steps)
         attention_scores = np.array(class_attention_scores[class_idx])  # (n_samples, n_patches)
         
@@ -295,12 +404,14 @@ def train(
     optimizer,
     scheduler,
     epochs,
+    eval_every_epoch=False,
 ):    
     # Create run directory
     run_dir = create_run_dir(base_dir="results/downstream", args=args)
 
     all_train_losses = []
     all_valid_losses = []
+    all_test_metrics = []  # Store test metrics for each epoch if eval_every_epoch=True
     
     # Move model to device
     model.to(device)
@@ -350,10 +461,20 @@ def train(
             scheduler.step()
 
         print(f"Epoch {epoch}/{epochs} - Train Loss: {train_loss:.4f}, Valid Loss: {valid_loss:.4f}")
+        
+        # Evaluate on test set if eval_every_epoch is True
+        if eval_every_epoch:
+            metrics = evaluate(run_dir, model, test_loader, device, task=args.task)
+            all_test_metrics.append(metrics)
+            print(f"  Test Metrics: {metrics}")
 
     # Plot training curves
     if run_dir:
         plot_metrics(all_train_losses, all_valid_losses, run_dir)
+        
+        # Plot test metrics over epochs if eval_every_epoch is True
+        if eval_every_epoch:
+            plot_test_metrics_over_epochs(all_test_metrics, run_dir, task=args.task)
     
     # Save last model
     save_model_checkpoint(model, run_dir, name="last_model.pth")
@@ -361,8 +482,12 @@ def train(
     # Plot attention spectra for each class
     plot_attention_spectra(run_dir, model, test_loader, device, task=args.task)
     
-    # Testing phase
-    metrics = evaluate(run_dir, model, test_loader, device, task=args.task)
+    # Testing phase (only if not already evaluated every epoch)
+    if not eval_every_epoch:
+        metrics = evaluate(run_dir, model, test_loader, device, task=args.task)
+    else:
+        # Use the last epoch metrics
+        metrics = all_test_metrics[-1]
 
     # Préparer le dictionnaire pour le CSV
     results_dict = {
@@ -374,11 +499,16 @@ def train(
         "finetune":args.finetune,
         "seed": args.seed,
         "data_ratio": args.data_ratio,
+        "mask_ratio": "None",
     }
 
     # Add mask ratio if the backbone is MAE
-    # if args.backbone_init == "mae":
-    #     results_dict["mask_ratio"] = args.mask_ratio
+    if args.backbone_init == "mae":
+        results_dict["mask_ratio"] = args.mask_ratio
+    
+    # Add downsampling factor if it exists
+    if args.backbone_init == "sap":
+        results_dict["downsampling_factor"] = args.downsampling_factor
 
     results_dict.update(metrics)
 

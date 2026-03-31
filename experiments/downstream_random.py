@@ -36,6 +36,7 @@ def main(args):
         window_stride=args.window_stride,
         batch_size=args.batch_size,
         data_ratio=args.data_ratio,
+        seed=args.seed,
     )
     
     # Get same train loader as pretrain
@@ -45,6 +46,7 @@ def main(args):
         window_stride=args.window_stride,
         batch_size=args.batch_size,
         data_ratio=1.0,  # Use full data for pretraining
+        seed=args.seed,
     )
 
     # Load pretrain train loader
@@ -58,11 +60,9 @@ def main(args):
     backbone_random._loads_stats(stats)
 
     # Split dataloaders
-    train_loader, valid_loader, test_loader, labels = split_data_factory.split_dataloader(
+    train_loader, valid_loader, test_loader, labels, dataset = split_data_factory.split_dataloader(
         split_type=args.split_type,
-        dataset=args.downstream_dataset,
         args_dataloader=args_dataloader,
-        seed=args.seed,
     )
 
     # Downstream model
@@ -105,8 +105,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Downstream Random Model")
 
     # Dataloader
-    parser.add_argument('--pretrain_dataset', type=str, required=True, choices=['CWRU','LASPI'], help='Name of the dataset to use for pretraining')
-    parser.add_argument('--downstream_dataset', type=str, required=True, choices=['CWRU','LASPI'], help='Name of the dataset to use for downstream task')
+    parser.add_argument('--pretrain_dataset', type=str, required=True, choices=['CWRU','LASPI','CVRTEST'], help='Name of the dataset to use for pretraining')
+    parser.add_argument('--downstream_dataset', type=str, required=True, choices=['CWRU','LASPI','CVRTEST'], help='Name of the dataset to use for downstream task')
 
     parser.add_argument('--batch_size', type=int, default=64, help='Batch size for training')
     parser.add_argument('--window_size', type=int, default=2048, help='Window size for data segments')
